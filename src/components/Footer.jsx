@@ -48,7 +48,7 @@ export const Footer = ({ setActivePage, setIsAdminView }) => {
             <ul className="space-y-2.5 text-sm text-gray-600 dark:text-gray-400">
               <li>
                 <button
-                  onClick={() => { setActivePage('home'); setIsAdminView(false); window.scrollTo(0,0); }}
+                  onClick={() => setActivePage('home')}
                   className="hover:text-gold-500 transition-colors"
                 >
                   {t('nav.home')}
@@ -56,7 +56,7 @@ export const Footer = ({ setActivePage, setIsAdminView }) => {
               </li>
               <li>
                 <button
-                  onClick={() => { setActivePage('menu'); setIsAdminView(false); window.scrollTo(0,0); }}
+                  onClick={() => setActivePage('menu')}
                   className="hover:text-gold-500 transition-colors"
                 >
                   {t('nav.menu')}
@@ -64,7 +64,7 @@ export const Footer = ({ setActivePage, setIsAdminView }) => {
               </li>
               <li>
                 <button
-                  onClick={() => { setActivePage('about'); setIsAdminView(false); window.scrollTo(0,0); }}
+                  onClick={() => setActivePage('about')}
                   className="hover:text-gold-500 transition-colors"
                 >
                   {t('nav.about')}
@@ -72,7 +72,7 @@ export const Footer = ({ setActivePage, setIsAdminView }) => {
               </li>
               <li>
                 <button
-                  onClick={() => { setActivePage('reservation'); setIsAdminView(false); window.scrollTo(0,0); }}
+                  onClick={() => setActivePage('reservation')}
                   className="hover:text-gold-500 transition-colors"
                 >
                   {t('nav.reservation')}
@@ -80,7 +80,7 @@ export const Footer = ({ setActivePage, setIsAdminView }) => {
               </li>
               <li>
                 <button
-                  onClick={() => { setActivePage('contact'); setIsAdminView(false); window.scrollTo(0,0); }}
+                  onClick={() => setActivePage('contact')}
                   className="hover:text-gold-500 transition-colors"
                 >
                   {t('nav.contact')}

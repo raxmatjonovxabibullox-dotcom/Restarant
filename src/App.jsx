@@ -58,34 +58,43 @@ function MainApp() {
     };
   }, []);
 
-  // Sync state and update browser address bar
-  const navigateTo = (page, isAdm = false) => {
+  // Handle page change (Home, Menu, About, Reservation, Contact)
+  const handlePageChange = (page) => {
     setActivePage(page);
-    setIsAdminView(isAdm);
+    setIsAdminView(false);
 
-    const targetUrl = isAdm ? '/admin' : page === 'home' ? '/' : `/${page}`;
+    const targetUrl = page === 'home' ? '/' : `/${page}`;
     if (window.location.pathname !== targetUrl) {
-      window.history.pushState({ page, isAdm }, '', targetUrl);
+      window.history.pushState({ page, isAdmin: false }, '', targetUrl);
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handlePageChange = (page) => {
-    navigateTo(page, false);
-  };
-
+  // Handle admin console toggle
   const handleAdminViewChange = (isAdm) => {
-    if (isAdm && !isAdmin) {
-      openLoginModal();
-      return;
+    if (isAdm) {
+      if (!isAdmin) {
+        openLoginModal();
+        return;
+      }
+      setIsAdminView(true);
+      if (window.location.pathname !== '/admin') {
+        window.history.pushState({ page: activePage, isAdmin: true }, '', '/admin');
+      }
+    } else {
+      setIsAdminView(false);
+      const targetUrl = activePage === 'home' ? '/' : `/${activePage}`;
+      if (window.location.pathname !== targetUrl) {
+        window.history.pushState({ page: activePage, isAdmin: false }, '', targetUrl);
+      }
     }
-    navigateTo(activePage, isAdm);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   // If user logs out while in admin view, return to site
   useEffect(() => {
     if (isAdminView && !isAdmin) {
-      navigateTo('home', false);
+      handlePageChange('home');
     }
   }, [isAdmin, isAdminView]);
 

@@ -127,10 +127,7 @@ export const Navbar = ({ activePage, setActivePage, setIsAdminView }) => {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           {/* Brand Logo */}
           <button
-            onClick={() => {
-              setActivePage('home');
-              setIsAdminView(false);
-            }}
+            onClick={() => setActivePage('home')}
             className="flex items-center gap-3 group text-left"
           >
             <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-tr from-amber-600 via-gold-500 to-amber-400 p-0.5 shadow-gold-500/30 shadow-md group-hover:scale-105 transition-transform">
@@ -155,10 +152,7 @@ export const Navbar = ({ activePage, setActivePage, setIsAdminView }) => {
               return (
                 <button
                   key={link.id}
-                  onClick={() => {
-                    setActivePage(link.id);
-                    setIsAdminView(false);
-                  }}
+                  onClick={() => setActivePage(link.id)}
                   className={`px-3.5 py-2 rounded-xl text-sm font-medium transition-all ${
                     isActive
                       ? 'text-gold-500 bg-gold-500/10 font-semibold'
@@ -175,10 +169,7 @@ export const Navbar = ({ activePage, setActivePage, setIsAdminView }) => {
           <div className="flex items-center gap-2 sm:gap-3">
             {/* Quick Reservation Button */}
             <button
-              onClick={() => {
-                setActivePage('reservation');
-                setIsAdminView(false);
-              }}
+              onClick={() => setActivePage('reservation')}
               className="hidden md:flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold bg-gold-500/10 border border-gold-500/30 text-gold-500 hover:bg-gold-500 hover:text-dark-950 transition-all"
             >
               <CalendarDays className="w-4 h-4" />
@@ -252,7 +243,6 @@ export const Navbar = ({ activePage, setActivePage, setIsAdminView }) => {
                 key={link.id}
                 onClick={() => {
                   setActivePage(link.id);
-                  setIsAdminView(false);
                   setMobileMenuOpen(false);
                 }}
                 className={`w-full px-4 py-2.5 rounded-xl text-left text-sm font-medium transition-colors ${
@@ -269,7 +259,6 @@ export const Navbar = ({ activePage, setActivePage, setIsAdminView }) => {
               <button
                 onClick={() => {
                   setActivePage('reservation');
-                  setIsAdminView(false);
                   setMobileMenuOpen(false);
                 }}
                 className="w-full py-2.5 rounded-xl text-center text-xs font-semibold bg-gold-500 text-dark-950 flex items-center justify-center gap-2"
