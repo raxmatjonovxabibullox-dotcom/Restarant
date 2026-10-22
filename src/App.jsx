@@ -4,14 +4,19 @@ import { LanguageProvider } from './context/LanguageContext';
 import { RestaurantProvider } from './context/RestaurantContext';
 import { CartProvider } from './context/CartContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { CurrencyProvider } from './context/CurrencyContext';
+import { FavoritesProvider } from './context/FavoritesContext';
 
 // Components
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { CartDrawer } from './components/CartDrawer';
+import { FavoritesDrawer } from './components/FavoritesDrawer';
 import { DishDetailModal } from './components/DishDetailModal';
 import { LoginModal } from './components/LoginModal';
 import { ToastNotification } from './components/ToastNotification';
+import { AudioPlayer } from './components/AudioPlayer';
+import { SmartConciergeModal } from './components/SmartConciergeModal';
 
 // Pages
 import { HomePage } from './pages/HomePage';
@@ -40,6 +45,7 @@ const parseCurrentRoute = () => {
 function MainApp() {
   const [activePage, setActivePage] = useState(() => parseCurrentRoute().page);
   const [isAdminView, setIsAdminView] = useState(() => parseCurrentRoute().isAdmin);
+  const [isConciergeOpen, setIsConciergeOpen] = useState(false);
   const { isAdmin, openLoginModal } = useAuth();
 
   // Listen to browser Back / Forward buttons and hash changes
@@ -108,11 +114,21 @@ function MainApp() {
             activePage={activePage}
             setActivePage={handlePageChange}
             setIsAdminView={handleAdminViewChange}
+            onOpenConcierge={() => setIsConciergeOpen(true)}
           />
 
           <main className="flex-1">
-            {activePage === 'home' && <HomePage setActivePage={handlePageChange} />}
-            {activePage === 'menu' && <MenuPage />}
+            {activePage === 'home' && (
+              <HomePage
+                setActivePage={handlePageChange}
+                onOpenConcierge={() => setIsConciergeOpen(true)}
+              />
+            )}
+            {activePage === 'menu' && (
+              <MenuPage
+                onOpenConcierge={() => setIsConciergeOpen(true)}
+              />
+            )}
             {activePage === 'about' && <AboutPage setActivePage={handlePageChange} />}
             {activePage === 'reservation' && <ReservationPage setActivePage={handlePageChange} />}
             {activePage === 'contact' && <ContactPage />}
@@ -122,14 +138,23 @@ function MainApp() {
             setActivePage={handlePageChange}
             setIsAdminView={handleAdminViewChange}
           />
+
+          {/* Floating Luxury Lounge Audio Player */}
+          <AudioPlayer />
         </>
       )}
 
       {/* Global Interactive Drawers & Overlays */}
       <CartDrawer />
+      <FavoritesDrawer />
       <DishDetailModal />
       <LoginModal setIsAdminView={handleAdminViewChange} />
       <ToastNotification />
+      <SmartConciergeModal
+        isOpen={isConciergeOpen}
+        onClose={() => setIsConciergeOpen(false)}
+        setActivePage={handlePageChange}
+      />
     </div>
   );
 }
@@ -138,13 +163,17 @@ export default function App() {
   return (
     <ThemeProvider>
       <LanguageProvider>
-        <RestaurantProvider>
-          <CartProvider>
-            <AuthProvider>
-              <MainApp />
-            </AuthProvider>
-          </CartProvider>
-        </RestaurantProvider>
+        <CurrencyProvider>
+          <FavoritesProvider>
+            <RestaurantProvider>
+              <CartProvider>
+                <AuthProvider>
+                  <MainApp />
+                </AuthProvider>
+              </CartProvider>
+            </RestaurantProvider>
+          </FavoritesProvider>
+        </CurrencyProvider>
       </LanguageProvider>
     </ThemeProvider>
   );
