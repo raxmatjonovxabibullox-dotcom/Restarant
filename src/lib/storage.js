@@ -93,7 +93,7 @@ export const addStoredReservation = (reservation) => {
 // System Settings (Telegram bot, Supabase)
 export const getStoredSettings = () => {
   const defaults = {
-    telegramBotToken: '',
+    telegramBotToken: '8975969633:AAGyCg0Y38OvLae3EOnuWDCMXuJwS_9jY9Y',
     telegramChatId: '8170197389',
     supabaseUrl: '',
     supabaseAnonKey: '',
@@ -108,8 +108,16 @@ export const getStoredSettings = () => {
       return defaults;
     }
     const parsed = JSON.parse(data);
+    let updated = false;
     if (!parsed.telegramChatId) {
       parsed.telegramChatId = '8170197389';
+      updated = true;
+    }
+    if (!parsed.telegramBotToken) {
+      parsed.telegramBotToken = '8975969633:AAGyCg0Y38OvLae3EOnuWDCMXuJwS_9jY9Y';
+      updated = true;
+    }
+    if (updated) {
       localStorage.setItem(KEYS.SETTINGS, JSON.stringify(parsed));
     }
     return parsed;
