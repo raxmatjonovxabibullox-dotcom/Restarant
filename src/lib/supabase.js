@@ -50,7 +50,19 @@ export const syncMenuWithSupabase = async (items) => {
     return { synced: false, reason: "Supabase ulanmagan (Lokal saqlangan)" };
   }
   try {
-    const { error } = await client.from('menu_items').upsert(items, { onConflict: 'id' });
+    const formatted = items.map(item => ({
+      id: item.id,
+      category: item.category,
+      name: item.name,
+      description: item.description,
+      price: item.price,
+      image: item.image,
+      prep_time: item.prepTime || 20,
+      calories: item.calories || 500,
+      tags: item.tags || [],
+      is_available: item.isAvailable !== undefined ? item.isAvailable : true
+    }));
+    const { error } = await client.from('menu_items').upsert(formatted, { onConflict: 'id' });
     if (error) throw error;
     return { synced: true, message: "Taomnoma Supabase bazasiga yuklandi!" };
   } catch (err) {
@@ -63,7 +75,21 @@ export const sendOrderToSupabase = async (order) => {
   const client = getSupabaseClient();
   if (!client) return { synced: false };
   try {
-    const { error } = await client.from('orders').insert([order]);
+    const payload = {
+      id: order.id,
+      customer_name: order.customerName,
+      customer_phone: order.customerPhone,
+      delivery_type: order.deliveryType,
+      table_number: order.tableNumber || '',
+      delivery_address: order.deliveryAddress || '',
+      payment_method: order.paymentMethod,
+      total_price: order.totalPrice || order.totalAmount || 0,
+      status: order.status || 'pending',
+      items: order.items || [],
+      notes: order.notes || '',
+      created_at: order.createdAt || new Date().toISOString()
+    };
+    const { error } = await client.from('orders').insert([payload]);
     if (error) throw error;
     return { synced: true };
   } catch (err) {
@@ -77,7 +103,20 @@ export const sendReservationToSupabase = async (reservation) => {
   const client = getSupabaseClient();
   if (!client) return { synced: false };
   try {
-    const { error } = await client.from('reservations').insert([reservation]);
+    const payload = {
+      id: reservation.id,
+      full_name: reservation.fullName,
+      phone: reservation.phone,
+      date: reservation.date,
+      time: reservation.time,
+      guests: String(reservation.guests || '2'),
+      zone: reservation.zone || '',
+      table_number: reservation.tableNumber || '',
+      special_requests: reservation.specialRequests || '',
+      status: reservation.status || 'new',
+      created_at: reservation.createdAt || new Date().toISOString()
+    };
+    const { error } = await client.from('reservations').insert([payload]);
     if (error) throw error;
     return { synced: true };
   } catch (err) {

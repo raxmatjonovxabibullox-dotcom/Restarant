@@ -96,7 +96,7 @@ export const getStoredSettings = () => {
     telegramBotToken: '8975969633:AAGyCg0Y38OvLae3EOnuWDCMXuJwS_9jY9Y',
     telegramChatId: '8170197389',
     supabaseUrl: 'https://mvmrndhvcvjccliqyyvk.supabase.co',
-    supabaseAnonKey: '',
+    supabaseAnonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im12bXJuZGh2Y3ZqY2NsaXF5eXZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI2NzQxOTUsImV4cCI6MjEwODI1MDE5NX0.f1XkYgaqZof0FFNjhjMoS5akylU_a2QELD8qe9C60yY',
     restaurantPhone: '+998 71 200 88 99',
     restaurantAddress: "Toshkent sh., Amir Temur shoh ko'chasi, 45",
   };
