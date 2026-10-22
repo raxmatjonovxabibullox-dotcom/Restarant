@@ -95,7 +95,7 @@ export const getStoredSettings = () => {
   const defaults = {
     telegramBotToken: '8975969633:AAGyCg0Y38OvLae3EOnuWDCMXuJwS_9jY9Y',
     telegramChatId: '8170197389',
-    supabaseUrl: '',
+    supabaseUrl: 'https://mvmrndhvcvjccliqyyvk.supabase.co',
     supabaseAnonKey: '',
     restaurantPhone: '+998 71 200 88 99',
     restaurantAddress: "Toshkent sh., Amir Temur shoh ko'chasi, 45",
