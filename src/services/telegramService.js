@@ -9,7 +9,7 @@ const getBotCredentials = () => {
 };
 
 // Send raw HTML message to Telegram
-const sendToTelegramApi = async (token, chatId, text) => {
+export const sendToTelegramApi = async (token, chatId, text) => {
   if (!token || !chatId) {
     return {
       success: false,
