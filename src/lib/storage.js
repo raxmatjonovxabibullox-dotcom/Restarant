@@ -92,23 +92,29 @@ export const addStoredReservation = (reservation) => {
 
 // System Settings (Telegram bot, Supabase)
 export const getStoredSettings = () => {
+  const defaults = {
+    telegramBotToken: '',
+    telegramChatId: '8170197389',
+    supabaseUrl: '',
+    supabaseAnonKey: '',
+    restaurantPhone: '+998 71 200 88 99',
+    restaurantAddress: "Toshkent sh., Amir Temur shoh ko'chasi, 45",
+  };
+
   try {
     const data = localStorage.getItem(KEYS.SETTINGS);
     if (!data) {
-      const defaults = {
-        telegramBotToken: '',
-        telegramChatId: '',
-        supabaseUrl: '',
-        supabaseAnonKey: '',
-        restaurantPhone: '+998 71 200 88 99',
-        restaurantAddress: "Toshkent sh., Amir Temur shoh ko'chasi, 45",
-      };
       localStorage.setItem(KEYS.SETTINGS, JSON.stringify(defaults));
       return defaults;
     }
-    return JSON.parse(data);
+    const parsed = JSON.parse(data);
+    if (!parsed.telegramChatId) {
+      parsed.telegramChatId = '8170197389';
+      localStorage.setItem(KEYS.SETTINGS, JSON.stringify(parsed));
+    }
+    return parsed;
   } catch (e) {
-    return {};
+    return defaults;
   }
 };
 

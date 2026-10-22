@@ -48,17 +48,17 @@ export const testTelegramBot = async (token, chatId) => {
     `✅ Telegram Bot aloqasi muvaffaqiyatli o'rnatildi!\n` +
     `📅 Vaqt: ${new Date().toLocaleString()}\n` +
     `🛎 Tizim barcha buyurtmalar va stol bandliklarini ushbu chatga yuborishga tayyor.`;
-  
+
   return await sendToTelegramApi(token, chatId, message);
 };
 
 // Format & Send Order
 export const sendTelegramOrder = async (order) => {
   const { token, chatId } = getBotCredentials();
-  
-  const deliveryTypeTitle = order.deliveryType === 'dineIn' 
+
+  const deliveryTypeTitle = order.deliveryType === 'dineIn'
     ? `🍽 RESTORANDA (Stol: <b>${order.tableNumber || "Ko'rsatilmagan"}</b>)`
-    : `🛵 YETKAZIB BERISH (Manzil: <b>${order.deliveryAddress || "Ko'rsatilmagan"}</b>)`;
+    : `🛵 Yetkazib Berish (Manzil: <b>${order.deliveryAddress || "Ko'rsatilmagan"}</b>)`;
 
   const paymentTitle = order.paymentMethod === 'card' ? "💳 Karta (Payme/Click)" : "💵 Naqd pul";
 
@@ -68,7 +68,7 @@ export const sendTelegramOrder = async (order) => {
     return `${idx + 1}. <b>${name}</b> x ${item.quantity} = ${subtotal} so'm`;
   }).join('\n');
 
-  const formattedMessage = 
+  const formattedMessage =
     `🔔 <b>YANGI BUYURTMA: #${order.id}</b>\n` +
     `━━━━━━━━━━━━━━━━━━━━\n` +
     `👤 <b>Mijoz:</b> ${order.customerName}\n` +
@@ -90,7 +90,7 @@ export const sendTelegramOrder = async (order) => {
 export const sendTelegramReservation = async (reservation) => {
   const { token, chatId } = getBotCredentials();
 
-  const formattedMessage = 
+  const formattedMessage =
     `🛎 <b>YANGI STOL BAND QILINDI: #${reservation.id}</b>\n` +
     `━━━━━━━━━━━━━━━━━━━━\n` +
     `👤 <b>Mijoz:</b> ${reservation.fullName}\n` +
@@ -110,7 +110,7 @@ export const sendTelegramReservation = async (reservation) => {
 export const sendTelegramContactMessage = async (msg) => {
   const { token, chatId } = getBotCredentials();
 
-  const formattedMessage = 
+  const formattedMessage =
     `📩 <b>YANGI MUROJAAT (Aloqa sahifasidan)</b>\n` +
     `━━━━━━━━━━━━━━━━━━━━\n` +
     `👤 <b>Yuboruvchi:</b> ${msg.name}\n` +
