@@ -120,6 +120,76 @@ class SoundSynthesizer {
       });
     } catch {}
   }
+
+  // Ambient Lounge Synthesizer for 100% offline relaxing music
+  startAmbientLounge(volume = 0.3) {
+    if (this.muted) return;
+    try {
+      this.init();
+      if (!this.ctx) return;
+      this.stopAmbientLounge();
+      this.ambientActive = true;
+
+      const masterGain = this.ctx.createGain();
+      masterGain.gain.setValueAtTime(volume * 0.2, this.ctx.currentTime);
+      masterGain.connect(this.ctx.destination);
+      this.ambientMasterGain = masterGain;
+
+      // Pentatonic Luxury Lounge Scale (D3, A3, D4, F#4, A4, B4, E5)
+      const scale = [146.83, 220.00, 293.66, 369.99, 440.00, 493.88, 659.25];
+
+      const playPadNote = () => {
+        if (!this.ambientActive || !this.ctx) return;
+        try {
+          const now = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const noteGain = this.ctx.createGain();
+
+          const freq = scale[Math.floor(Math.random() * scale.length)];
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now);
+
+          const duration = 4.0 + Math.random() * 3.0;
+          noteGain.gain.setValueAtTime(0.0001, now);
+          noteGain.gain.linearRampToValueAtTime(0.05, now + 1.2);
+          noteGain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+          osc.connect(noteGain);
+          noteGain.connect(masterGain);
+
+          osc.start(now);
+          osc.stop(now + duration + 0.1);
+
+          this.ambientTimer = setTimeout(playPadNote, 2000 + Math.random() * 2000);
+        } catch {}
+      };
+
+      playPadNote();
+      setTimeout(playPadNote, 1000);
+      setTimeout(playPadNote, 2200);
+    } catch {}
+  }
+
+  stopAmbientLounge() {
+    this.ambientActive = false;
+    if (this.ambientTimer) {
+      clearTimeout(this.ambientTimer);
+      this.ambientTimer = null;
+    }
+    if (this.ambientMasterGain && this.ctx) {
+      try {
+        this.ambientMasterGain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.5);
+      } catch {}
+    }
+  }
+
+  setAmbientVolume(vol) {
+    if (this.ambientMasterGain && this.ctx) {
+      try {
+        this.ambientMasterGain.gain.setValueAtTime(Math.max(0, vol * 0.2), this.ctx.currentTime);
+      } catch {}
+    }
+  }
 }
 
 export const soundFx = new SoundSynthesizer();
