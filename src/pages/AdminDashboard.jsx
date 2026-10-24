@@ -43,7 +43,9 @@ import {
   ChefHat,
   Printer,
   Phone,
-  Coins
+  Coins,
+  Globe,
+  ChevronDown
 } from 'lucide-react';
 
 export const AdminDashboard = ({ setIsAdminView }) => {
@@ -61,10 +63,19 @@ export const AdminDashboard = ({ setIsAdminView }) => {
     showToast
   } = useRestaurant();
 
-  const { getLocalized } = useLanguage();
+  const { lang, setLang, t, getLocalized } = useLanguage();
   const { theme, toggleTheme } = useTheme();
   const { formatPrice } = useCurrency();
   const { isFullscreen, toggleFullscreen } = useFullscreen();
+
+  const [langDropdownOpen, setLangDropdownOpen] = useState(false);
+
+  const languages = [
+    { code: 'uz', label: "O'zbekcha", flag: '🇺🇿' },
+    { code: 'ru', label: 'Русский', flag: '🇷🇺' },
+    { code: 'en', label: 'English', flag: '🇬🇧' },
+  ];
+  const currentLangObj = languages.find(l => l.code === lang) || languages[0];
 
   const [activeTab, setActiveTab] = useState('dashboard'); // dashboard, kds, menu, orders, reservations, settings
 
@@ -338,13 +349,13 @@ export const AdminDashboard = ({ setIsAdminView }) => {
 
   // Categories list
   const categories = [
-    { id: 'all', label: "Barchasi" },
-    { id: 'national', label: "Milliy taomlar" },
-    { id: 'salads', label: "Salatlar" },
-    { id: 'kebabs', label: "Kabob & Gril" },
-    { id: 'mains', label: "Issiq taomlar" },
-    { id: 'desserts', label: "Shirinliklar" },
-    { id: 'drinks', label: "Ichimliklar" },
+    { id: 'all', label: t('categories.all') || (lang === 'ru' ? 'Все' : lang === 'en' ? 'All' : 'Barchasi') },
+    { id: 'national', label: t('categories.national') || (lang === 'ru' ? 'Национальные блюда' : lang === 'en' ? 'National Cuisine' : 'Milliy taomlar') },
+    { id: 'salads', label: t('categories.salads') || (lang === 'ru' ? 'Салаты' : lang === 'en' ? 'Salads' : 'Salatlar') },
+    { id: 'kebabs', label: t('categories.kebabs') || (lang === 'ru' ? 'Шашлык и Гриль' : lang === 'en' ? 'Kebabs & Grill' : 'Kabob & Gril') },
+    { id: 'mains', label: t('categories.mains') || (lang === 'ru' ? 'Горячие блюда' : lang === 'en' ? 'Main Courses' : 'Issiq taomlar') },
+    { id: 'desserts', label: t('categories.desserts') || (lang === 'ru' ? 'Десерты' : lang === 'en' ? 'Desserts' : 'Shirinliklar') },
+    { id: 'drinks', label: t('categories.drinks') || (lang === 'ru' ? 'Напитки' : lang === 'en' ? 'Beverages' : 'Ichimliklar') },
   ];
 
   // Filtered menu
@@ -426,12 +437,12 @@ export const AdminDashboard = ({ setIsAdminView }) => {
           {/* Navigation Tabs (Desktop) */}
           <nav className="hidden lg:flex items-center gap-1">
             {[
-              { id: 'dashboard', label: 'Boshqaruv', icon: LayoutDashboard },
-              { id: 'kds', label: `Oshxona (${pendingOrdersCount})`, icon: ChefHat, badge: pendingOrdersCount > 0 },
-              { id: 'menu', label: 'Taomnoma', icon: UtensilsCrossed },
-              { id: 'orders', label: `Buyurtmalar (${orders.length})`, icon: ShoppingBag },
-              { id: 'reservations', label: `Bandlik (${activeReservationsCount})`, icon: CalendarDays },
-              { id: 'settings', label: 'Sozlamalar', icon: Settings },
+              { id: 'dashboard', label: t('admin.dashboard') || (lang === 'ru' ? 'Дашборд' : lang === 'en' ? 'Dashboard' : 'Boshqaruv'), icon: LayoutDashboard },
+              { id: 'kds', label: `${lang === 'ru' ? 'Кухня' : lang === 'en' ? 'Kitchen' : 'Oshxona'} (${pendingOrdersCount})`, icon: ChefHat, badge: pendingOrdersCount > 0 },
+              { id: 'menu', label: t('admin.menuManagement') || (lang === 'ru' ? 'Меню' : lang === 'en' ? 'Menu' : 'Taomnoma'), icon: UtensilsCrossed },
+              { id: 'orders', label: `${t('admin.orders') || (lang === 'ru' ? 'Заказы' : lang === 'en' ? 'Orders' : 'Buyurtmalar')} (${orders.length})`, icon: ShoppingBag },
+              { id: 'reservations', label: `${t('admin.reservations') || (lang === 'ru' ? 'Брони' : lang === 'en' ? 'Reservations' : 'Bandlik')} (${activeReservationsCount})`, icon: CalendarDays },
+              { id: 'settings', label: t('admin.settings') || (lang === 'ru' ? 'Настройки' : lang === 'en' ? 'Settings' : 'Sozlamalar'), icon: Settings },
             ].map(tab => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
@@ -455,7 +466,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
             })}
           </nav>
 
-          {/* Right Tools: Print Report, Theme, Fullscreen, Back to Public */}
+          {/* Right Tools: Print Report, Language, Theme, Fullscreen, Back to Public */}
           <div className="flex items-center gap-2">
             {/* Quick Shift Report Print */}
             <button
@@ -464,11 +475,48 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                 setIsDailyReportOpen(true);
               }}
               className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gold-500/10 border border-gold-500/30 text-gold-500 hover:bg-gold-500 hover:text-dark-950 text-xs font-bold transition-all shadow-sm"
-              title="Kunlik Kassa Hisoboti"
+              title={lang === 'ru' ? 'Ежедневный отчет смены' : lang === 'en' ? 'Daily Shift Report' : 'Kunlik Kassa Hisoboti'}
             >
               <Printer className="w-3.5 h-3.5" />
-              <span>Hisobot</span>
+              <span>{lang === 'ru' ? 'Отчет' : lang === 'en' ? 'Report' : 'Hisobot'}</span>
             </button>
+
+            {/* Language Switcher Dropdown */}
+            <div className="relative">
+              <button
+                onClick={() => {
+                  soundFx.playPop();
+                  setLangDropdownOpen(!langDropdownOpen);
+                }}
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-gray-100 dark:bg-dark-800 border border-gray-200 dark:border-gray-700 hover:border-gold-500 text-xs font-semibold text-gray-700 dark:text-gray-300 transition-colors shadow-sm"
+                title="Tilni tanlash / Выбор языка / Language"
+              >
+                <Globe className="w-3.5 h-3.5 text-gold-500" />
+                <span className="font-bold">{currentLangObj.flag} {currentLangObj.code.toUpperCase()}</span>
+                <ChevronDown className="w-3 h-3 text-gray-400" />
+              </button>
+
+              {langDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-36 py-1 bg-white dark:bg-dark-850 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl z-50 animate-fade-in">
+                  {languages.map((l) => (
+                    <button
+                      key={l.code}
+                      onClick={() => {
+                        soundFx.playPop();
+                        setLang(l.code);
+                        setLangDropdownOpen(false);
+                      }}
+                      className={`w-full px-3 py-2 text-left text-xs flex items-center justify-between hover:bg-gold-500/10 hover:text-gold-500 transition-colors ${
+                        lang === l.code ? 'font-bold text-gold-500 bg-gold-500/5' : 'text-gray-700 dark:text-gray-300'
+                      }`}
+                    >
+                      <span>{l.label}</span>
+                      <span>{l.flag}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
 
             {/* Theme Toggle */}
             <button
@@ -476,8 +524,8 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                 soundFx.playPop();
                 toggleTheme();
               }}
-              className="p-2 rounded-xl bg-gray-100 dark:bg-dark-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:text-gold-500"
-              title="Mavzuni almashtirish"
+              className="p-2 rounded-xl bg-gray-100 dark:bg-dark-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:text-gold-500 transition-colors shadow-sm"
+              title={lang === 'ru' ? 'Сменить тему (Светлая / Темная)' : lang === 'en' ? 'Toggle theme (Light / Dark)' : 'Mavzuni almashtirish'}
             >
               {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-700" />}
             </button>
@@ -489,7 +537,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                 toggleFullscreen();
               }}
               aria-label="Toggle fullscreen"
-              title={isFullscreen ? "To'liq ekrandan chiqish (Esc)" : "To'liq ekran rejimi (Fullscreen)"}
+              title={isFullscreen ? (lang === 'ru' ? 'Выйти из полноэкранного режима' : lang === 'en' ? 'Exit fullscreen' : "To'liq ekrandan chiqish (Esc)") : (lang === 'ru' ? 'Полноэкранный режим' : lang === 'en' ? 'Fullscreen mode' : "To'liq ekran rejimi")}
               className={`p-2 rounded-xl border transition-all ${
                 isFullscreen
                   ? 'bg-gold-500/15 border-gold-500/50 text-gold-500'
@@ -505,9 +553,9 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                 soundFx.playPop();
                 setIsAdminView(false);
               }}
-              className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl bg-gray-100 dark:bg-dark-800 border border-gray-200 dark:border-gray-700 text-xs font-semibold text-gray-700 dark:text-gray-300 hover:border-gold-500 hover:text-gold-500"
+              className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl bg-gray-100 dark:bg-dark-800 border border-gray-200 dark:border-gray-700 text-xs font-semibold text-gray-700 dark:text-gray-300 hover:border-gold-500 hover:text-gold-500 shadow-sm transition-colors"
             >
-              <span>Sayt</span>
+              <span>{t('admin.backToSite') || (lang === 'ru' ? 'Сайт' : lang === 'en' ? 'Site' : 'Sayt')}</span>
               <ExternalLink className="w-3.5 h-3.5" />
             </button>
           </div>
@@ -516,12 +564,12 @@ export const AdminDashboard = ({ setIsAdminView }) => {
         {/* Mobile Navigation Tabs */}
         <div className="flex lg:hidden items-center gap-1.5 overflow-x-auto pt-2.5 pb-1 scrollbar-none">
           {[
-            { id: 'dashboard', label: 'Boshqaruv', icon: LayoutDashboard },
-            { id: 'kds', label: `Oshxona (${pendingOrdersCount})`, icon: ChefHat },
-            { id: 'menu', label: 'Taomnoma', icon: UtensilsCrossed },
-            { id: 'orders', label: `Buyurtmalar (${orders.length})`, icon: ShoppingBag },
-            { id: 'reservations', label: `Bandlik (${activeReservationsCount})`, icon: CalendarDays },
-            { id: 'settings', label: 'Sozlamalar', icon: Settings },
+            { id: 'dashboard', label: t('admin.dashboard') || (lang === 'ru' ? 'Дашборд' : lang === 'en' ? 'Dashboard' : 'Boshqaruv'), icon: LayoutDashboard },
+            { id: 'kds', label: `${lang === 'ru' ? 'Кухня' : lang === 'en' ? 'Kitchen' : 'Oshxona'} (${pendingOrdersCount})`, icon: ChefHat },
+            { id: 'menu', label: t('admin.menuManagement') || (lang === 'ru' ? 'Меню' : lang === 'en' ? 'Menu' : 'Taomnoma'), icon: UtensilsCrossed },
+            { id: 'orders', label: `${t('admin.orders') || (lang === 'ru' ? 'Заказы' : lang === 'en' ? 'Orders' : 'Buyurtmalar')} (${orders.length})`, icon: ShoppingBag },
+            { id: 'reservations', label: `${t('admin.reservations') || (lang === 'ru' ? 'Брони' : lang === 'en' ? 'Reservations' : 'Bandlik')} (${activeReservationsCount})`, icon: CalendarDays },
+            { id: 'settings', label: t('admin.settings') || (lang === 'ru' ? 'Настройки' : lang === 'en' ? 'Settings' : 'Sozlamalar'), icon: Settings },
           ].map(tab => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -553,7 +601,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
               {/* Revenue */}
               <div className="glass-card p-5 rounded-3xl space-y-2 border border-gray-200 dark:border-white/10">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-500 font-semibold">Jami Tushum</span>
+                  <span className="text-xs text-gray-500 font-semibold">{t('admin.todayRevenue') || (lang === 'ru' ? 'Выручка' : lang === 'en' ? 'Revenue' : 'Jami Tushum')}</span>
                   <div className="p-2 rounded-xl bg-gold-500/10 text-gold-500">
                     <DollarSign className="w-4 h-4" />
                   </div>
@@ -563,46 +611,46 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                 </div>
                 <div className="flex items-center gap-1 text-[11px] text-emerald-500 font-semibold">
                   <TrendingUp className="w-3.5 h-3.5" />
-                  <span>+18.4% o'sish tendentsiyasi</span>
+                  <span>{lang === 'ru' ? '+18.4% рост за неделю' : lang === 'en' ? '+18.4% growth trend' : "+18.4% o'sish tendentsiyasi"}</span>
                 </div>
               </div>
 
               {/* Total Orders */}
               <div className="glass-card p-5 rounded-3xl space-y-2 border border-gray-200 dark:border-white/10">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-500 font-semibold">Buyurtmalar</span>
+                  <span className="text-xs text-gray-500 font-semibold">{t('admin.orders') || (lang === 'ru' ? 'Заказы' : lang === 'en' ? 'Orders' : 'Buyurtmalar')}</span>
                   <div className="p-2 rounded-xl bg-blue-500/10 text-blue-500">
                     <ShoppingBag className="w-4 h-4" />
                   </div>
                 </div>
                 <div className="font-serif font-black text-2xl sm:text-3xl text-gray-900 dark:text-white">
-                  {orders.length} ta
+                  {orders.length}
                 </div>
                 <div className="flex items-center gap-1 text-[11px] text-blue-500 font-semibold">
-                  <span>{pendingOrdersCount} ta oshxonada faol</span>
+                  <span>{pendingOrdersCount} {lang === 'ru' ? 'в процессе на кухне' : lang === 'en' ? 'active in kitchen' : 'ta oshxonada faol'}</span>
                 </div>
               </div>
 
               {/* Reservations */}
               <div className="glass-card p-5 rounded-3xl space-y-2 border border-gray-200 dark:border-white/10">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-500 font-semibold">Stol Bandliklari</span>
+                  <span className="text-xs text-gray-500 font-semibold">{t('admin.reservations') || (lang === 'ru' ? 'Брони Столов' : lang === 'en' ? 'Reservations' : 'Stol Bandliklari')}</span>
                   <div className="p-2 rounded-xl bg-amber-500/10 text-amber-500">
                     <CalendarDays className="w-4 h-4" />
                   </div>
                 </div>
                 <div className="font-serif font-black text-2xl sm:text-3xl text-gray-900 dark:text-white">
-                  {reservations.length} ta
+                  {reservations.length}
                 </div>
                 <div className="flex items-center gap-1 text-[11px] text-amber-500 font-semibold">
-                  <span>{activeReservationsCount} ta tasdiqlangan/yangi</span>
+                  <span>{activeReservationsCount} {lang === 'ru' ? 'подтверждено/новых' : lang === 'en' ? 'confirmed/new' : 'ta tasdiqlangan/yangi'}</span>
                 </div>
               </div>
 
               {/* Average Ticket Size */}
               <div className="glass-card p-5 rounded-3xl space-y-2 border border-gray-200 dark:border-white/10">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-500 font-semibold">O'rtacha Chek</span>
+                  <span className="text-xs text-gray-500 font-semibold">{lang === 'ru' ? 'Средний Чек' : lang === 'en' ? 'Average Check' : "O'rtacha Chek"}</span>
                   <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-500">
                     <Coins className="w-4 h-4" />
                   </div>
@@ -611,7 +659,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                   {formatPrice(averageCheck)}
                 </div>
                 <div className="flex items-center gap-1 text-[11px] text-emerald-500 font-semibold">
-                  <span>{menuItems.length} ta taom menyuda</span>
+                  <span>{menuItems.length} {lang === 'ru' ? 'позиций в меню' : lang === 'en' ? 'items in menu' : 'ta taom menyuda'}</span>
                 </div>
               </div>
             </div>
@@ -622,14 +670,14 @@ export const AdminDashboard = ({ setIsAdminView }) => {
               <div className="lg:col-span-8 glass-card p-6 rounded-3xl border border-gray-200 dark:border-white/10 space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="font-serif font-bold text-lg text-gray-900 dark:text-white">
-                    Haftalik Tushum Dinamikasi
+                    {t('admin.weeklyRevenue') || (lang === 'ru' ? 'Динамика Выручки' : lang === 'en' ? 'Weekly Revenue Dynamics' : 'Haftalik Tushum Dinamikasi')}
                   </h3>
                   <button
                     onClick={() => setIsDailyReportOpen(true)}
                     className="text-xs text-gold-500 font-bold hover:underline flex items-center gap-1"
                   >
                     <Printer className="w-3.5 h-3.5" />
-                    <span>Kunlik hisobotni chiqarish</span>
+                    <span>{lang === 'ru' ? 'Распечатать отчет смены' : lang === 'en' ? 'Print shift report' : 'Kunlik hisobotni chiqarish'}</span>
                   </button>
                 </div>
 
@@ -789,10 +837,10 @@ export const AdminDashboard = ({ setIsAdminView }) => {
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
               <div>
                 <h2 className="font-serif font-black text-2xl sm:text-3xl text-gray-900 dark:text-white">
-                  Taomnoma Boshqaruvi
+                  {t('admin.menuManagement') || (lang === 'ru' ? 'Управление Меню' : lang === 'en' ? 'Menu Management' : 'Taomnoma Boshqaruvi')}
                 </h2>
                 <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
-                  Taomlarni qo'shish, tahrirlash, narxlarini o'zgartirish va sotuv holatini boshqarish
+                  {lang === 'ru' ? 'Добавление, редактирование блюд, изменение цен и управление наличием' : lang === 'en' ? 'Add, edit dishes, adjust pricing and manage availability' : "Taomlarni qo'shish, tahrirlash, narxlarini o'zgartirish va sotuv holatini boshqarish"}
                 </p>
               </div>
 
@@ -802,7 +850,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                   className="w-full sm:w-auto px-5 py-3 rounded-2xl gold-gradient-bg text-dark-950 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg hover:scale-105 transition-all"
                 >
                   <Plus className="w-4 h-4" />
-                  <span>Yangi Taom Qo'shish</span>
+                  <span>{t('admin.addNewDish') || (lang === 'ru' ? '+ Добавить блюдо' : lang === 'en' ? '+ Add Dish' : "Yangi Taom Qo'shish")}</span>
                 </button>
               </div>
             </div>
@@ -813,7 +861,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                 <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-3" />
                 <input
                   type="text"
-                  placeholder="Taom nomi bo'yicha qidirish..."
+                  placeholder={lang === 'ru' ? 'Поиск блюда по названию...' : lang === 'en' ? 'Search dishes by name...' : "Taom nomi bo'yicha qidirish..."}
                   value={menuSearch}
                   onChange={(e) => setMenuSearch(e.target.value)}
                   className="glass-input w-full pl-10 text-xs sm:text-sm"
@@ -939,10 +987,10 @@ export const AdminDashboard = ({ setIsAdminView }) => {
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div>
                 <h2 className="font-serif font-black text-2xl sm:text-3xl text-gray-900 dark:text-white">
-                  Buyurtmalar Boshqaruvi
+                  {t('admin.orders') || (lang === 'ru' ? 'Управление Заказами' : lang === 'en' ? 'Orders Management' : 'Buyurtmalar Boshqaruvi')}
                 </h2>
                 <p className="text-xs sm:text-sm text-gray-500">
-                  Barcha kelib tushgan buyurtmalar, ularning holatlari va Telegram integratsiyasi
+                  {lang === 'ru' ? 'Все поступившие заказы, их статусы и отправка в Telegram' : lang === 'en' ? 'Incoming customer orders, preparation statuses and Telegram integration' : 'Barcha kelib tushgan buyurtmalar, ularning holatlari va Telegram integratsiyasi'}
                 </p>
               </div>
 
@@ -961,7 +1009,17 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                         : 'bg-gray-100 dark:bg-dark-800 text-gray-600 dark:text-gray-300'
                     }`}
                   >
-                    {st === 'all' ? 'Barchasi' : st === 'pending' ? 'Kutilmoqda' : st === 'cooking' ? 'Tayyorlanmoqda' : st === 'delivering' ? 'Yetkazilmoqda' : st === 'completed' ? 'Yakunlandi' : 'Bekor'}
+                    {st === 'all'
+                      ? (lang === 'ru' ? 'Все' : lang === 'en' ? 'All' : 'Barchasi')
+                      : st === 'pending'
+                      ? (lang === 'ru' ? 'Ожидание' : lang === 'en' ? 'Pending' : 'Kutilmoqda')
+                      : st === 'cooking'
+                      ? (lang === 'ru' ? 'Готовится' : lang === 'en' ? 'Cooking' : 'Tayyorlanmoqda')
+                      : st === 'delivering'
+                      ? (lang === 'ru' ? 'Доставка' : lang === 'en' ? 'Delivering' : 'Yetkazilmoqda')
+                      : st === 'completed'
+                      ? (lang === 'ru' ? 'Завершен' : lang === 'en' ? 'Completed' : 'Yakunlandi')
+                      : (lang === 'ru' ? 'Отменен' : lang === 'en' ? 'Cancelled' : 'Bekor')}
                   </button>
                 ))}
               </div>
@@ -1098,10 +1156,10 @@ export const AdminDashboard = ({ setIsAdminView }) => {
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div>
                 <h2 className="font-serif font-black text-2xl sm:text-3xl text-gray-900 dark:text-white">
-                  Stol Bandliklari & Zallar Nazorati
+                  {t('admin.reservations') || (lang === 'ru' ? 'Брони Столов & Залы' : lang === 'en' ? 'Reservations & Floor Plan' : 'Stol Bandliklari & Zallar Nazorati')}
                 </h2>
                 <p className="text-xs sm:text-sm text-gray-500">
-                  Stol bandliklari, VIP xonalar va stollarning real vaqtdagi bandlik xaritasi
+                  {lang === 'ru' ? 'Брони столиков, VIP залы и интерактивная карта занятости столов' : lang === 'en' ? 'Table bookings, VIP chambers and real-time floor occupancy map' : "Stol bandliklari, VIP xonalar va stollarning real vaqtdagi bandlik xaritasi"}
                 </p>
               </div>
 
@@ -1118,7 +1176,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                       : 'text-gray-600 dark:text-gray-400'
                   }`}
                 >
-                  Bandliklar Ro'yxati
+                  {lang === 'ru' ? 'Список броней' : lang === 'en' ? 'Reservations List' : "Bandliklar Ro'yxati"}
                 </button>
                 <button
                   onClick={() => {
@@ -1131,7 +1189,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                       : 'text-gray-600 dark:text-gray-400'
                   }`}
                 >
-                  🗺️ Jonli Stollar Xaritasi
+                  🗺️ {lang === 'ru' ? 'Карта столов (Залы)' : lang === 'en' ? 'Floor Plan (Chambers)' : 'Jonli Stollar Xaritasi'}
                 </button>
               </div>
             </div>
@@ -1266,10 +1324,10 @@ export const AdminDashboard = ({ setIsAdminView }) => {
           <div className="max-w-4xl mx-auto space-y-8">
             <div>
               <h2 className="font-serif font-black text-2xl sm:text-3xl text-gray-900 dark:text-white">
-                Tizim Sozlamalari & Integratsiyalar
+                {t('admin.settings') || (lang === 'ru' ? 'Настройки Системы & Интеграции' : lang === 'en' ? 'System Settings & Integrations' : 'Tizim Sozlamalari & Integratsiyalar')}
               </h2>
               <p className="text-xs sm:text-sm text-gray-500">
-                Telegram Bot (Chat ID 8170197389), Supabase ma'lumotlar bazasi va zaxira nusxalar
+                {lang === 'ru' ? 'Telegram бот (Chat ID 8170197389), база данных Supabase и резервные копии данных' : lang === 'en' ? 'Telegram Bot (Chat ID 8170197389), Supabase cloud database and local backups' : "Telegram Bot (Chat ID 8170197389), Supabase ma'lumotlar bazasi va zaxira nusxalar"}
               </p>
             </div>
 
@@ -1282,10 +1340,10 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                   </div>
                   <div>
                     <h3 className="font-serif font-bold text-lg text-gray-900 dark:text-white">
-                      Telegram Xabarnoma Tizimi
+                      {t('admin.telegramBotConfig') || (lang === 'ru' ? 'Интеграция Telegram Бота' : lang === 'en' ? 'Telegram Bot Integration' : 'Telegram Xabarnoma Tizimi')}
                     </h3>
                     <span className="text-xs text-gray-500">
-                      Barcha yangi buyurtmalar va stol bandliklari ushbu bot orqali guruhga boradi
+                      {lang === 'ru' ? 'Все новые заказы и брони столиков мгновенно отправляются в Telegram' : lang === 'en' ? 'All incoming orders and reservations will be dispatched to Telegram' : "Barcha yangi buyurtmalar va stol bandliklari ushbu bot orqali guruhga boradi"}
                     </span>
                   </div>
                 </div>
