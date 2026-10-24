@@ -344,13 +344,21 @@ export const CartDrawer = () => {
                   <div>
                     <input
                       type="tel"
+                      inputMode="tel"
+                      autoComplete="tel"
                       required
-                      placeholder="Telefon raqamingiz (+998...) *"
+                      placeholder="+998 (90) 123-45-67 *"
                       value={customerPhone}
                       onKeyDown={blockNonPhoneKeys}
-                      onChange={(e) => handlePhoneInputChange(e, setCustomerPhone)}
-                      className="w-full glass-input text-xs py-2"
+                      onChange={(e) => {
+                        const formatted = handlePhoneInputChange(e, customerPhone);
+                        setCustomerPhone(formatted);
+                      }}
+                      className="w-full glass-input text-xs py-2 font-mono"
                     />
+                    <span className="text-[10px] text-gray-400 block mt-0.5">
+                      Masalan: 90 123 45 67 (avtomatik formatlanadi)
+                    </span>
                   </div>
 
                   {deliveryType === 'dineIn' ? (

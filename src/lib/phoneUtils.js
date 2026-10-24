@@ -32,9 +32,10 @@ export const formatUzPhone = (value) => {
   return formatted;
 };
 
-// Handle input change with backspace awareness
-export const handlePhoneInputChange = (e, prevValue = '') => {
+// Handle input change with backspace awareness and optional setter callback
+export const handlePhoneInputChange = (e, prevOrSetter = '') => {
   let val = e.target.value;
+  const prevValue = typeof prevOrSetter === 'string' ? prevOrSetter : '';
 
   // If user hit backspace on a formatting char like ')' or '-'
   if (prevValue && val.length < prevValue.length) {
@@ -46,7 +47,14 @@ export const handlePhoneInputChange = (e, prevValue = '') => {
     }
   }
 
-  return formatUzPhone(val);
+  const formatted = formatUzPhone(val);
+
+  // If a setter callback was passed (e.g. setCustomerPhone)
+  if (typeof prevOrSetter === 'function') {
+    prevOrSetter(formatted);
+  }
+
+  return formatted;
 };
 
 // Keydown blocker: strictly prevent letters and non-numeric keys
@@ -55,6 +63,9 @@ export const blockNonPhoneKeys = (e) => {
   if (
     e.ctrlKey ||
     e.metaKey ||
+    e.key === 'Unidentified' ||
+    e.key === 'Process' ||
+    e.keyCode === 229 ||
     [
       'Backspace',
       'Delete',
@@ -77,10 +88,13 @@ export const blockNonPhoneKeys = (e) => {
     return;
   }
 
-  // Only allow digits 0-9
-  if (!/^[0-9]$/.test(e.key)) {
-    e.preventDefault();
+  // Allow digits 0-9 from both standard keys and numpad
+  if (/^[0-9]$/.test(e.key) || /^Numpad[0-9]$/.test(e.code)) {
+    return;
   }
+
+  // Block letters and other special symbols
+  e.preventDefault();
 };
 
 // Validate that the phone has complete Uzbekistan 9 digits (+998 XX XXX-XX-XX)

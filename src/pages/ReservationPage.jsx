@@ -401,14 +401,17 @@ export const ReservationPage = ({ setActivePage }) => {
                     </label>
                     <input
                       type="tel"
+                      inputMode="tel"
+                      autoComplete="tel"
                       required
                       placeholder="+998 (90) 123-45-67"
                       value={formData.phone}
                       onKeyDown={blockNonPhoneKeys}
-                      onChange={(e) => handlePhoneInputChange(e, (formatted) => {
+                      onChange={(e) => {
+                        const formatted = handlePhoneInputChange(e, formData.phone);
                         setFormData(prev => ({ ...prev, phone: formatted }));
-                      })}
-                      className="w-full glass-input"
+                      }}
+                      className="w-full glass-input font-mono"
                     />
                     <span className="text-[10px] text-gray-400 mt-1 block">
                       Faqat raqamlar qabul qilinadi
