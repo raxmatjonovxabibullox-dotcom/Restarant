@@ -5,7 +5,7 @@ import { useTheme } from '../context/ThemeContext';
 import { useCurrency } from '../context/CurrencyContext';
 import { useFullscreen } from '../hooks/useFullscreen';
 import { soundFx } from '../hooks/useSoundEffects';
-import { testTelegramBot, sendToTelegramApi } from '../services/telegramService';
+import { testTelegramBot, sendToTelegramApi, sendPhotoToTelegramApi } from '../services/telegramService';
 import { getStoredSettings, saveStoredSettings } from '../lib/storage';
 import { syncMenuWithSupabase, testSupabaseConnection } from '../lib/supabase';
 import { KitchenDisplay } from '../components/admin/KitchenDisplay';
@@ -246,11 +246,17 @@ export const AdminDashboard = ({ setIsAdminView }) => {
     soundFx.playPop();
     setSendingBroadcast(true);
     try {
-      const text = `📢 <b>ADMIN XABARI (Zafaron Dashboard):</b>\n\n${customBroadcastMsg.trim()}\n\n🕒 Vaqt: ${new Date().toLocaleTimeString()}`;
-      const res = await sendToTelegramApi(settingsForm.telegramBotToken, settingsForm.telegramChatId, text);
+      const caption =
+        `👑 <b>ZAFARON RESTAURANT & LOUNGE</b>\n` +
+        `📢 <b>BOSH ADMINISTRATOR E'LONI:</b>\n` +
+        `━━━━━━━━━━━━━━━━━━━━━━\n` +
+        `<blockquote>\n${customBroadcastMsg.trim()}\n</blockquote>\n\n` +
+        `🕒 <b>Vaqt:</b> <code>${new Date().toLocaleString('uz-UZ')}</code>`;
+      const bannerUrl = 'https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=1200&q=80';
+      const res = await sendPhotoToTelegramApi(settingsForm.telegramBotToken, settingsForm.telegramChatId, bannerUrl, caption);
       if (res.success) {
         soundFx.playSuccessFanfare();
-        showToast("Xabar Telegramga muvaffaqiyatli yuborildi!", "success");
+        showToast("Xabar va rasm Telegramga muvaffaqiyatli yuborildi!", "success");
         setCustomBroadcastMsg('');
       } else {
         showToast(res.message || "Xabar yuborishda xatolik", "error");

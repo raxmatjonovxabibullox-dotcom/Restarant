@@ -1,5 +1,5 @@
 // LocalStorage persistence service for Zafaron Restaurant
-import { initialMenu, initialOrders, initialReservations } from '../data/initialMenu';
+import { initialMenu, initialOrders, initialReservations } from '../data/initialMenu.js';
 
 const KEYS = {
   MENU: 'zafaron_menu_items_v1',
