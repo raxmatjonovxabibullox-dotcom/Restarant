@@ -22,7 +22,7 @@ import { handlePhoneInputChange, blockNonPhoneKeys, isValidUzPhone } from '../li
 export const CartDrawer = () => {
   const { cart, updateQuantity, removeFromCart, clearCart, isCartOpen, closeCart } = useCart();
   const { placeOrder } = useRestaurant();
-  const { getLocalized } = useLanguage();
+  const { lang, getLocalized } = useLanguage();
   const { formatPrice } = useCurrency();
 
   const [customerName, setCustomerName] = useState('');
@@ -39,6 +39,45 @@ export const CartDrawer = () => {
   const [isReceiptOpen, setIsReceiptOpen] = useState(false);
   const [trackerStep, setTrackerStep] = useState(1);
 
+  // Multilingual Cart Dictionary
+  const tCart = {
+    title: lang === 'ru' ? 'Корзина Заказа' : lang === 'en' ? 'Shopping Cart' : 'Buyurtma Savati',
+    statusTitle: lang === 'ru' ? 'Статус заказа' : lang === 'en' ? 'Order Status' : 'Buyurtma holati',
+    brandSubtitle: 'Zafaron Restaurant & Lounge',
+    orderNum: lang === 'ru' ? 'ЗАКАЗ' : lang === 'en' ? 'ORDER' : 'BUYURTMA',
+    orderReceived: lang === 'ru' ? 'Ваш Заказ Принят!' : lang === 'en' ? 'Your Order is Confirmed!' : 'Buyurtmangiz Qabul Qilindi!',
+    orderSentInfo: lang === 'ru' ? 'Информация отправлена администратору и в Telegram бот.' : lang === 'en' ? 'Details dispatched to restaurant admin and Telegram bot.' : "Ma'lumotlar restoran administratoriga va Telegram botga yuborildi.",
+    liveTracking: lang === 'ru' ? 'Статус Заказа в Реальном Времени' : lang === 'en' ? 'Live Order Tracking' : 'Jonli Buyurtma Holati (Live Tracking)',
+    step1Title: lang === 'ru' ? '1. Принят и подтвержден' : lang === 'en' ? '1. Accepted and confirmed' : '1. Qabul qilindi va tasdiqlandi',
+    step1Desc: lang === 'ru' ? 'Оформлен в системе' : lang === 'en' ? 'Processed in system' : 'Tizimda rasmiylashtirildi',
+    step2Title: lang === 'ru' ? '2. Шеф-повар готовит на кухне' : lang === 'en' ? '2. Chef is cooking in kitchen' : '2. Oshxonada Bosh Oshpaz tayyorlamoqda',
+    step2Desc: lang === 'ru' ? 'Примерное время: 15-20 минут' : lang === 'en' ? 'Estimated time: 15-20 min' : 'Taxminiy vaqt: 15-20 daqiqa',
+    step3DineIn: lang === 'ru' ? '3. Готов к подаче на стол' : lang === 'en' ? '3. Ready to serve at table' : '3. Stolga yetkazishga tayyor',
+    step3Delivery: lang === 'ru' ? '3. VIP Курьер выехал' : lang === 'en' ? '3. VIP Courier dispatched' : "3. VIP Kuryer yo'lga chiqdi",
+    step3Desc: lang === 'ru' ? 'Быстрый сервис' : lang === 'en' ? 'Prompt service' : 'Tezkor xizmat',
+    viewReceiptBtn: lang === 'ru' ? 'Посмотреть и напечатать официальный чек' : lang === 'en' ? 'View & Print Official Receipt' : "Rasmiy To'lov Chekini Ko'rish & Chop Etish",
+    continueBtn: lang === 'ru' ? 'Понятно, продолжить' : lang === 'en' ? 'Got it, continue' : 'Tushunarli, Davom Etish',
+    emptyTitle: lang === 'ru' ? 'Ваша корзина пуста' : lang === 'en' ? 'Your cart is empty' : "Savatingiz hozircha bo'sh",
+    emptyDesc: lang === 'ru' ? 'Выберите изысканные блюда из нашего меню и оформите заказ.' : lang === 'en' ? 'Select delicious gourmet dishes from our menu and place an order.' : "Menyudan o'zingizga yoqqan shohona taomlarni tanlab, buyurtma bering.",
+    dineInBtn: lang === 'ru' ? '🍽️ В зале (Стол)' : lang === 'en' ? '🍽️ Dine-in (Table)' : '🍽️ Restoranda (Stolga)',
+    deliveryBtn: lang === 'ru' ? '🛵 Доставка (+15K)' : lang === 'en' ? '🛵 Delivery (+15K)' : '🛵 Yetkazib berish (+15K)',
+    namePlaceholder: lang === 'ru' ? 'Ваше имя *' : lang === 'en' ? 'Your Name *' : 'Ismingiz *',
+    phonePlaceholder: lang === 'ru' ? '+998 (90) 123-45-67 *' : lang === 'en' ? '+998 (90) 123-45-67 *' : '+998 (90) 123-45-67 *',
+    phoneHint: lang === 'ru' ? 'Например: 90 123 45 67 (автоформат)' : lang === 'en' ? 'e.g. 90 123 45 67 (auto-formatted)' : 'Masalan: 90 123 45 67 (avtomatik formatlanadi)',
+    tablePlaceholder: lang === 'ru' ? 'Номер стола (например: 5 или VIP 1)' : lang === 'en' ? 'Table number (e.g. 5 or VIP 1)' : 'Stol raqami (masalan: 5 yoki VIP 1)',
+    addressPlaceholder: lang === 'ru' ? 'Адрес доставки (улица, дом, ориентир) *' : lang === 'en' ? 'Delivery address (street, apt, landmark) *' : "Yetkazish manzili (ko'cha, uy, mo'ljal) *",
+    notesPlaceholder: lang === 'ru' ? 'Пожелания к заказу (без лука, побольше соуса...)' : lang === 'en' ? 'Special requests (no onions, extra sauce...)' : "Qo'shimcha izoh (masalan: ko'proq sous, piyozsiz...)",
+    cardPay: lang === 'ru' ? '💳 Карта (Click/Payme)' : lang === 'en' ? '💳 Card (Click/Payme)' : '💳 Karta (Click/Payme)',
+    cashPay: lang === 'ru' ? '💵 Наличные' : lang === 'en' ? '💵 Cash' : '💵 Naqd pul',
+    subtotalLabel: lang === 'ru' ? 'Сумма блюд:' : lang === 'en' ? 'Subtotal:' : 'Taomlar summasi:',
+    deliveryLabel: lang === 'ru' ? 'Доставка:' : lang === 'en' ? 'Delivery:' : 'Yetkazib berish:',
+    totalLabel: lang === 'ru' ? 'ИТОГО К ОПЛАТЕ:' : lang === 'en' ? 'TOTAL PAYMENT:' : "JAMI TO'LOV:",
+    submittingBtn: lang === 'ru' ? 'Отправка заказа...' : lang === 'en' ? 'Submitting order...' : 'Yuborilmoqda...',
+    confirmBtn: lang === 'ru' ? 'Подтвердить Заказ' : lang === 'en' ? 'Confirm Order' : 'Buyurtmani Tasdiqlash',
+    alertName: lang === 'ru' ? 'Пожалуйста, введите ваше имя!' : lang === 'en' ? 'Please enter your name!' : 'Iltimos, ismingizni kiriting!',
+    alertPhone: lang === 'ru' ? 'Пожалуйста, введите полный номер телефона:\nНапример: +998 (90) 123-45-67' : lang === 'en' ? 'Please enter a valid phone number:\ne.g. +998 (90) 123-45-67' : "Iltimos, to'liq telefon raqamingizni kiriting:\nMasalan: +998 (90) 123-45-67"
+  };
+
   if (!isCartOpen) return null;
 
   const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
@@ -50,12 +89,12 @@ export const CartDrawer = () => {
     if (cart.length === 0) return;
 
     if (!customerName.trim()) {
-      alert("Iltimos, ismingizni kiriting!");
+      alert(tCart.alertName);
       return;
     }
 
     if (!isValidUzPhone(customerPhone)) {
-      alert("Iltimos, to'liq telefon raqamingizni kiriting:\nMasalan: +998 (90) 123-45-67");
+      alert(tCart.alertPhone);
       return;
     }
 
@@ -109,10 +148,10 @@ export const CartDrawer = () => {
               </div>
               <div>
                 <h3 className="font-serif font-bold text-lg text-gray-900 dark:text-white">
-                  Buyurtma Savati {cart.length > 0 && `(${cart.length})`}
+                  {tCart.title} {cart.length > 0 && `(${cart.length})`}
                 </h3>
                 <span className="text-xs text-gray-500 dark:text-gray-400">
-                  {placedOrder ? "Buyurtma holati" : "Zafaron Restaurant & Lounge"}
+                  {placedOrder ? tCart.statusTitle : tCart.brandSubtitle}
                 </span>
               </div>
             </div>
@@ -134,20 +173,20 @@ export const CartDrawer = () => {
                     <CheckCircle2 className="w-10 h-10" />
                   </div>
                   <span className="text-xs font-bold uppercase tracking-widest text-gold-500 block">
-                    BUYURTMA #{placedOrder.id}
+                    {tCart.orderNum} #{placedOrder.id}
                   </span>
                   <h4 className="font-serif font-black text-2xl text-gray-900 dark:text-white">
-                    Buyurtmangiz Qabul Qilindi!
+                    {tCart.orderReceived}
                   </h4>
                   <p className="text-xs text-gray-500 dark:text-gray-400">
-                    Ma'lumotlar restoran administratoriga va Telegram botga yuborildi.
+                    {tCart.orderSentInfo}
                   </p>
                 </div>
 
                 {/* ANIMATED REAL-TIME ORDER TRACKER */}
                 <div className="p-5 rounded-2xl bg-gray-50 dark:bg-dark-800/80 border border-gray-200 dark:border-white/10 space-y-4">
                   <span className="text-xs font-bold uppercase tracking-wider text-gray-500 block">
-                    Jonli Buyurtma Holati (Live Tracking)
+                    {tCart.liveTracking}
                   </span>
 
                   <div className="space-y-4">
@@ -159,8 +198,8 @@ export const CartDrawer = () => {
                         ✓
                       </div>
                       <div className="flex-1">
-                        <p className="text-xs font-bold text-gray-900 dark:text-white">1. Qabul qilindi va tasdiqlandi</p>
-                        <p className="text-[10px] text-gray-400">Tizimda rasmiylashtirildi</p>
+                        <p className="text-xs font-bold text-gray-900 dark:text-white">{tCart.step1Title}</p>
+                        <p className="text-[10px] text-gray-400">{tCart.step1Desc}</p>
                       </div>
                     </div>
 
@@ -173,9 +212,9 @@ export const CartDrawer = () => {
                       </div>
                       <div className="flex-1">
                         <p className={`text-xs font-bold ${trackerStep >= 2 ? 'text-gold-500' : 'text-gray-400'}`}>
-                          2. Oshxonada Bosh Oshpaz tayyorlamoqda
+                          {tCart.step2Title}
                         </p>
-                        <p className="text-[10px] text-gray-400">Taxminiy vaqt: 15-20 daqiqa</p>
+                        <p className="text-[10px] text-gray-400">{tCart.step2Desc}</p>
                       </div>
                     </div>
 
@@ -188,9 +227,9 @@ export const CartDrawer = () => {
                       </div>
                       <div className="flex-1">
                         <p className={`text-xs font-bold ${trackerStep >= 3 ? 'text-gray-900 dark:text-white' : 'text-gray-400'}`}>
-                          {placedOrder.deliveryType === 'dineIn' ? "3. Stolga yetkazishga tayyor" : "3. VIP Kuryer yo'lga chiqdi"}
+                          {placedOrder.deliveryType === 'dineIn' ? tCart.step3DineIn : tCart.step3Delivery}
                         </p>
-                        <p className="text-[10px] text-gray-400">Tezkor xizmat</p>
+                        <p className="text-[10px] text-gray-400">{tCart.step3Desc}</p>
                       </div>
                     </div>
                   </div>
@@ -202,7 +241,7 @@ export const CartDrawer = () => {
                   className="w-full py-3.5 px-4 rounded-xl bg-gray-100 dark:bg-dark-800 hover:bg-gold-500/10 border border-gray-300 dark:border-white/10 hover:border-gold-500 text-gray-800 dark:text-gray-200 font-bold text-xs flex items-center justify-center gap-2 transition-all"
                 >
                   <Printer className="w-4 h-4 text-gold-500" />
-                  <span>Rasmiy To'lov Chekini Ko'rish & Chop Etish</span>
+                  <span>{tCart.viewReceiptBtn}</span>
                 </button>
               </div>
 
@@ -210,7 +249,7 @@ export const CartDrawer = () => {
                 onClick={handleCloseAndReset}
                 className="w-full py-3.5 rounded-xl gold-gradient-bg text-dark-950 font-bold text-sm"
               >
-                Tushunarli, Davom Etish
+                {tCart.continueBtn}
               </button>
             </div>
           ) : cart.length === 0 ? (
@@ -221,10 +260,10 @@ export const CartDrawer = () => {
               </div>
               <div>
                 <h4 className="font-bold text-lg text-gray-900 dark:text-white">
-                  Savatingiz hozircha bo'sh
+                  {tCart.emptyTitle}
                 </h4>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 max-w-xs">
-                  Menyudan o'zingizga yoqqan shohona taomlarni tanlab, buyurtma bering.
+                  {tCart.emptyDesc}
                 </p>
               </div>
             </div>
@@ -310,7 +349,7 @@ export const CartDrawer = () => {
                         : 'bg-white dark:bg-dark-800 border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300'
                     }`}
                   >
-                    🍽️ Restoranda (Stolga)
+                    {tCart.dineInBtn}
                   </button>
                   <button
                     type="button"
@@ -324,7 +363,7 @@ export const CartDrawer = () => {
                         : 'bg-white dark:bg-dark-800 border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300'
                     }`}
                   >
-                    🛵 Yetkazib berish (+15K)
+                    {tCart.deliveryBtn}
                   </button>
                 </div>
 
@@ -334,7 +373,7 @@ export const CartDrawer = () => {
                     <input
                       type="text"
                       required
-                      placeholder="Ismingiz *"
+                      placeholder={tCart.namePlaceholder}
                       value={customerName}
                       onChange={(e) => setCustomerName(e.target.value)}
                       className="w-full glass-input text-xs py-2"
@@ -347,7 +386,7 @@ export const CartDrawer = () => {
                       inputMode="tel"
                       autoComplete="tel"
                       required
-                      placeholder="+998 (90) 123-45-67 *"
+                      placeholder={tCart.phonePlaceholder}
                       value={customerPhone}
                       onKeyDown={blockNonPhoneKeys}
                       onChange={(e) => {
@@ -357,7 +396,7 @@ export const CartDrawer = () => {
                       className="w-full glass-input text-xs py-2 font-mono"
                     />
                     <span className="text-[10px] text-gray-400 block mt-0.5">
-                      Masalan: 90 123 45 67 (avtomatik formatlanadi)
+                      {tCart.phoneHint}
                     </span>
                   </div>
 
@@ -365,7 +404,7 @@ export const CartDrawer = () => {
                     <div>
                       <input
                         type="text"
-                        placeholder="Stol raqami (masalan: 5 yoki VIP 1)"
+                        placeholder={tCart.tablePlaceholder}
                         value={tableNumber}
                         onChange={(e) => setTableNumber(e.target.value)}
                         className="w-full glass-input text-xs py-2"
@@ -376,7 +415,7 @@ export const CartDrawer = () => {
                       <input
                         type="text"
                         required
-                        placeholder="Yetkazish manzili (ko'cha, uy, mo'ljal) *"
+                        placeholder={tCart.addressPlaceholder}
                         value={deliveryAddress}
                         onChange={(e) => setDeliveryAddress(e.target.value)}
                         className="w-full glass-input text-xs py-2"
@@ -387,7 +426,7 @@ export const CartDrawer = () => {
                   <div>
                     <input
                       type="text"
-                      placeholder="Qo'shimcha izoh (masalan: ko'proq sous, piyozsiz...)"
+                      placeholder={tCart.notesPlaceholder}
                       value={notes}
                       onChange={(e) => setNotes(e.target.value)}
                       className="w-full glass-input text-xs py-2"
@@ -404,7 +443,7 @@ export const CartDrawer = () => {
                         onChange={() => setPaymentMethod('card')}
                         className="accent-gold-500"
                       />
-                      <span>💳 Karta (Click/Payme)</span>
+                      <span>{tCart.cardPay}</span>
                     </label>
                     <label className="flex items-center gap-1.5 cursor-pointer text-gray-700 dark:text-gray-300">
                       <input
@@ -414,7 +453,7 @@ export const CartDrawer = () => {
                         onChange={() => setPaymentMethod('cash')}
                         className="accent-gold-500"
                       />
-                      <span>💵 Naqd pul</span>
+                      <span>{tCart.cashPay}</span>
                     </label>
                   </div>
                 </div>
@@ -422,17 +461,17 @@ export const CartDrawer = () => {
                 {/* Price Breakdown */}
                 <div className="pt-2 border-t border-gray-200 dark:border-gray-800 space-y-1 text-xs">
                   <div className="flex justify-between text-gray-500">
-                    <span>Taomlar summasi:</span>
+                    <span>{tCart.subtotalLabel}</span>
                     <span>{formatPrice(subtotal)}</span>
                   </div>
                   {deliveryType === 'delivery' && (
                     <div className="flex justify-between text-gray-500">
-                      <span>Yetkazib berish:</span>
+                      <span>{tCart.deliveryLabel}</span>
                       <span>{formatPrice(deliveryFee)}</span>
                     </div>
                   )}
                   <div className="flex justify-between text-base font-bold text-gray-900 dark:text-white pt-1">
-                    <span>JAMI TO'LOV:</span>
+                    <span>{tCart.totalLabel}</span>
                     <span className="gold-gradient-text text-xl font-black">{formatPrice(grandTotal)}</span>
                   </div>
                 </div>
@@ -443,7 +482,7 @@ export const CartDrawer = () => {
                   className="w-full py-3.5 rounded-2xl gold-gradient-bg text-dark-950 font-bold text-sm flex items-center justify-center gap-2 shadow-xl hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50"
                 >
                   <Sparkles className="w-4 h-4" />
-                  <span>{isSubmitting ? "Yuborilmoqda..." : `Buyurtmani Tasdiqlash • ${formatPrice(grandTotal)}`}</span>
+                  <span>{isSubmitting ? tCart.submittingBtn : `${tCart.confirmBtn} • ${formatPrice(grandTotal)}`}</span>
                 </button>
               </form>
             </div>

@@ -53,6 +53,7 @@ import {
 
 export const AdminDashboard = ({ setIsAdminView }) => {
   const { user, isAdmin, logout } = useAuth();
+  const { lang, setLang, t, getLocalized } = useLanguage();
 
   // Hard Security Guard: Strictly deny non-authenticated users
   if (!isAdmin) {
@@ -62,9 +63,15 @@ export const AdminDashboard = ({ setIsAdminView }) => {
           <div className="w-16 h-16 rounded-2xl bg-red-500/10 text-red-400 mx-auto flex items-center justify-center">
             <Lock className="w-8 h-8" />
           </div>
-          <h2 className="font-serif font-black text-2xl text-white">Ruxsat Etilmagan Kirish (403)</h2>
+          <h2 className="font-serif font-black text-2xl text-white">
+            {lang === 'ru' ? 'Доступ Запрещен (403)' : lang === 'en' ? 'Access Denied (403)' : 'Ruxsat Etilmagan Kirish (403)'}
+          </h2>
           <p className="text-xs text-gray-400 leading-relaxed">
-            Admin panelga faqat Supabase Authentication orqali tizimga kirgan tasdiqlangan administratorlar kira oladi.
+            {lang === 'ru'
+              ? 'Только авторизованные администраторы через Supabase Authentication могут войти в панель управления.'
+              : lang === 'en'
+              ? 'Only authenticated administrators through Supabase Authentication are allowed to enter the dashboard.'
+              : "Admin panelga faqat Supabase Authentication orqali tizimga kirgan tasdiqlangan administratorlar kira oladi."}
           </p>
           <button
             onClick={() => {
@@ -73,7 +80,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
             }}
             className="w-full py-3 rounded-xl gold-gradient-bg text-dark-950 font-bold text-xs"
           >
-            Bosh sahifaga qaytish
+            {lang === 'ru' ? 'Вернуться на Главную' : lang === 'en' ? 'Return to Home' : 'Bosh sahifaga qaytish'}
           </button>
         </div>
       </div>
@@ -94,7 +101,6 @@ export const AdminDashboard = ({ setIsAdminView }) => {
     showToast
   } = useRestaurant();
 
-  const { lang, setLang, t, getLocalized } = useLanguage();
   const { theme, toggleTheme } = useTheme();
   const { formatPrice } = useCurrency();
   const { isFullscreen, toggleFullscreen } = useFullscreen();
@@ -735,42 +741,59 @@ export const AdminDashboard = ({ setIsAdminView }) => {
 
                 {/* Simulated Visual Bar Chart */}
                 <div className="h-48 flex items-end justify-between gap-2 pt-6 pb-2 border-b border-gray-100 dark:border-white/5">
-                  {[
-                    { day: 'Dush', h: '55%', amount: '1.8M' },
-                    { day: 'Sesh', h: '70%', amount: '2.4M' },
-                    { day: 'Chor', h: '60%', amount: '2.1M' },
-                    { day: 'Pay', h: '85%', amount: '3.2M' },
-                    { day: 'Juma', h: '95%', amount: '4.5M' },
-                    { day: 'Shan', h: '100%', amount: '5.2M' },
-                    { day: 'Yak', h: '90%', amount: '4.1M' },
-                  ].map((bar, i) => (
-                    <div key={i} className="flex-1 flex flex-col items-center gap-2 group cursor-pointer">
-                      <span className="text-[10px] text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity font-bold">
-                        {bar.amount}
-                      </span>
-                      <div className="w-full max-w-[36px] bg-gray-200 dark:bg-dark-800 rounded-t-xl overflow-hidden h-36 flex items-end">
-                        <div
-                          style={{ height: bar.h }}
-                          className="w-full bg-gradient-to-t from-amber-600 to-gold-400 group-hover:from-amber-500 group-hover:to-gold-300 transition-all rounded-t-xl"
-                        />
+                  {(() => {
+                    const daysMap = {
+                      uz: ['Dush', 'Sesh', 'Chor', 'Pay', 'Juma', 'Shan', 'Yak'],
+                      ru: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
+                      en: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                    };
+                    const dayLabels = daysMap[lang] || daysMap.uz;
+                    const chartData = [
+                      { h: '55%', amount: '1.8M' },
+                      { h: '70%', amount: '2.4M' },
+                      { h: '60%', amount: '2.1M' },
+                      { h: '85%', amount: '3.2M' },
+                      { h: '95%', amount: '4.5M' },
+                      { h: '100%', amount: '5.2M' },
+                      { h: '90%', amount: '4.1M' },
+                    ];
+                    return chartData.map((bar, i) => (
+                      <div key={i} className="flex-1 flex flex-col items-center gap-2 group cursor-pointer">
+                        <span className="text-[10px] text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity font-bold">
+                          {bar.amount}
+                        </span>
+                        <div className="w-full max-w-[36px] bg-gray-200 dark:bg-dark-800 rounded-t-xl overflow-hidden h-36 flex items-end">
+                          <div
+                            style={{ height: bar.h }}
+                            className="w-full bg-gradient-to-t from-amber-600 to-gold-400 group-hover:from-amber-500 group-hover:to-gold-300 transition-all rounded-t-xl"
+                          />
+                        </div>
+                        <span className="text-xs font-semibold text-gray-500 group-hover:text-gold-500">
+                          {dayLabels[i]}
+                        </span>
                       </div>
-                      <span className="text-xs font-semibold text-gray-500 group-hover:text-gold-500">
-                        {bar.day}
-                      </span>
-                    </div>
-                  ))}
+                    ));
+                  })()}
                 </div>
 
                 <div className="flex items-center justify-between text-xs text-gray-500 pt-1">
-                  <span>Eng gavjum kunlar: Juma va Shanba (Jonli musiqa)</span>
-                  <span className="font-bold text-gold-500">O'rtacha chek: {formatPrice(averageCheck)}</span>
+                  <span>
+                    {lang === 'ru'
+                      ? 'Самые активные дни: Пятница и Суббота (Живая музыка)'
+                      : lang === 'en'
+                      ? 'Busiest days: Friday & Saturday (Live music)'
+                      : 'Eng gavjum kunlar: Juma va Shanba (Jonli musiqa)'}
+                  </span>
+                  <span className="font-bold text-gold-500">
+                    {lang === 'ru' ? 'Средний чек' : lang === 'en' ? 'Average check' : "O'rtacha chek"}: {formatPrice(averageCheck)}
+                  </span>
                 </div>
               </div>
 
               {/* Popular Dishes: 4 cols */}
               <div className="lg:col-span-4 glass-card p-6 rounded-3xl border border-gray-200 dark:border-white/10 space-y-4">
                 <h3 className="font-serif font-bold text-lg text-gray-900 dark:text-white">
-                  Eng Xaridorgir Taomlar
+                  {lang === 'ru' ? 'Популярные Блюда' : lang === 'en' ? 'Top Selling Dishes' : 'Eng Xaridorgir Taomlar'}
                 </h3>
 
                 <div className="space-y-3">
@@ -802,13 +825,13 @@ export const AdminDashboard = ({ setIsAdminView }) => {
             <div className="glass-card p-6 rounded-3xl border border-gray-200 dark:border-white/10 space-y-4">
               <div className="flex items-center justify-between">
                 <h3 className="font-serif font-bold text-lg text-gray-900 dark:text-white">
-                  Oxirgi Buyurtmalar
+                  {lang === 'ru' ? 'Последние Заказы' : lang === 'en' ? 'Recent Orders' : 'Oxirgi Buyurtmalar'}
                 </h3>
                 <button
                   onClick={() => handleTabChange('orders')}
                   className="text-xs text-gold-500 font-bold hover:underline"
                 >
-                  Barcha buyurtmalarni ko'rish →
+                  {lang === 'ru' ? 'Посмотреть все заказы →' : lang === 'en' ? 'View all orders →' : "Barcha buyurtmalarni ko'rish →"}
                 </button>
               </div>
 
@@ -816,12 +839,12 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                 <table className="w-full text-left text-xs sm:text-sm">
                   <thead>
                     <tr className="border-b border-gray-200 dark:border-gray-800 text-gray-400 text-xs uppercase">
-                      <th className="pb-3 font-semibold">Buyurtma</th>
-                      <th className="pb-3 font-semibold">Mijoz</th>
-                      <th className="pb-3 font-semibold">Turi</th>
-                      <th className="pb-3 font-semibold">Summa</th>
-                      <th className="pb-3 font-semibold">Holati</th>
-                      <th className="pb-3 font-semibold text-right">Amal</th>
+                      <th className="pb-3 font-semibold">{lang === 'ru' ? 'Заказ' : lang === 'en' ? 'Order' : 'Buyurtma'}</th>
+                      <th className="pb-3 font-semibold">{lang === 'ru' ? 'Клиент' : lang === 'en' ? 'Customer' : 'Mijoz'}</th>
+                      <th className="pb-3 font-semibold">{lang === 'ru' ? 'Тип' : lang === 'en' ? 'Type' : 'Turi'}</th>
+                      <th className="pb-3 font-semibold">{lang === 'ru' ? 'Сумма' : lang === 'en' ? 'Total' : 'Summa'}</th>
+                      <th className="pb-3 font-semibold">{lang === 'ru' ? 'Статус' : lang === 'en' ? 'Status' : 'Holati'}</th>
+                      <th className="pb-3 font-semibold text-right">{lang === 'ru' ? 'Действие' : lang === 'en' ? 'Action' : 'Amal'}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -833,7 +856,9 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                           <span className="text-xs text-gray-400">{o.customerPhone}</span>
                         </td>
                         <td className="py-3 text-xs">
-                          {o.deliveryType === 'dineIn' ? `🍽 Stol: ${o.tableNumber || '-'}` : '🛵 Yetkazish'}
+                          {o.deliveryType === 'dineIn'
+                            ? (lang === 'ru' ? `🍽 Стол: ${o.tableNumber || '-'}` : lang === 'en' ? `🍽 Table: ${o.tableNumber || '-'}` : `🍽 Stol: ${o.tableNumber || '-'}`)
+                            : (lang === 'ru' ? '🛵 Доставка' : lang === 'en' ? '🛵 Delivery' : '🛵 Yetkazish')}
                         </td>
                         <td className="py-3 font-bold">
                           {formatPrice(o.totalPrice || o.totalAmount || 0)}
@@ -848,7 +873,15 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                               ? 'bg-blue-500/10 text-blue-500'
                               : 'bg-gray-200 dark:bg-dark-800 text-gray-500'
                           }`}>
-                            {o.status === 'pending' ? 'Kutilmoqda' : o.status === 'cooking' ? 'Tayyorlanmoqda' : o.status === 'delivering' ? 'Yetkazilmoqda' : o.status === 'completed' ? 'Yetkazildi' : o.status}
+                            {o.status === 'pending'
+                              ? (lang === 'ru' ? 'Ожидание' : lang === 'en' ? 'Pending' : 'Kutilmoqda')
+                              : o.status === 'cooking'
+                              ? (lang === 'ru' ? 'Готовится' : lang === 'en' ? 'Cooking' : 'Tayyorlanmoqda')
+                              : o.status === 'delivering'
+                              ? (lang === 'ru' ? 'Доставка' : lang === 'en' ? 'Delivering' : 'Yetkazilmoqda')
+                              : o.status === 'completed'
+                              ? (lang === 'ru' ? 'Доставлен' : lang === 'en' ? 'Completed' : 'Yetkazildi')
+                              : o.status}
                           </span>
                         </td>
                         <td className="py-3 text-right">
@@ -857,10 +890,10 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                               setSelectedOrderForReceipt(o);
                             }}
                             className="px-3 py-1.5 rounded-lg text-xs bg-gray-100 dark:bg-dark-800 hover:text-gold-500 font-semibold mr-1"
-                            title="Chekni chop etish"
+                            title={lang === 'ru' ? 'Печать товарного чека' : lang === 'en' ? 'Print receipt' : "Chekni chop etish"}
                           >
                             <Printer className="w-3.5 h-3.5 inline mr-1" />
-                            Chek
+                            {lang === 'ru' ? 'Чек' : lang === 'en' ? 'Receipt' : 'Chek'}
                           </button>
                         </td>
                       </tr>
@@ -910,13 +943,16 @@ export const AdminDashboard = ({ setIsAdminView }) => {
             {/* Search & Category Filter Toolbar */}
             <div className="glass-card p-4 rounded-2xl flex flex-col md:flex-row items-center gap-3 border border-gray-200 dark:border-white/10">
               <div className="relative flex-1 w-full">
-                <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-3" />
+                <div className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 flex items-center">
+                  <Search className="w-4 h-4" />
+                </div>
                 <input
                   type="text"
                   placeholder={lang === 'ru' ? 'Поиск блюда по названию...' : lang === 'en' ? 'Search dishes by name...' : "Taom nomi bo'yicha qidirish..."}
                   value={menuSearch}
                   onChange={(e) => setMenuSearch(e.target.value)}
-                  className="glass-input w-full pl-10 text-xs sm:text-sm"
+                  style={{ paddingLeft: '2.75rem' }}
+                  className="glass-input w-full !pl-11 text-xs sm:text-sm"
                 />
               </div>
 
@@ -975,15 +1011,15 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                             ? 'bg-emerald-500/90 text-white'
                             : 'bg-red-500/90 text-white'
                         }`}
-                        title="Sotuv holatini o'zgartirish"
+                        title={lang === 'ru' ? 'Изменить наличие блюда' : lang === 'en' ? 'Toggle availability' : "Sotuv holatini o'zgartirish"}
                       >
                         {dish.isAvailable !== false ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
                       </button>
                     </div>
 
                     <div className="absolute bottom-2 left-2 right-2 flex justify-between text-[10px] text-white/90 bg-dark-950/70 backdrop-blur-sm px-2.5 py-1 rounded-lg">
-                      <span>{dish.prepTime || 20} daq.</span>
-                      <span>{dish.calories || 500} kkal</span>
+                      <span>{dish.prepTime || 20} {lang === 'ru' ? 'мин.' : lang === 'en' ? 'min' : 'daq.'}</span>
+                      <span>{dish.calories || 500} {lang === 'ru' ? 'ккал' : lang === 'en' ? 'kcal' : 'kkal'}</span>
                     </div>
                   </div>
 
@@ -1007,7 +1043,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                         <button
                           onClick={() => handleOpenEditDish(dish)}
                           className="p-2 rounded-xl bg-gray-100 dark:bg-dark-800 text-gray-600 dark:text-gray-300 hover:text-gold-500 hover:bg-gold-500/10 transition-colors"
-                          title="Tahrirlash"
+                          title={lang === 'ru' ? 'Редактировать' : lang === 'en' ? 'Edit' : 'Tahrirlash'}
                         >
                           <Edit className="w-3.5 h-3.5" />
                         </button>
@@ -1015,12 +1051,12 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                         <button
                           onClick={() => {
                             soundFx.playPop();
-                            if (window.confirm("Taomni menyudan o'chirmoqchimisiz?")) {
+                            if (window.confirm(lang === 'ru' ? 'Удалить это блюдо из меню?' : lang === 'en' ? 'Delete this dish from menu?' : "Taomni menyudan o'chirmoqchimisiz?")) {
                               deleteDish(dish.id);
                             }
                           }}
                           className="p-2 rounded-xl bg-gray-100 dark:bg-dark-800 text-gray-600 dark:text-gray-300 hover:text-red-500 hover:bg-red-500/10 transition-colors"
-                          title="O'chirish"
+                          title={lang === 'ru' ? 'Удалить' : lang === 'en' ? 'Delete' : "O'chirish"}
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
@@ -1079,13 +1115,16 @@ export const AdminDashboard = ({ setIsAdminView }) => {
 
             {/* Search Input for Orders */}
             <div className="relative">
-              <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-3" />
+              <div className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 flex items-center">
+                <Search className="w-4 h-4" />
+              </div>
               <input
                 type="text"
-                placeholder="Buyurtma ID raqami, mijoz ismi yoki telefon raqami bo'yicha qidirish..."
+                placeholder={lang === 'ru' ? 'Поиск по номеру заказа, имени клиента или телефону...' : lang === 'en' ? 'Search by order ID, customer name or phone...' : "Buyurtma ID raqami, mijoz ismi yoki telefon raqami bo'yicha qidirish..."}
                 value={orderSearch}
                 onChange={(e) => setOrderSearch(e.target.value)}
-                className="glass-input w-full pl-10 text-xs sm:text-sm"
+                style={{ paddingLeft: '2.75rem' }}
+                className="glass-input w-full !pl-11 text-xs sm:text-sm"
               />
             </div>
 
@@ -1093,7 +1132,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
               <div className="glass-card p-12 text-center rounded-3xl text-gray-500 space-y-2">
                 <ShoppingBag className="w-10 h-10 mx-auto text-gray-400" />
                 <h4 className="font-serif font-bold text-lg text-gray-700 dark:text-gray-300">
-                  Ushbu toifada buyurtmalar mavjud emas
+                  {lang === 'ru' ? 'В этой категории нет заказов' : lang === 'en' ? 'No orders in this category' : 'Ushbu toifada buyurtmalar mavjud emas'}
                 </h4>
               </div>
             ) : (
@@ -1124,31 +1163,33 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                           }}
                           className="glass-input text-xs py-1 px-2.5 rounded-lg font-bold cursor-pointer"
                         >
-                          <option value="pending">Kutilmoqda</option>
-                          <option value="cooking">Tayyorlanmoqda</option>
-                          <option value="delivering">Yetkazilmoqda</option>
-                          <option value="completed">Yakunlandi</option>
-                          <option value="cancelled">Bekor qilindi</option>
+                          <option value="pending">{lang === 'ru' ? 'Ожидание' : lang === 'en' ? 'Pending' : 'Kutilmoqda'}</option>
+                          <option value="cooking">{lang === 'ru' ? 'Готовится' : lang === 'en' ? 'Cooking' : 'Tayyorlanmoqda'}</option>
+                          <option value="delivering">{lang === 'ru' ? 'Доставка' : lang === 'en' ? 'Delivering' : 'Yetkazilmoqda'}</option>
+                          <option value="completed">{lang === 'ru' ? 'Завершен' : lang === 'en' ? 'Completed' : 'Yakunlandi'}</option>
+                          <option value="cancelled">{lang === 'ru' ? 'Отменен' : lang === 'en' ? 'Cancelled' : 'Bekor qilindi'}</option>
                         </select>
                       </div>
 
                       {/* Customer Info */}
                       <div className="py-3 space-y-1 text-xs">
                         <div className="flex items-center justify-between">
-                          <span className="text-gray-400">Mijoz:</span>
+                          <span className="text-gray-400">{lang === 'ru' ? 'Клиент:' : lang === 'en' ? 'Customer:' : 'Mijoz:'}</span>
                           <span className="font-bold text-gray-900 dark:text-white">{order.customerName}</span>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-gray-400">Telefon:</span>
+                          <span className="text-gray-400">{lang === 'ru' ? 'Телефон:' : lang === 'en' ? 'Phone:' : 'Telefon:'}</span>
                           <a href={`tel:${order.customerPhone}`} className="text-gold-500 font-semibold hover:underline flex items-center gap-1">
                             <Phone className="w-3 h-3" />
                             {order.customerPhone}
                           </a>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-gray-400">Xizmat:</span>
+                          <span className="text-gray-400">{lang === 'ru' ? 'Тип:' : lang === 'en' ? 'Service:' : 'Xizmat:'}</span>
                           <span className="font-medium text-gray-800 dark:text-gray-200">
-                            {order.deliveryType === 'dineIn' ? `🍽 Stol: ${order.tableNumber || '-'}` : `🛵 ${order.deliveryAddress}`}
+                            {order.deliveryType === 'dineIn'
+                              ? (lang === 'ru' ? `🍽 Стол: ${order.tableNumber || '-'}` : lang === 'en' ? `🍽 Table: ${order.tableNumber || '-'}` : `🍽 Stol: ${order.tableNumber || '-'}`)
+                              : (lang === 'ru' ? `🛵 ${order.deliveryAddress || 'Доставка'}` : lang === 'en' ? `🛵 ${order.deliveryAddress || 'Delivery'}` : `🛵 ${order.deliveryAddress || 'Dostavka'}`)}
                           </span>
                         </div>
                       </div>
@@ -1156,12 +1197,12 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                       {/* Items List */}
                       <div className="p-3 rounded-2xl bg-gray-50 dark:bg-dark-800/80 border border-gray-100 dark:border-white/5 space-y-1.5 text-xs">
                         <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">
-                          Buyurtma qilingan taomlar:
+                          {lang === 'ru' ? 'Заказанные блюда:' : lang === 'en' ? 'Ordered items:' : 'Buyurtma qilingan taomlar:'}
                         </span>
                         {order.items?.map((it, idx) => (
                           <div key={idx} className="flex justify-between text-gray-700 dark:text-gray-300">
                             <span>
-                              {typeof it.name === 'object' ? (it.name.uz || it.name.en) : it.name} x {it.quantity}
+                              {getLocalized(it.name)} x {it.quantity}
                             </span>
                             <span className="font-semibold text-gray-900 dark:text-white">
                               {formatPrice(it.price * it.quantity)}
@@ -1174,7 +1215,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                     {/* Total, Payment & Receipt Print */}
                     <div className="pt-3 border-t border-gray-100 dark:border-white/5 flex items-center justify-between">
                       <div>
-                        <span className="text-[10px] text-gray-400 uppercase block">Jami summa</span>
+                        <span className="text-[10px] text-gray-400 uppercase block">{lang === 'ru' ? 'Итоговая сумма' : lang === 'en' ? 'Total amount' : 'Jami summa'}</span>
                         <span className="font-serif font-black text-lg text-gray-900 dark:text-white">
                           {formatPrice(order.totalPrice || order.totalAmount || 0)}
                         </span>
@@ -1186,12 +1227,14 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                             setSelectedOrderForReceipt(order);
                           }}
                           className="p-2 rounded-xl bg-gray-100 dark:bg-dark-800 text-gray-700 dark:text-gray-300 hover:text-gold-500 hover:bg-gold-500/10 transition-colors"
-                          title="Chekni ko'rish va chop etish"
+                          title={lang === 'ru' ? 'Печать товарного чека' : lang === 'en' ? 'Print receipt' : "Chekni ko'rish va chop etish"}
                         >
                           <Printer className="w-4 h-4" />
                         </button>
                         <span className="text-xs px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-dark-800 text-gray-600 dark:text-gray-300 font-medium">
-                          {order.paymentMethod === 'card' ? '💳 Karta' : '💵 Naqd'}
+                          {order.paymentMethod === 'card'
+                            ? (lang === 'ru' ? '💳 Карта' : lang === 'en' ? '💳 Card' : '💳 Karta')
+                            : (lang === 'ru' ? '💵 Наличные' : lang === 'en' ? '💵 Cash' : '💵 Naqd')}
                         </span>
                       </div>
                     </div>
@@ -1251,7 +1294,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
             ) : (
               <>
                 {/* Status filter */}
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-1.5 flex-wrap">
                   {['all', 'new', 'confirmed', 'finished', 'cancelled'].map(st => (
                     <button
                       key={st}
@@ -1265,7 +1308,15 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                           : 'bg-gray-100 dark:bg-dark-800 text-gray-600 dark:text-gray-300'
                       }`}
                     >
-                      {st === 'all' ? 'Barchasi' : st === 'new' ? 'Yangi' : st === 'confirmed' ? 'Tasdiqlangan' : st === 'finished' ? 'Keldilar' : 'Bekor'}
+                      {st === 'all'
+                        ? (lang === 'ru' ? 'Все' : lang === 'en' ? 'All' : 'Barchasi')
+                        : st === 'new'
+                        ? (lang === 'ru' ? 'Новые' : lang === 'en' ? 'New' : 'Yangi')
+                        : st === 'confirmed'
+                        ? (lang === 'ru' ? 'Подтвержденные' : lang === 'en' ? 'Confirmed' : 'Tasdiqlangan')
+                        : st === 'finished'
+                        ? (lang === 'ru' ? 'Прибыли' : lang === 'en' ? 'Arrived' : 'Keldilar')
+                        : (lang === 'ru' ? 'Отмененные' : lang === 'en' ? 'Cancelled' : 'Bekor')}
                     </button>
                   ))}
                 </div>
@@ -1288,34 +1339,42 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                               ? 'bg-amber-500/10 text-amber-500'
                               : 'bg-gray-200 dark:bg-dark-800 text-gray-500'
                           }`}>
-                            {res.status === 'confirmed' ? 'Tasdiqlangan' : res.status === 'new' ? 'Yangi' : res.status}
+                            {res.status === 'confirmed'
+                              ? (lang === 'ru' ? 'Подтвержден' : lang === 'en' ? 'Confirmed' : 'Tasdiqlangan')
+                              : res.status === 'new'
+                              ? (lang === 'ru' ? 'Новый' : lang === 'en' ? 'New' : 'Yangi')
+                              : res.status === 'finished'
+                              ? (lang === 'ru' ? 'Прибыли' : lang === 'en' ? 'Arrived' : 'Keldilar')
+                              : (lang === 'ru' ? 'Отменен' : lang === 'en' ? 'Cancelled' : 'Bekor')}
                           </span>
                         </div>
 
                         <div className="space-y-2 text-xs">
                           <div className="flex justify-between">
-                            <span className="text-gray-400">Mehmon:</span>
+                            <span className="text-gray-400">{lang === 'ru' ? 'Гость:' : lang === 'en' ? 'Guest:' : 'Mehmon:'}</span>
                             <span className="font-bold text-gray-900 dark:text-white">{res.fullName}</span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-gray-400">Telefon:</span>
+                            <span className="text-gray-400">{lang === 'ru' ? 'Телефон:' : lang === 'en' ? 'Phone:' : 'Telefon:'}</span>
                             <a href={`tel:${res.phone}`} className="text-gold-500 font-semibold hover:underline flex items-center gap-1">
                               <Phone className="w-3 h-3" />
                               {res.phone}
                             </a>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-gray-400">Sana & Vaqt:</span>
+                            <span className="text-gray-400">{lang === 'ru' ? 'Дата и Время:' : lang === 'en' ? 'Date & Time:' : 'Sana & Vaqt:'}</span>
                             <span className="font-bold text-gold-500">{res.date} • {res.time}</span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-gray-400">Mehmonlar soni:</span>
-                            <span className="font-semibold text-gray-800 dark:text-gray-200">{res.guests} kishi</span>
+                            <span className="text-gray-400">{lang === 'ru' ? 'Количество гостей:' : lang === 'en' ? 'Number of guests:' : 'Mehmonlar soni:'}</span>
+                            <span className="font-semibold text-gray-800 dark:text-gray-200">
+                              {res.guests} {lang === 'ru' ? 'чел.' : lang === 'en' ? 'guests' : 'kishi'}
+                            </span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-gray-400">Zal / Stol:</span>
+                            <span className="text-gray-400">{lang === 'ru' ? 'Зал / Стол:' : lang === 'en' ? 'Hall / Table:' : 'Zal / Stol:'}</span>
                             <span className="font-semibold text-gray-800 dark:text-gray-200">
-                              {res.zone} {res.tableNumber && `(Stol #${res.tableNumber})`}
+                              {res.zone} {res.tableNumber && `(${lang === 'ru' ? 'Стол' : lang === 'en' ? 'Table' : 'Stol'} #${res.tableNumber})`}
                             </span>
                           </div>
                         </div>
@@ -1337,7 +1396,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                             }}
                             className="flex-1 py-2 rounded-xl bg-emerald-500/10 hover:bg-emerald-500 text-emerald-500 hover:text-white font-bold text-xs transition-colors"
                           >
-                            Tasdiqlash
+                            {lang === 'ru' ? 'Подтвердить' : lang === 'en' ? 'Confirm' : 'Tasdiqlash'}
                           </button>
                         )}
                         {res.status !== 'finished' && (
@@ -1348,7 +1407,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                             }}
                             className="flex-1 py-2 rounded-xl bg-gray-100 dark:bg-dark-800 hover:bg-gold-500 hover:text-dark-950 font-bold text-xs transition-colors"
                           >
-                            Keldilar
+                            {lang === 'ru' ? 'Прибыли' : lang === 'en' ? 'Arrived' : 'Keldilar'}
                           </button>
                         )}
                         {res.status !== 'cancelled' && (
@@ -1359,7 +1418,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                             }}
                             className="px-3 py-2 rounded-xl bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white font-bold text-xs transition-colors"
                           >
-                            Bekor
+                            {lang === 'ru' ? 'Отмена' : lang === 'en' ? 'Cancel' : 'Bekor'}
                           </button>
                         )}
                       </div>
@@ -1418,7 +1477,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                     className="glass-input w-full font-mono text-xs sm:text-sm"
                   />
                   <span className="text-[11px] text-gray-400 mt-1 block">
-                    @BotFather orqali yaratilgan bot tokeni
+                    {lang === 'ru' ? 'Токен бота, созданный через @BotFather' : lang === 'en' ? 'Bot token created via @BotFather' : '@BotFather orqali yaratilgan bot tokeni'}
                   </span>
                 </div>
 
@@ -1434,19 +1493,19 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                     className="glass-input w-full font-mono text-xs sm:text-sm"
                   />
                   <span className="text-[11px] text-gray-400 mt-1 block">
-                    Sizning Telegram ID raqamingiz: <b>8170197389</b>
+                    {lang === 'ru' ? 'Ваш Telegram ID: ' : lang === 'en' ? 'Your Telegram ID: ' : 'Sizning Telegram ID raqamingiz: '}<b>8170197389</b>
                   </span>
                 </div>
 
                 {/* Direct Custom Broadcast Message to Telegram */}
                 <div className="p-4 rounded-2xl bg-blue-500/5 dark:bg-blue-950/20 border border-blue-500/20 space-y-2.5">
                   <span className="text-xs font-bold text-blue-500 uppercase tracking-wider block">
-                    Telegramga to'g'ridan-to'g'ri xabar yuborish (Live Test)
+                    {lang === 'ru' ? 'Прямая отправка сообщения в Telegram (Live Test)' : lang === 'en' ? 'Direct message to Telegram (Live Test)' : "Telegramga to'g'ridan-to'g'ri xabar yuborish (Live Test)"}
                   </span>
                   <div className="flex gap-2">
                     <input
                       type="text"
-                      placeholder="Telegramga yubormoqchi bo'lgan xabaringizni yozing..."
+                      placeholder={lang === 'ru' ? 'Введите сообщение для Telegram...' : lang === 'en' ? 'Type a test message for Telegram...' : "Telegramga yubormoqchi bo'lgan xabaringizni yozing..."}
                       value={customBroadcastMsg}
                       onChange={(e) => setCustomBroadcastMsg(e.target.value)}
                       className="glass-input flex-1 text-xs"
@@ -1457,7 +1516,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                       className="px-4 py-2 rounded-xl gold-gradient-bg text-dark-950 font-bold text-xs flex items-center gap-1.5 disabled:opacity-40"
                     >
                       <Send className="w-3.5 h-3.5" />
-                      <span>{sendingBroadcast ? 'Yuborilmoqda...' : 'Yuborish'}</span>
+                      <span>{sendingBroadcast ? (lang === 'ru' ? 'Отправка...' : lang === 'en' ? 'Sending...' : 'Yuborilmoqda...') : (lang === 'ru' ? 'Отправить' : lang === 'en' ? 'Send' : 'Yuborish')}</span>
                     </button>
                   </div>
                 </div>
@@ -1469,7 +1528,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                       : 'bg-red-500/10 border border-red-500/30 text-red-400'
                   }`}>
                     {botTestResult.success ? <CheckCircle2 className="w-5 h-5 flex-shrink-0" /> : <AlertCircle className="w-5 h-5 flex-shrink-0" />}
-                    <span>{botTestResult.message || (botTestResult.success ? "Telegram Bot bilan aloqa muvaffaqiyatli o'rnatildi!" : "Xatolik")}</span>
+                    <span>{botTestResult.message || (botTestResult.success ? (lang === 'ru' ? 'Связь с Telegram ботом успешно установлена!' : lang === 'en' ? 'Connection to Telegram Bot established successfully!' : "Telegram Bot bilan aloqa muvaffaqiyatli o'rnatildi!") : (lang === 'ru' ? 'Ошибка' : lang === 'en' ? 'Error' : 'Xatolik'))}</span>
                   </div>
                 )}
 
@@ -1480,14 +1539,14 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                     className="px-5 py-3 rounded-xl border border-gray-300 dark:border-gray-700 hover:border-gold-500 text-xs font-bold text-gray-800 dark:text-gray-200 flex items-center justify-center gap-2 disabled:opacity-40"
                   >
                     <Send className="w-4 h-4 text-gold-500" />
-                    <span>{testingBot ? 'Yuborilmoqda...' : 'Botni Test Qilish'}</span>
+                    <span>{testingBot ? (lang === 'ru' ? 'Отправка...' : lang === 'en' ? 'Sending...' : 'Yuborilmoqda...') : (lang === 'ru' ? 'Тестировать Бота' : lang === 'en' ? 'Test Bot' : 'Botni Test Qilish')}</span>
                   </button>
 
                   <button
                     onClick={handleSaveSettings}
                     className="px-6 py-3 rounded-xl gold-gradient-bg text-dark-950 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg"
                   >
-                    <span>Sozlamalarni Saqlash</span>
+                    <span>{lang === 'ru' ? 'Сохранить Настройки' : lang === 'en' ? 'Save Settings' : 'Sozlamalarni Saqlash'}</span>
                   </button>
                 </div>
               </div>
@@ -1501,10 +1560,10 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                 </div>
                 <div>
                   <h3 className="font-serif font-bold text-lg text-gray-900 dark:text-white">
-                    Supabase Ma'lumotlar Bazasi
+                    {lang === 'ru' ? 'База Данных Supabase' : lang === 'en' ? 'Supabase Database' : "Supabase Ma'lumotlar Bazasi"}
                   </h3>
                   <span className="text-xs text-gray-500">
-                    Bulutli ma'lumotlar bazasi orqali real vaqtda sinxronlash
+                    {lang === 'ru' ? 'Синхронизация в реальном времени через облачную БД' : lang === 'en' ? 'Real-time synchronization via cloud database' : "Bulutli ma'lumotlar bazasi orqali real vaqtda sinxronlash"}
                   </span>
                 </div>
               </div>
@@ -1554,7 +1613,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                     className="px-5 py-3 rounded-xl border border-gray-300 dark:border-gray-700 hover:border-gold-500 text-xs font-bold text-gray-800 dark:text-gray-200 flex items-center justify-center gap-2 disabled:opacity-40"
                   >
                     <Database className="w-4 h-4 text-emerald-500" />
-                    <span>{testingSupabase ? 'Tekshirilmoqda...' : 'Ulanishni Tekshirish'}</span>
+                    <span>{testingSupabase ? (lang === 'ru' ? 'Проверка...' : lang === 'en' ? 'Checking...' : 'Tekshirilmoqda...') : (lang === 'ru' ? 'Проверить Подключение' : lang === 'en' ? 'Check Connection' : 'Ulanishni Tekshirish')}</span>
                   </button>
 
                   <button
@@ -1563,14 +1622,14 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                     className="px-6 py-3 rounded-xl gold-gradient-bg text-dark-950 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg disabled:opacity-50"
                   >
                     <RefreshCw className={`w-4 h-4 ${syncingSupabase ? 'animate-spin' : ''}`} />
-                    <span>{syncingSupabase ? 'Sinxronlanmoqda...' : 'Supabase Bazasiga Yuklash'}</span>
+                    <span>{syncingSupabase ? (lang === 'ru' ? 'Синхронизация...' : lang === 'en' ? 'Syncing...' : 'Sinxronlanmoqda...') : (lang === 'ru' ? 'Синхронизировать с Supabase' : lang === 'en' ? 'Sync to Supabase' : 'Supabase Bazasiga Yuklash')}</span>
                   </button>
 
                   <button
                     onClick={handleSaveSettings}
                     className="px-5 py-3 rounded-xl border border-gray-300 dark:border-gray-700 hover:border-gold-500 text-xs font-bold text-gray-800 dark:text-gray-200"
                   >
-                    Saqlash
+                    {lang === 'ru' ? 'Сохранить' : lang === 'en' ? 'Save' : 'Saqlash'}
                   </button>
                 </div>
               </div>
@@ -1579,10 +1638,10 @@ export const AdminDashboard = ({ setIsAdminView }) => {
             {/* Backup & System Reset */}
             <div className="glass-card rounded-3xl p-6 sm:p-8 border border-gray-200 dark:border-white/10 space-y-4">
               <h3 className="font-serif font-bold text-lg text-gray-900 dark:text-white">
-                Zaxira va Ma'lumotlarni Boshqarish
+                {lang === 'ru' ? 'Резервное Копирование и Управление' : lang === 'en' ? 'Backup & Data Management' : "Zaxira va Ma'lumotlarni Boshqarish"}
               </h3>
               <p className="text-xs text-gray-500">
-                Barcha taomnoma va buyurtmalar tarixini zaxiralash yoki dastlabki holatga qaytarish
+                {lang === 'ru' ? 'Резервное копирование меню и заказов или сброс до заводских' : lang === 'en' ? 'Backup menu and order history or reset to factory defaults' : 'Barcha taomnoma va buyurtmalar tarixini zaxiralash yoki dastlabki holatga qaytarish'}
               </p>
 
               <div className="flex flex-wrap gap-4 pt-2">
@@ -1591,20 +1650,21 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                   className="px-5 py-3 rounded-xl bg-gray-100 dark:bg-dark-800 hover:border-gold-500 border border-gray-200 dark:border-gray-700 text-xs font-bold text-gray-800 dark:text-gray-200 flex items-center gap-2"
                 >
                   <Download className="w-4 h-4 text-gold-500" />
-                  <span>Zaxira Nusxasi (JSON) Yuklab Olish</span>
+                  <span>{lang === 'ru' ? 'Скачать Резервную Копию (JSON)' : lang === 'en' ? 'Download Backup (JSON)' : 'Zaxira Nusxasi (JSON) Yuklab Olish'}</span>
                 </button>
 
                 <button
                   onClick={() => {
                     soundFx.playPop();
-                    if (window.confirm("Barcha taomnoma standart holatga qaytarilsinmi?")) {
+                    const confirmMsg = lang === 'ru' ? 'Сбросить все меню до заводских настроек по умолчанию?' : lang === 'en' ? 'Reset all menu dishes to default state?' : "Barcha taomnoma standart holatga qaytarilsinmi?";
+                    if (window.confirm(confirmMsg)) {
                       resetToDefaultMenu();
                     }
                   }}
                   className="px-5 py-3 rounded-xl bg-red-500/10 hover:bg-red-500 border border-red-500/20 text-xs font-bold text-red-500 hover:text-white flex items-center gap-2 transition-colors"
                 >
                   <RefreshCw className="w-4 h-4" />
-                  <span>Dastlabki Menyu Holatiga Qaytish</span>
+                  <span>{lang === 'ru' ? 'Сбросить Меню по Умолчанию' : lang === 'en' ? 'Reset to Default Menu' : 'Dastlabki Menyu Holatiga Qaytish'}</span>
                 </button>
               </div>
             </div>
@@ -1629,14 +1689,16 @@ export const AdminDashboard = ({ setIsAdminView }) => {
             </button>
 
             <h3 className="font-serif font-black text-2xl text-gray-900 dark:text-white mb-6">
-              {editingDishId ? "Taomni Tahrirlash" : "Yangi Taom Qo'shish"}
+              {editingDishId
+                ? (lang === 'ru' ? 'Редактировать Блюдо' : lang === 'en' ? 'Edit Dish' : "Taomni Tahrirlash")
+                : (lang === 'ru' ? 'Добавить Новое Блюдо' : lang === 'en' ? 'Add New Dish' : "Yangi Taom Qo'shish")}
             </h3>
 
             <form onSubmit={handleSaveDish} className="space-y-5">
               {/* Names in 3 languages */}
               <div className="space-y-3 p-4 rounded-2xl bg-gray-50 dark:bg-dark-800/60 border border-gray-100 dark:border-white/5">
                 <span className="text-xs font-bold text-gold-500 uppercase tracking-wider block">
-                  Taom nomi (3 tilda)
+                  {lang === 'ru' ? 'Название блюда (на 3 языках)' : lang === 'en' ? 'Dish name (in 3 languages)' : 'Taom nomi (3 tilda)'}
                 </span>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div>
@@ -1676,7 +1738,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
               {/* Descriptions in 3 languages */}
               <div className="space-y-3 p-4 rounded-2xl bg-gray-50 dark:bg-dark-800/60 border border-gray-100 dark:border-white/5">
                 <span className="text-xs font-bold text-gold-500 uppercase tracking-wider block">
-                  Taom tavsifi (3 tilda)
+                  {lang === 'ru' ? 'Описание блюда (на 3 языках)' : lang === 'en' ? 'Dish description (in 3 languages)' : 'Taom tavsifi (3 tilda)'}
                 </span>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div>
@@ -1716,25 +1778,25 @@ export const AdminDashboard = ({ setIsAdminView }) => {
               <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
                 <div>
                   <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">
-                    Kategoriya
+                    {lang === 'ru' ? 'Категория' : lang === 'en' ? 'Category' : 'Kategoriya'}
                   </label>
                   <select
                     value={dishFormData.category}
                     onChange={(e) => setDishFormData({ ...dishFormData, category: e.target.value })}
                     className="glass-input w-full text-xs"
                   >
-                    <option value="national">Milliy taomlar</option>
-                    <option value="salads">Salatlar</option>
-                    <option value="kebabs">Kabob & Gril</option>
-                    <option value="mains">Issiq taomlar</option>
-                    <option value="desserts">Desertlar</option>
-                    <option value="drinks">Ichimliklar</option>
+                    <option value="national">{lang === 'ru' ? 'Национальные блюда' : lang === 'en' ? 'National Dishes' : 'Milliy taomlar'}</option>
+                    <option value="salads">{lang === 'ru' ? 'Салаты' : lang === 'en' ? 'Salads' : 'Salatlar'}</option>
+                    <option value="kebabs">{lang === 'ru' ? 'Шашлык и Гриль' : lang === 'en' ? 'Kebabs & Grill' : 'Kabob & Gril'}</option>
+                    <option value="mains">{lang === 'ru' ? 'Горячие блюда' : lang === 'en' ? 'Main Courses' : 'Issiq taomlar'}</option>
+                    <option value="desserts">{lang === 'ru' ? 'Десерты' : lang === 'en' ? 'Desserts' : 'Desertlar'}</option>
+                    <option value="drinks">{lang === 'ru' ? 'Напитки' : lang === 'en' ? 'Drinks' : 'Ichimliklar'}</option>
                   </select>
                 </div>
 
                 <div>
                   <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">
-                    Narxi (so'mda) *
+                    {lang === 'ru' ? 'Цена (в сумах) *' : lang === 'en' ? 'Price (UZS) *' : "Narxi (so'mda) *"}
                   </label>
                   <input
                     type="number"
@@ -1749,7 +1811,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
 
                 <div>
                   <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">
-                    Tayyorlanish (daq.)
+                    {lang === 'ru' ? 'Приготовление (мин.)' : lang === 'en' ? 'Prep time (min.)' : 'Tayyorlanish (daq.)'}
                   </label>
                   <input
                     type="number"
@@ -1762,7 +1824,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
 
                 <div>
                   <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">
-                    Kaloriya (kkal)
+                    {lang === 'ru' ? 'Калории (ккал)' : lang === 'en' ? 'Calories (kcal)' : 'Kaloriya (kkal)'}
                   </label>
                   <input
                     type="number"
@@ -1777,7 +1839,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
               {/* Image URL & Preset Pickers */}
               <div className="space-y-2">
                 <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300">
-                  Taom Rasmi URL manzili
+                  {lang === 'ru' ? 'URL изображения блюда' : lang === 'en' ? 'Dish Image URL' : 'Taom Rasmi URL manzili'}
                 </label>
                 <input
                   type="url"
@@ -1787,7 +1849,9 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                   className="glass-input w-full text-xs"
                 />
                 <div className="flex flex-wrap items-center gap-1.5 pt-1">
-                  <span className="text-[11px] text-gray-400">Tayyor rasmlar:</span>
+                  <span className="text-[11px] text-gray-400">
+                    {lang === 'ru' ? 'Готовые фото:' : lang === 'en' ? 'Preset photos:' : 'Tayyor rasmlar:'}
+                  </span>
                   {presetImages.map((pr, i) => (
                     <button
                       type="button"
@@ -1804,14 +1868,14 @@ export const AdminDashboard = ({ setIsAdminView }) => {
               {/* Tags */}
               <div>
                 <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1.5">
-                  Maxsus belgilar (Tags)
+                  {lang === 'ru' ? 'Специальные метки (Теги)' : lang === 'en' ? 'Special Badges (Tags)' : 'Maxsus belgilar (Tags)'}
                 </label>
                 <div className="flex flex-wrap gap-2">
                   {[
-                    { id: 'chef', label: "👨‍🍳 Bosh oshpaz saralagan" },
-                    { id: 'popular', label: "🔥 Eng xaridorgir" },
-                    { id: 'halal', label: "✨ 100% Halol" },
-                    { id: 'spicy', label: "🌶️ Achchiq" }
+                    { id: 'chef', label: lang === 'ru' ? '👨‍🍳 Выбор шефа' : lang === 'en' ? "👨‍🍳 Chef's Choice" : "👨‍🍳 Bosh oshpaz saralagan" },
+                    { id: 'popular', label: lang === 'ru' ? '🔥 Популярное' : lang === 'en' ? '🔥 Popular' : '🔥 Eng xaridorgir' },
+                    { id: 'halal', label: lang === 'ru' ? '✨ 100% Халяль' : lang === 'en' ? '✨ 100% Halal' : '✨ 100% Halol' },
+                    { id: 'spicy', label: lang === 'ru' ? '🌶️ Острое' : lang === 'en' ? '🌶️ Spicy' : '🌶️ Achchiq' }
                   ].map(tag => (
                     <button
                       type="button"
@@ -1839,7 +1903,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                     className="w-4 h-4 accent-gold-500 rounded"
                   />
                   <span className="text-xs font-semibold text-gray-800 dark:text-gray-200">
-                    Sotuvda mavjud (Mijozlar menyusida ko'rinadi)
+                    {lang === 'ru' ? 'В наличии (отображается в меню гостей)' : lang === 'en' ? 'Available (visible in guest menu)' : "Sotuvda mavjud (Mijozlar menyusida ko'rinadi)"}
                   </span>
                 </label>
               </div>
@@ -1851,13 +1915,15 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                   onClick={() => setIsDishModalOpen(false)}
                   className="px-5 py-2.5 rounded-xl bg-gray-100 dark:bg-dark-800 text-gray-700 dark:text-gray-300 font-semibold text-xs"
                 >
-                  Bekor qilish
+                  {lang === 'ru' ? 'Отмена' : lang === 'en' ? 'Cancel' : 'Bekor qilish'}
                 </button>
                 <button
                   type="submit"
                   className="px-6 py-2.5 rounded-xl gold-gradient-bg text-dark-950 font-bold text-xs shadow-lg hover:scale-105 transition-transform"
                 >
-                  {editingDishId ? "O'zgarishlarni Saqlash" : "Taomni Qo'shish"}
+                  {editingDishId
+                    ? (lang === 'ru' ? 'Сохранить Изменения' : lang === 'en' ? 'Save Changes' : "O'zgarishlarni Saqlash")
+                    : (lang === 'ru' ? 'Добавить Блюдо' : lang === 'en' ? 'Add Dish' : "Taomni Qo'shish")}
                 </button>
               </div>
             </form>

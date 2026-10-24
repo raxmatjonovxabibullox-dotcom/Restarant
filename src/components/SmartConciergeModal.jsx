@@ -10,7 +10,7 @@ export const SmartConciergeModal = ({ isOpen, onClose, setActivePage }) => {
   const { menuItems } = useRestaurant();
   const { addToCart, openCart } = useCart();
   const { formatPrice } = useCurrency();
-  const { getLocalized } = useLanguage();
+  const { lang, getLocalized } = useLanguage();
 
   const [step, setStep] = useState(1);
   const [selectedMood, setSelectedMood] = useState('romantic');
@@ -22,40 +22,66 @@ export const SmartConciergeModal = ({ isOpen, onClose, setActivePage }) => {
   const moods = [
     {
       id: 'romantic',
-      title: "Romantik Kechki Ovqat",
-      desc: "Nafis muhit, mayin go'shtli taomlar, desert va choy",
+      title: lang === 'ru' ? 'Романтический Ужин' : lang === 'en' ? 'Romantic Dinner' : 'Romantik Kechki Ovqat',
+      desc: lang === 'ru' ? 'Уютная атмосфера, нежнейшие мясные блюда, десерт и чай' : lang === 'en' ? 'Cozy ambiance, tender meat cuts, dessert and signature tea' : "Nafis muhit, mayin go'shtli taomlar, desert va choy",
       icon: "🍷",
-      dishes: ['dish-1', 'dish-7', 'dish-9', 'dish-11'] // Palov, Salad, Desert, Choy
+      dishes: ['dish-1', 'dish-7', 'dish-9', 'dish-11']
     },
     {
       id: 'family',
-      title: "Katta Oilaviy Dasturxon",
-      desc: "To'kin-sochin dasturxon, Shohona palov, manti va somsa",
+      title: lang === 'ru' ? 'Большой Семейный Стол' : lang === 'en' ? 'Grand Family Feast' : 'Katta Oilaviy Dasturxon',
+      desc: lang === 'ru' ? 'Богатый стол, Праздничный плов, манты и сочные самсы' : lang === 'en' ? 'Lavish banquet, Royal plov, manti, and crispy somsa' : "To'kin-sochin dasturxon, Shohona palov, manti va somsa",
       icon: "👨‍👩‍👧‍👦",
       dishes: ['dish-1', 'dish-2', 'dish-4', 'dish-7', 'dish-11']
     },
     {
       id: 'business',
-      title: "Biznes & Ishbilarmonlar Tushligi",
-      desc: "Premial Ribeye steyk, yangi salat va tetiklantiruvchi ichimliklar",
+      title: lang === 'ru' ? 'Деловой & Бизнес Обед' : lang === 'en' ? 'Business Lunch' : 'Biznes & Ishbilarmonlar Tushligi',
+      desc: lang === 'ru' ? 'Премиальный стейк Рибай, свежий салат и бодрящие напитки' : lang === 'en' ? 'Premium Ribeye steak, fresh salad, and revitalizing drinks' : "Premial Ribeye steyk, yangi salat va tetiklantiruvchi ichimliklar",
       icon: "💼",
       dishes: ['dish-5', 'dish-7', 'dish-12']
     },
     {
       id: 'kebab',
-      title: "Do'stona Kabobxo'rlik",
-      desc: "Qo'ra kaboblar assortisi, achchiq-chuchuk va tandir issiq non",
+      title: lang === 'ru' ? 'Дружеские Шашлыки' : lang === 'en' ? 'Kebab Party with Friends' : "Do'stona Kabobxo'rlik",
+      desc: lang === 'ru' ? 'Ассорти шашлыков на мангале, ачик-чучук и горячая лепешка' : lang === 'en' ? 'Grilled kebab assortment, fresh achichuk, and hot tandoor bread' : "Qo'ra kaboblar assortisi, achchiq-chuchuk va tandir issiq non",
       icon: "🍢",
       dishes: ['dish-6', 'dish-2', 'dish-7', 'dish-11']
     },
     {
       id: 'healthy',
-      title: "Yengil & Sog'lom Taomnoma",
-      desc: "Parhezbop salat, sho'rva va ko'k choy",
+      title: lang === 'ru' ? 'Легкое & Здоровое Меню' : lang === 'en' ? 'Light & Healthy Diet' : "Yengil & Sog'lom Taomnoma",
+      desc: lang === 'ru' ? 'Диетический салат, суп и горный зеленый чай' : lang === 'en' ? 'Fresh dietary salad, clear soup, and mountain green tea' : "Parhezbop salat, sho'rva va ko'k choy",
       icon: "🥗",
       dishes: ['dish-7', 'dish-8', 'dish-11']
     }
   ];
+
+  const guestOptions = lang === 'ru'
+    ? ['1-2 чел.', '3-4 чел.', '5-8 чел.', '10+ чел.']
+    : lang === 'en'
+    ? ['1-2 guests', '3-4 guests', '5-8 guests', '10+ guests']
+    : ['1-2 kishi', '3-4 kishi', '5-8 kishi', '10+ kishi'];
+
+  const tSomm = {
+    badge: lang === 'ru' ? 'Zafaron Умный Сомелье & Меню-Гид' : lang === 'en' ? 'Zafaron Smart Sommelier & Recommender' : 'Zafaron Aqlli Sommelier & Recommender',
+    title: lang === 'ru' ? 'Идеальное Меню Под Ваше Настроение' : lang === 'en' ? 'Curated Table for Your Mood' : 'Sizga Mos Shohona Dasturxon',
+    step1Title: lang === 'ru' ? '1. Для какого события или настроения планируете?' : lang === 'en' ? '1. What occasion or dining mood are you planning?' : '1. Qanday tadbir yoki kayfiyat uchun rejalashtiryapsiz?',
+    step2Title: lang === 'ru' ? '2. Количество гостей' : lang === 'en' ? '2. Number of guests' : '2. Mehmonlar soni',
+    calculateBtn: lang === 'ru' ? 'Подобрать Фирменный Сет' : lang === 'en' ? 'Calculate Curated Set' : 'Maxsus Tavsiya To\'plamini Ko\'rish',
+    chefCurated: lang === 'ru' ? 'Фирменный 3-этапный сет от шеф-повара' : lang === 'en' ? 'Chef-curated 3-course luxury tasting menu' : 'Bosh oshpaz tomonidan saralangan shohona 3-bosqichli to\'plam',
+    discountBadge: lang === 'ru' ? 'Скидка 10%' : lang === 'en' ? '10% OFF' : '10% Chegirma',
+    mainDish: lang === 'ru' ? 'Главное Блюдо' : lang === 'en' ? 'Main Course' : 'Asosiy Taom',
+    saladAppetizer: lang === 'ru' ? 'Салат & Закуска' : lang === 'en' ? 'Salad & Starter' : 'Salat & Ishtaha',
+    dessertDrink: lang === 'ru' ? 'Десерт & Напиток' : lang === 'en' ? 'Dessert & Beverage' : 'Desert & Ichimlik',
+    originalPrice: lang === 'ru' ? 'Обычная цена:' : lang === 'en' ? 'Regular price:' : 'Asl narxi:',
+    savings: lang === 'ru' ? 'Ваша выгода:' : lang === 'en' ? 'You save:' : 'Tejovingiz:',
+    specialSetPrice: lang === 'ru' ? 'Цена Специального Сета' : lang === 'en' ? 'Special Set Price' : 'Maxsus To\'plam Narxi',
+    addAllBtn: lang === 'ru' ? 'Добавить все в корзину' : lang === 'en' ? 'Add All to Cart' : 'Barchasini Savatga Qo\'shish',
+    reserveBtn: lang === 'ru' ? 'Забронировать Стол' : lang === 'en' ? 'Book a Table' : 'Stol Band Qilish',
+    backBtn: lang === 'ru' ? '← Выбрать другое настроение' : lang === 'en' ? '← Choose another mood' : '← Boshqa kayfiyatni tanlash',
+    kcal: lang === 'ru' ? 'ккал' : lang === 'en' ? 'kcal' : 'kkal'
+  };
 
   const handleCalculateRecommendation = () => {
     soundFx.playChime();
@@ -65,7 +91,7 @@ export const SmartConciergeModal = ({ isOpen, onClose, setActivePage }) => {
       .filter(Boolean);
 
     const total = items.reduce((sum, item) => sum + item.price, 0);
-    const discountedTotal = Math.round(total * 0.9); // 10% VIP Concierge discount!
+    const discountedTotal = Math.round(total * 0.9);
 
     setRecommendation({
       mood: moodObj,
@@ -119,10 +145,10 @@ export const SmartConciergeModal = ({ isOpen, onClose, setActivePage }) => {
           </div>
           <div>
             <span className="text-[11px] font-bold uppercase tracking-wider text-gold-500 block">
-              Zafaron Aqlli Sommelier & Recommender
+              {tSomm.badge}
             </span>
             <h3 className="font-serif font-black text-2xl text-gray-900 dark:text-white">
-              Sizga Mos Shohona Dasturxon
+              {tSomm.title}
             </h3>
           </div>
         </div>
@@ -132,7 +158,7 @@ export const SmartConciergeModal = ({ isOpen, onClose, setActivePage }) => {
           <div className="space-y-6">
             <div>
               <label className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 block mb-3">
-                1. Qanday tadbir yoki kayfiyat uchun rejalashtiryapsiz?
+                {tSomm.step1Title}
               </label>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {moods.map((m) => {
@@ -165,10 +191,10 @@ export const SmartConciergeModal = ({ isOpen, onClose, setActivePage }) => {
 
             <div>
               <label className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 block mb-3">
-                2. Mehmonlar soni
+                {tSomm.step2Title}
               </label>
               <div className="flex flex-wrap gap-2">
-                {['1-2 kishi', '3-4 kishi', '5-8 kishi', '10+ kishi'].map((opt) => (
+                {guestOptions.map((opt) => (
                   <button
                     key={opt}
                     onClick={() => {
@@ -192,7 +218,7 @@ export const SmartConciergeModal = ({ isOpen, onClose, setActivePage }) => {
               className="w-full py-4 rounded-2xl gold-gradient-bg text-dark-950 font-bold text-base flex items-center justify-center gap-2 shadow-xl hover:scale-[1.02] transition-transform"
             >
               <Sparkles className="w-5 h-5" />
-              <span>Maxsus Tavsiya To'plamini Ko'rish</span>
+              <span>{tSomm.calculateBtn}</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>
@@ -205,11 +231,11 @@ export const SmartConciergeModal = ({ isOpen, onClose, setActivePage }) => {
                   {recommendation?.mood.icon} {recommendation?.mood.title}
                 </span>
                 <span className="text-sm text-gray-700 dark:text-gray-300 font-medium">
-                  Bosh oshpaz tomonidan saralangan shohona 3-bosqichli to'plam
+                  {tSomm.chefCurated}
                 </span>
               </div>
               <span className="px-3 py-1 rounded-full text-xs font-black bg-emerald-500 text-white uppercase tracking-wider">
-                10% Chegirma
+                {tSomm.discountBadge}
               </span>
             </div>
 
@@ -227,13 +253,13 @@ export const SmartConciergeModal = ({ isOpen, onClose, setActivePage }) => {
                   />
                   <div className="flex-1 min-w-0">
                     <span className="text-[10px] uppercase font-bold text-gold-500 block">
-                      {i === 0 ? "Asosiy Taom" : i === 1 ? "Salat & Ishtaha" : "Desert & Ichimlik"}
+                      {i === 0 ? tSomm.mainDish : i === 1 ? tSomm.saladAppetizer : tSomm.dessertDrink}
                     </span>
                     <h5 className="font-serif font-bold text-sm text-gray-900 dark:text-white truncate">
                       {getLocalized(dish.name)}
                     </h5>
                     <span className="text-xs text-gray-500 dark:text-gray-400 block truncate">
-                      {dish.portion} • {dish.calories} kkal
+                      {dish.portion} • {dish.calories} {tSomm.kcal}
                     </span>
                   </div>
                   <span className="font-bold text-sm text-gray-900 dark:text-white whitespace-nowrap">
@@ -247,14 +273,14 @@ export const SmartConciergeModal = ({ isOpen, onClose, setActivePage }) => {
             <div className="p-4 rounded-2xl bg-dark-950 text-white border border-gold-500/30 flex items-center justify-between">
               <div>
                 <span className="text-xs text-gray-400 block line-through">
-                  Asl narxi: {formatPrice(recommendation?.total)}
+                  {tSomm.originalPrice} {formatPrice(recommendation?.total)}
                 </span>
                 <span className="text-xs text-emerald-400 font-bold block">
-                  Tejovingiz: {formatPrice(recommendation?.savings)}
+                  {tSomm.savings} {formatPrice(recommendation?.savings)}
                 </span>
               </div>
               <div className="text-right">
-                <span className="text-[11px] text-gold-400 uppercase tracking-wider block">Maxsus To'plam Narxi</span>
+                <span className="text-[11px] text-gold-400 uppercase tracking-wider block">{tSomm.specialSetPrice}</span>
                 <span className="text-xl sm:text-2xl font-black gold-gradient-text">
                   {formatPrice(recommendation?.discountedTotal)}
                 </span>
@@ -268,14 +294,14 @@ export const SmartConciergeModal = ({ isOpen, onClose, setActivePage }) => {
                 className="w-full sm:flex-1 py-3.5 rounded-xl gold-gradient-bg text-dark-950 font-bold text-sm flex items-center justify-center gap-2 shadow-lg hover:scale-105 transition-transform"
               >
                 <ShoppingBag className="w-4 h-4" />
-                <span>Barchasini Savatga Qo'shish</span>
+                <span>{tSomm.addAllBtn}</span>
               </button>
 
               <button
                 onClick={handleReserveWithMenu}
                 className="w-full sm:w-auto px-5 py-3.5 rounded-xl bg-gray-100 dark:bg-dark-800 text-gray-800 dark:text-gray-200 border border-gray-300 dark:border-white/10 hover:border-gold-500 text-sm font-semibold transition-colors"
               >
-                Stol Band Qilish
+                {tSomm.reserveBtn}
               </button>
             </div>
 
@@ -283,7 +309,7 @@ export const SmartConciergeModal = ({ isOpen, onClose, setActivePage }) => {
               onClick={() => setStep(1)}
               className="w-full text-center text-xs text-gray-500 hover:text-gold-500 transition-colors pt-1"
             >
-              ← Boshqa kayfiyatni tanlash
+              {tSomm.backBtn}
             </button>
           </div>
         )}

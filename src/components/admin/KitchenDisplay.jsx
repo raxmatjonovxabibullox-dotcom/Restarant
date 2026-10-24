@@ -1,8 +1,82 @@
 import React from 'react';
 import { ChefHat, Clock, CheckCircle2, Flame, Bike, UtensilsCrossed } from 'lucide-react';
+import { useLanguage } from '../../context/LanguageContext';
 import { soundFx } from '../../hooks/useSoundEffects';
 
 export const KitchenDisplay = ({ orders, updateOrderStatus, getLocalized }) => {
+  const { lang } = useLanguage();
+
+  const tKds = {
+    uz: {
+      title: "Oshxona Ekrani (Kitchen Display System)",
+      activeTickets: (count) => `${count} ta faol chipta`,
+      subtitle: "Bosh oshpaz va oshpazlar guruhi uchun real vaqtdagi faol pishirish chiptalari",
+      liveMonitoring: "Jonli monitoring",
+      emptyTitle: "Barcha taomlar pishirib bo'lingan!",
+      emptyDesc: "Hozirda oshxona uchun yangi buyurtmalar navbati yo'q. Yangi buyurtma kelishi bilan bu yerda chipta paydo bo'ladi.",
+      tablePrefix: "Stol #",
+      unspecified: "Ko'rsatilmagan",
+      delivery: "Yetkazib berish",
+      minsAgo: (mins) => `${mins} daq. oldin`,
+      cooking: "🔥 Olov ustida",
+      waiting: "⏳ Kutilmoqda",
+      customer: "Mijoz:",
+      dishesToCook: "Tayyorlanadigan taomlar:",
+      portion: "Portsiya:",
+      addon: "Qo'shimcha:",
+      note: "Izoh:",
+      startCooking: "Pishirishni Boshlash",
+      readyDelivery: "Tayyor! Kuryerga Topshirish",
+      readyDineIn: "Tayyor! Stolga Yetkazish"
+    },
+    ru: {
+      title: "Экран Кухни (Kitchen Display System)",
+      activeTickets: (count) => `${count} активных билетов`,
+      subtitle: "Активные заказы в реальном времени для шеф-повара и кулинарной команды",
+      liveMonitoring: "Живой мониторинг",
+      emptyTitle: "Все блюда приготовлены!",
+      emptyDesc: "Сейчас нет очереди заказов на кухню. Новые заказы появятся здесь моментально.",
+      tablePrefix: "Стол #",
+      unspecified: "Не указан",
+      delivery: "Доставка",
+      minsAgo: (mins) => `${mins} мин. назад`,
+      cooking: "🔥 Готовится на огне",
+      waiting: "⏳ В ожидании",
+      customer: "Клиент:",
+      dishesToCook: "Блюда к приготовлению:",
+      portion: "Порция:",
+      addon: "Добавки:",
+      note: "Примечание:",
+      startCooking: "Начать Готовку",
+      readyDelivery: "Готово! К курьеру",
+      readyDineIn: "Готово! Подать к столу"
+    },
+    en: {
+      title: "Kitchen Display System (KDS)",
+      activeTickets: (count) => `${count} active tickets`,
+      subtitle: "Real-time kitchen order tickets for executive chef and culinary brigade",
+      liveMonitoring: "Live monitoring",
+      emptyTitle: "All dishes prepared!",
+      emptyDesc: "No queued kitchen orders right now. New tickets will appear here instantaneously.",
+      tablePrefix: "Table #",
+      unspecified: "Not specified",
+      delivery: "Delivery",
+      minsAgo: (mins) => `${mins} min ago`,
+      cooking: "🔥 On the fire",
+      waiting: "⏳ Queued",
+      customer: "Customer:",
+      dishesToCook: "Dishes to prepare:",
+      portion: "Portion:",
+      addon: "Add-ons:",
+      note: "Note:",
+      startCooking: "Start Cooking",
+      readyDelivery: "Ready! Hand to Courier",
+      readyDineIn: "Ready! Serve to Table"
+    }
+  };
+
+  const cur = tKds[lang] || tKds.uz;
+
   // Filter only active orders for the kitchen (pending or cooking)
   const kitchenOrders = orders.filter(
     (o) => o.status === 'pending' || o.status === 'cooking'
@@ -29,13 +103,13 @@ export const KitchenDisplay = ({ orders, updateOrderStatus, getLocalized }) => {
           </div>
           <div>
             <h3 className="font-serif font-black text-xl sm:text-2xl text-white flex items-center gap-2">
-              Oshxona Ekrani (Kitchen Display System)
+              {cur.title}
               <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500 text-dark-950">
-                {kitchenOrders.length} ta faol chipta
+                {cur.activeTickets(kitchenOrders.length)}
               </span>
             </h3>
             <p className="text-xs text-gray-400 mt-0.5">
-              Bosh oshpaz va oshpazlar guruhi uchun real vaqtdagi faol pishirish chiptalari
+              {cur.subtitle}
             </p>
           </div>
         </div>
@@ -43,7 +117,7 @@ export const KitchenDisplay = ({ orders, updateOrderStatus, getLocalized }) => {
         <div className="flex items-center gap-2 text-xs">
           <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-gold-400 font-bold">
             <Clock className="w-3.5 h-3.5" />
-            Jonli monitoring
+            {cur.liveMonitoring}
           </span>
         </div>
       </div>
@@ -55,10 +129,10 @@ export const KitchenDisplay = ({ orders, updateOrderStatus, getLocalized }) => {
             <CheckCircle2 className="w-8 h-8" />
           </div>
           <h4 className="font-serif font-bold text-xl text-gray-900 dark:text-white">
-            Barcha taomlar pishirib bo'lingan!
+            {cur.emptyTitle}
           </h4>
           <p className="text-xs text-gray-500 max-w-sm mx-auto">
-            Hozirda oshxona uchun yangi buyurtmalar navbati yo'q. Yangi buyurtma kelishi bilan bu yerda chipta paydo bo'ladi.
+            {cur.emptyDesc}
           </p>
         </div>
       ) : (
@@ -90,12 +164,12 @@ export const KitchenDisplay = ({ orders, updateOrderStatus, getLocalized }) => {
                         {order.deliveryType === 'dineIn' ? (
                           <span className="text-emerald-500 flex items-center gap-1 font-bold">
                             <UtensilsCrossed className="w-3.5 h-3.5" />
-                            Stol #{order.tableNumber || "Ko'rsatilmagan"}
+                            {cur.tablePrefix}{order.tableNumber || cur.unspecified}
                           </span>
                         ) : (
                           <span className="text-blue-500 flex items-center gap-1 font-bold">
                             <Bike className="w-3.5 h-3.5" />
-                            Yetkazib berish
+                            {cur.delivery}
                           </span>
                         )}
                       </span>
@@ -110,17 +184,17 @@ export const KitchenDisplay = ({ orders, updateOrderStatus, getLocalized }) => {
                           : 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/30'
                       }`}>
                         <Clock className="w-3 h-3" />
-                        {elapsedMinutes} daq. oldin
+                        {cur.minsAgo(elapsedMinutes)}
                       </span>
                       <span className="text-[10px] text-gray-400 block mt-1">
-                        {isCooking ? '🔥 Olov ustida' : '⏳ Kutilmoqda'}
+                        {isCooking ? cur.cooking : cur.waiting}
                       </span>
                     </div>
                   </div>
 
                   {/* Customer name */}
                   <div className="text-xs text-gray-600 dark:text-gray-300">
-                    <span>Mijoz: </span>
+                    <span>{cur.customer} </span>
                     <b className="text-gray-900 dark:text-white">{order.customerName}</b>
                     {order.customerPhone && (
                       <span className="text-gray-400 ml-2 font-mono">({order.customerPhone})</span>
@@ -130,7 +204,7 @@ export const KitchenDisplay = ({ orders, updateOrderStatus, getLocalized }) => {
                   {/* Dish Items Checklist */}
                   <div className="p-3.5 rounded-2xl bg-gray-50 dark:bg-dark-800/80 border border-gray-200 dark:border-white/5 space-y-2">
                     <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 block mb-1">
-                      Tayyorlanadigan taomlar:
+                      {cur.dishesToCook}
                     </span>
                     {order.items?.map((item, idx) => (
                       <div
@@ -139,16 +213,16 @@ export const KitchenDisplay = ({ orders, updateOrderStatus, getLocalized }) => {
                       >
                         <div className="flex-1 pr-2">
                           <span className="font-bold text-gray-900 dark:text-white text-sm">
-                            {item.quantity}x {getLocalized(item.name)}
+                            {item.quantity}x {getLocalized ? getLocalized(item.name) : (typeof item.name === 'object' ? (item.name[lang] || item.name.uz) : item.name)}
                           </span>
                           {item.selectedPortion && (
                             <span className="text-[11px] text-gold-500 block">
-                              Portsiya: {item.selectedPortion}
+                              {cur.portion} {item.selectedPortion}
                             </span>
                           )}
                           {item.selectedAddons?.length > 0 && (
                             <span className="text-[10px] text-emerald-500 block">
-                              Qo'shimcha: {item.selectedAddons.join(', ')}
+                              {cur.addon} {item.selectedAddons.join(', ')}
                             </span>
                           )}
                         </div>
@@ -158,7 +232,7 @@ export const KitchenDisplay = ({ orders, updateOrderStatus, getLocalized }) => {
 
                   {order.notes && (
                     <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-500 italic">
-                      Izoh: "{order.notes}"
+                      {cur.note} "{order.notes}"
                     </div>
                   )}
                 </div>
@@ -171,7 +245,7 @@ export const KitchenDisplay = ({ orders, updateOrderStatus, getLocalized }) => {
                       className="w-full py-3 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-dark-950 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg hover:scale-[1.02] transition-transform"
                     >
                       <Flame className="w-4 h-4" />
-                      <span>Pishirishni Boshlash</span>
+                      <span>{cur.startCooking}</span>
                     </button>
                   ) : (
                     <button
@@ -181,8 +255,8 @@ export const KitchenDisplay = ({ orders, updateOrderStatus, getLocalized }) => {
                       <CheckCircle2 className="w-4 h-4" />
                       <span>
                         {order.deliveryType === 'delivery'
-                          ? "Tayyor! Kuryerga Topshirish"
-                          : "Tayyor! Stolga Yetkazish"}
+                          ? cur.readyDelivery
+                          : cur.readyDineIn}
                       </span>
                     </button>
                   )}

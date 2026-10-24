@@ -19,28 +19,78 @@ import {
   Send
 } from 'lucide-react';
 
-const PORTION_OPTIONS = [
-  { id: 'standard', name: 'Standart (1x)', multiplier: 1.0, label: '1 porsiya' },
-  { id: 'large', name: 'Katta porsiya (1.5x)', multiplier: 1.35, label: '+35%' },
-  { id: 'royal', name: 'Shohona to\'plam (2x)', multiplier: 1.75, label: '+75%' }
-];
-
-const GOURMET_ADDONS = [
-  { id: 'kazi', name: 'Maxsus Ot Go\'shti Kazi', price: 15000 },
-  { id: 'quail_eggs', name: 'Bedana tuxumi (3 dona)', price: 6000 },
-  { id: 'saffron_sauce', name: 'Zafaron sarimsoqli sousi', price: 8000 },
-  { id: 'tandoor_bread', name: 'Yangi yopilgan Tandir non', price: 5000 }
-];
-
 export const DishDetailModal = () => {
   const { selectedDishModal, setSelectedDishModal } = useRestaurant();
   const { addToCart, openCart } = useCart();
-  const { t, getLocalized } = useLanguage();
+  const { t, lang, getLocalized } = useLanguage();
   const { formatPrice } = useCurrency();
   const { isFavorite, toggleFavorite } = useFavorites();
 
+  const portions = [
+    {
+      id: 'standard',
+      name: lang === 'ru' ? 'Стандарт (1x)' : lang === 'en' ? 'Standard (1x)' : 'Standart (1x)',
+      multiplier: 1.0,
+      label: lang === 'ru' ? '1 порция' : lang === 'en' ? '1 portion' : '1 porsiya'
+    },
+    {
+      id: 'large',
+      name: lang === 'ru' ? 'Большая порция (1.5x)' : lang === 'en' ? 'Large portion (1.5x)' : 'Katta porsiya (1.5x)',
+      multiplier: 1.35,
+      label: '+35%'
+    },
+    {
+      id: 'royal',
+      name: lang === 'ru' ? 'Царский сет (2x)' : lang === 'en' ? 'Royal set (2x)' : "Shohona to'plam (2x)",
+      multiplier: 1.75,
+      label: '+75%'
+    }
+  ];
+
+  const addonsList = [
+    {
+      id: 'kazi',
+      name: lang === 'ru' ? 'Особый конский казы' : lang === 'en' ? 'Special Horsemeat Kazi' : "Maxsus Ot Go'shti Kazi",
+      price: 15000
+    },
+    {
+      id: 'quail_eggs',
+      name: lang === 'ru' ? 'Перепелиные яйца (3 шт.)' : lang === 'en' ? 'Quail eggs (3 pcs)' : 'Bedana tuxumi (3 dona)',
+      price: 6000
+    },
+    {
+      id: 'saffron_sauce',
+      name: lang === 'ru' ? 'Шафраново-чесночный соус' : lang === 'en' ? 'Saffron garlic sauce' : 'Zafaron sarimsoqli sousi',
+      price: 8000
+    },
+    {
+      id: 'tandoor_bread',
+      name: lang === 'ru' ? 'Горячая тандырная лепешка' : lang === 'en' ? 'Fresh hot tandoor bread' : 'Yangi yopilgan Tandir non',
+      price: 5000
+    }
+  ];
+
+  const tDish = {
+    time: lang === 'ru' ? 'Время' : lang === 'en' ? 'Time' : 'Vaqt',
+    min: lang === 'ru' ? 'мин.' : lang === 'en' ? 'min.' : 'daqiqa',
+    calories: lang === 'ru' ? 'Калории' : lang === 'en' ? 'Calories' : 'Kaloriya',
+    kcal: lang === 'ru' ? 'ккал' : lang === 'en' ? 'kcal' : 'kkal',
+    portion: lang === 'ru' ? 'Порция' : lang === 'en' ? 'Portion' : 'Portsiya',
+    portionTitle: lang === 'ru' ? 'Выберите размер порции:' : lang === 'en' ? 'Select portion size:' : 'Portsiya hajmini tanlang:',
+    addonsTitle: lang === 'ru' ? 'Фирменные добавки:' : lang === 'en' ? 'Gourmet Add-ons:' : "Qo'shimcha sarxil lazzatlar:",
+    reviewsTitle: lang === 'ru' ? 'Отзывы гостей' : lang === 'en' ? 'Guest Reviews' : 'Mehmonlar Fikrlari',
+    cancelReview: lang === 'ru' ? 'Отмена' : lang === 'en' ? 'Cancel' : 'Bekor qilish',
+    addReview: lang === 'ru' ? '+ Оставить отзыв' : lang === 'en' ? '+ Write a review' : '+ Fikr bildirish',
+    namePlaceholder: lang === 'ru' ? 'Ваше имя' : lang === 'en' ? 'Your Name' : 'Ismingiz',
+    commentPlaceholder: lang === 'ru' ? 'Ваш отзыв о блюде и сервисе...' : lang === 'en' ? 'Your review of the dish & service...' : "Taom va xizmat haqida fikringiz...",
+    saveReviewBtn: lang === 'ru' ? 'Опубликовать отзыв' : lang === 'en' ? 'Post Review' : 'Fikrni Saqlash',
+    totalPriceLabel: lang === 'ru' ? 'Итоговая стоимость:' : lang === 'en' ? 'Total price:' : 'Jami qiymat:',
+    addToCartBtn: lang === 'ru' ? 'В корзину' : lang === 'en' ? 'Add to Cart' : "Savatga Qo'shish",
+    justNow: lang === 'ru' ? 'Только что' : lang === 'en' ? 'Just now' : 'Hozirgina'
+  };
+
   const [quantity, setQuantity] = useState(1);
-  const [selectedPortion, setSelectedPortion] = useState(PORTION_OPTIONS[0]);
+  const [selectedPortion, setSelectedPortion] = useState(portions[0]);
   const [selectedAddons, setSelectedAddons] = useState([]);
   
   // Reviews state
@@ -53,31 +103,29 @@ export const DishDetailModal = () => {
   useEffect(() => {
     if (selectedDishModal) {
       setQuantity(1);
-      setSelectedPortion(PORTION_OPTIONS[0]);
+      setSelectedPortion(portions[0]);
       setSelectedAddons([]);
       setShowReviewForm(false);
       
-      // Load stored reviews for this dish
       try {
         const stored = localStorage.getItem(`zafaron_reviews_${selectedDishModal.id}`);
         if (stored) {
           setReviews(JSON.parse(stored));
         } else {
-          // Default initial reviews for visual beauty
           const initial = [
             {
               id: 1,
-              name: "Bobur Mirzayev",
+              name: lang === 'ru' ? "Бобур Мирзаев" : lang === 'en' ? "Bobur Mirzayev" : "Bobur Mirzayev",
               rating: 5,
-              date: "2 kun oldin",
-              comment: "Ajoyib ta'm va yuqori xizmat! Go'shti nihoyatda mayin pishgan, zafaron hidi o'zgacha shukuh bag'ishlaydi."
+              date: lang === 'ru' ? "2 дня назад" : lang === 'en' ? "2 days ago" : "2 kun oldin",
+              comment: lang === 'ru' ? "Изумительный вкус и высокий сервис! Нежнейшее мясо и аромат шафрана." : lang === 'en' ? "Incredible taste and high service! Very tender meat with subtle saffron aroma." : "Ajoyib ta'm va yuqori xizmat! Go'shti nihoyatda mayin pishgan, zafaron hidi o'zgacha shukuh bag'ishlaydi."
             },
             {
               id: 2,
-              name: "Madina Alimova",
+              name: lang === 'ru' ? "Мадина Алимова" : lang === 'en' ? "Madina Alimova" : "Madina Alimova",
               rating: 5,
-              date: "1 hafta oldin",
-              comment: "Oila a'zolarimiz bilan kelib juda mamnun bo'ldik. Portsiya juda saxiy va shohona bezatilgan."
+              date: lang === 'ru' ? "1 неделю назад" : lang === 'en' ? "1 week ago" : "1 hafta oldin",
+              comment: lang === 'ru' ? "Были с семьей, все остались в восторге. Порции очень щедрые и празднично украшены." : lang === 'en' ? "Visited with family, thoroughly enjoyed. Generous portions and royal presentation." : "Oila a'zolarimiz bilan kelib juda mamnun bo'ldik. Portsiya juda saxiy va shohona bezatilgan."
             }
           ];
           setReviews(initial);
@@ -86,7 +134,7 @@ export const DishDetailModal = () => {
         setReviews([]);
       }
     }
-  }, [selectedDishModal]);
+  }, [selectedDishModal, lang]);
 
   if (!selectedDishModal) return null;
 
@@ -96,7 +144,7 @@ export const DishDetailModal = () => {
   // Calculate dynamic price with portions and addons
   const basePriceWithPortion = Math.round(dish.price * selectedPortion.multiplier);
   const addonsTotal = selectedAddons.reduce((sum, addonId) => {
-    const addon = GOURMET_ADDONS.find(a => a.id === addonId);
+    const addon = addonsList.find(a => a.id === addonId);
     return sum + (addon ? addon.price : 0);
   }, 0);
   const unitPrice = basePriceWithPortion + addonsTotal;
@@ -115,7 +163,7 @@ export const DishDetailModal = () => {
       ...dish,
       price: unitPrice,
       selectedPortion: selectedPortion.name,
-      selectedAddons: selectedAddons.map(id => GOURMET_ADDONS.find(a => a.id === id)?.name).filter(Boolean)
+      selectedAddons: selectedAddons.map(id => addonsList.find(a => a.id === id)?.name).filter(Boolean)
     };
     addToCart(itemToAdd, quantity);
     setSelectedDishModal(null);
@@ -131,7 +179,7 @@ export const DishDetailModal = () => {
       id: Date.now(),
       name: newReviewerName.trim(),
       rating: newReviewRating,
-      date: "Hozirgina",
+      date: tDish.justNow,
       comment: newReviewComment.trim()
     };
 
@@ -147,56 +195,60 @@ export const DishDetailModal = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div
         onClick={() => setSelectedDishModal(null)}
-        className="absolute inset-0 bg-black/75 backdrop-blur-md transition-opacity"
+        className="absolute inset-0 bg-black/80 backdrop-blur-md transition-opacity"
       />
 
-      <div className="relative w-full max-w-3xl bg-white dark:bg-dark-900 border border-gold-500/30 rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[92vh] animate-slide-up">
-        {/* Close Button */}
-        <button
-          onClick={() => setSelectedDishModal(null)}
-          className="absolute top-4 right-4 z-20 p-2 rounded-xl bg-black/50 text-white hover:bg-black/80 backdrop-blur-md transition-colors"
-        >
-          <X className="w-5 h-5" />
-        </button>
-
-        {/* Dish Image & Badges */}
-        <div className="md:w-5/12 relative h-56 md:h-auto min-h-[260px] flex-shrink-0">
+      {/* Modal Dialog */}
+      <div className="relative w-full max-w-2xl bg-white dark:bg-dark-900 border border-gray-200 dark:border-white/10 rounded-3xl shadow-2xl overflow-hidden animate-slide-up flex flex-col max-h-[90vh]">
+        {/* Top Image Banner */}
+        <div className="relative h-60 sm:h-72 w-full overflow-hidden flex-shrink-0 bg-dark-950">
           <img
             src={dish.image}
             alt={getLocalized(dish.name)}
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent md:bg-gradient-to-r md:from-transparent md:to-dark-900/30" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
-          {/* Tags on Image */}
-          <div className="absolute top-4 left-4 flex flex-wrap gap-1.5 z-10">
-            {dish.tags?.map((tag) => (
-              <span
-                key={tag}
-                className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-dark-950/85 text-gold-400 border border-gold-500/30 backdrop-blur-md uppercase tracking-wider shadow-sm"
-              >
-                {t(`badges.${tag}`)}
-              </span>
-            ))}
-          </div>
-
-          {/* Favorite button over image */}
+          {/* Close button */}
           <button
-            onClick={() => toggleFavorite(dish)}
-            className="absolute bottom-4 right-4 z-10 p-2.5 rounded-full bg-dark-950/80 backdrop-blur-md border border-white/20 text-white hover:scale-110 transition-transform shadow-lg"
+            onClick={() => setSelectedDishModal(null)}
+            className="absolute top-4 right-4 p-2 rounded-full bg-black/50 text-white hover:bg-black/80 transition-colors backdrop-blur-sm"
+          >
+            <X className="w-5 h-5" />
+          </button>
+
+          {/* Favorite button */}
+          <button
+            onClick={() => {
+              soundFx.playPop();
+              toggleFavorite(dish);
+            }}
+            className="absolute top-4 left-4 p-2.5 rounded-full bg-black/50 text-white hover:scale-110 transition-transform backdrop-blur-sm"
           >
             <Heart className={`w-5 h-5 ${isFav ? 'fill-red-500 text-red-500' : 'text-white'}`} />
           </button>
+
+          {/* Badges on image */}
+          <div className="absolute bottom-4 left-4 flex flex-wrap gap-2">
+            {dish.tags?.map((tag) => (
+              <span
+                key={tag}
+                className="px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-gold-500 text-dark-950 shadow-md"
+              >
+                {t(`badges.${tag}`) || tag}
+              </span>
+            ))}
+          </div>
         </div>
 
-        {/* Content Info & Options */}
-        <div className="md:w-7/12 p-6 flex flex-col justify-between overflow-y-auto">
-          <div className="space-y-4">
-            {/* Header info */}
+        {/* Modal Scrollable Body */}
+        <div className="p-6 overflow-y-auto flex-1 flex flex-col justify-between">
+          <div className="space-y-5">
+            {/* Title & Description */}
             <div>
               <div className="flex items-center justify-between gap-2 mb-1.5">
                 <span className="text-xs uppercase font-bold text-gold-500 tracking-wider">
@@ -223,27 +275,27 @@ export const DishDetailModal = () => {
               <div>
                 <div className="flex items-center justify-center gap-1 text-[11px] text-gray-500 dark:text-gray-400">
                   <Clock className="w-3 h-3 text-gold-500" />
-                  <span>Vaqt</span>
+                  <span>{tDish.time}</span>
                 </div>
                 <span className="text-xs font-bold text-gray-900 dark:text-white mt-0.5 block">
-                  {dish.prepTime || 20} daqiqa
+                  {dish.prepTime || 20} {tDish.min}
                 </span>
               </div>
 
               <div>
                 <div className="flex items-center justify-center gap-1 text-[11px] text-gray-500 dark:text-gray-400">
                   <Flame className="w-3 h-3 text-orange-500" />
-                  <span>Kaloriya</span>
+                  <span>{tDish.calories}</span>
                 </div>
                 <span className="text-xs font-bold text-gray-900 dark:text-white mt-0.5 block">
-                  {dish.calories || 450} kkal
+                  {dish.calories || 450} {tDish.kcal}
                 </span>
               </div>
 
               <div>
                 <div className="flex items-center justify-center gap-1 text-[11px] text-gray-500 dark:text-gray-400">
                   <Sparkles className="w-3 h-3 text-emerald-500" />
-                  <span>Portsiya</span>
+                  <span>{tDish.portion}</span>
                 </div>
                 <span className="text-xs font-bold text-gray-900 dark:text-white mt-0.5 block truncate">
                   {dish.portion || '1 porsiya'}
@@ -254,10 +306,10 @@ export const DishDetailModal = () => {
             {/* PORTION SELECTOR */}
             <div>
               <span className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 block mb-2">
-                Portsiya hajmini tanlang:
+                {tDish.portionTitle}
               </span>
               <div className="grid grid-cols-3 gap-2">
-                {PORTION_OPTIONS.map((opt) => (
+                {portions.map((opt) => (
                   <button
                     key={opt.id}
                     onClick={() => {
@@ -280,10 +332,10 @@ export const DishDetailModal = () => {
             {/* GOURMET ADDONS */}
             <div>
               <span className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 block mb-2">
-                Qo'shimcha sarxil lazzatlar:
+                {tDish.addonsTitle}
               </span>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {GOURMET_ADDONS.map((addon) => {
+                {addonsList.map((addon) => {
                   const isChecked = selectedAddons.includes(addon.id);
                   return (
                     <button
@@ -310,13 +362,13 @@ export const DishDetailModal = () => {
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 flex items-center gap-1.5">
                   <MessageSquare className="w-3.5 h-3.5 text-gold-500" />
-                  Mehmonlar Fikrlari ({reviews.length})
+                  {tDish.reviewsTitle} ({reviews.length})
                 </span>
                 <button
                   onClick={() => setShowReviewForm(!showReviewForm)}
                   className="text-xs font-semibold text-gold-500 hover:underline"
                 >
-                  {showReviewForm ? "Bekor qilish" : "+ Fikr bildirish"}
+                  {showReviewForm ? tDish.cancelReview : tDish.addReview}
                 </button>
               </div>
 
@@ -326,7 +378,7 @@ export const DishDetailModal = () => {
                   <div className="flex gap-2">
                     <input
                       type="text"
-                      placeholder="Ismingiz"
+                      placeholder={tDish.namePlaceholder}
                       required
                       value={newReviewerName}
                       onChange={(e) => setNewReviewerName(e.target.value)}
@@ -346,7 +398,7 @@ export const DishDetailModal = () => {
                     </div>
                   </div>
                   <textarea
-                    placeholder="Taom va xizmat haqida fikringiz..."
+                    placeholder={tDish.commentPlaceholder}
                     required
                     rows="2"
                     value={newReviewComment}
@@ -358,7 +410,7 @@ export const DishDetailModal = () => {
                     className="w-full py-2 rounded-xl gold-gradient-bg text-dark-950 font-bold text-xs flex items-center justify-center gap-1.5"
                   >
                     <Send className="w-3.5 h-3.5" />
-                    <span>Fikrni Saqlash</span>
+                    <span>{tDish.saveReviewBtn}</span>
                   </button>
                 </form>
               )}
@@ -388,7 +440,7 @@ export const DishDetailModal = () => {
           <div className="pt-4 mt-4 border-t border-gray-200 dark:border-gray-800 space-y-3">
             <div className="flex items-center justify-between">
               <div>
-                <span className="text-[11px] text-gray-500 dark:text-gray-400 block">Jami qiymat:</span>
+                <span className="text-[11px] text-gray-500 dark:text-gray-400 block">{tDish.totalPriceLabel}</span>
                 <span className="font-bold text-2xl gold-gradient-text">
                   {formatPrice(totalPrice)}
                 </span>
@@ -425,7 +477,7 @@ export const DishDetailModal = () => {
               className="w-full py-3.5 px-4 rounded-2xl gold-gradient-bg flex items-center justify-center gap-2 text-sm font-bold shadow-xl transition-all hover:scale-[1.02]"
             >
               <ShoppingBag className="w-4 h-4" />
-              <span>Savatga Qo'shish • {formatPrice(totalPrice)}</span>
+              <span>{tDish.addToCartBtn} • {formatPrice(totalPrice)}</span>
             </button>
           </div>
         </div>

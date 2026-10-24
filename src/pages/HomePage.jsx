@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 
 export const HomePage = ({ setActivePage, onOpenConcierge }) => {
-  const { t, getLocalized } = useLanguage();
+  const { t, getLocalized, lang } = useLanguage();
   const { menuItems, setSelectedDishModal } = useRestaurant();
   const { addToCart } = useCart();
   const { formatPrice } = useCurrency();
@@ -115,7 +115,7 @@ export const HomePage = ({ setActivePage, onOpenConcierge }) => {
               className="w-full sm:w-auto px-6 py-4 rounded-2xl bg-amber-500/15 border border-gold-500/40 text-gold-500 hover:bg-gold-500 hover:text-dark-950 text-base font-bold flex items-center justify-center gap-2 transition-all shadow-md active:scale-95"
             >
               <Sparkles className="w-5 h-5" />
-              <span>Aqlli Sommelier</span>
+              <span>{lang === 'ru' ? 'Умный Сомелье' : lang === 'en' ? 'Smart Sommelier' : 'Aqlli Sommelier'}</span>
             </button>
           </div>
 
@@ -123,15 +123,15 @@ export const HomePage = ({ setActivePage, onOpenConcierge }) => {
           <div className="pt-8 flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
             <div className="flex items-center gap-2">
               <ShieldCheck className="w-4 h-4 text-gold-500" />
-              <span>100% Halol va Sarxil Masalliqlar</span>
+              <span>{lang === 'ru' ? '100% Халяль и Свежие Ингредиенты' : lang === 'en' ? '100% Halal & Fresh Ingredients' : '100% Halol va Sarxil Masalliqlar'}</span>
             </div>
             <div className="flex items-center gap-2">
               <Award className="w-4 h-4 text-gold-500" />
-              <span>Xalqaro Mukofotli Bosh Oshpaz</span>
+              <span>{lang === 'ru' ? 'Международный Шеф-повар' : lang === 'en' ? 'Award-winning Head Chef' : 'Xalqaro Mukofotli Bosh Oshpaz'}</span>
             </div>
             <div className="flex items-center gap-2">
               <Music className="w-4 h-4 text-gold-500" />
-              <span>Har Oqshom Jonli Sharqona Musiqa</span>
+              <span>{lang === 'ru' ? 'Каждый вечер живая музыка' : lang === 'en' ? 'Live Oriental Music Every Evening' : 'Har Oqshom Jonli Sharqona Musiqa'}</span>
             </div>
           </div>
         </div>
@@ -141,10 +141,26 @@ export const HomePage = ({ setActivePage, onOpenConcierge }) => {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
           {[
-            { value: "15+", label: "Yillik Royal Tajriba", sub: "2010-yildan buyon" },
-            { value: "85+", label: "Eksklyuziv Taomlar", sub: "Milliy va Yevropa" },
-            { value: "12K+", label: "Mamnun Mehmonlar", sub: "Toshkent & Xorijiy" },
-            { value: "4.9 ★", label: "Oshpazlik Bahosi", sub: "5 yulduzli servis" }
+            {
+              value: "15+",
+              label: lang === 'ru' ? 'Лет Королевского Опыта' : lang === 'en' ? 'Years of Royal Experience' : 'Yillik Royal Tajriba',
+              sub: lang === 'ru' ? 'с 2010 года' : lang === 'en' ? 'since 2010' : '2010-yildan buyon'
+            },
+            {
+              value: "85+",
+              label: lang === 'ru' ? 'Эксклюзивных Блюд' : lang === 'en' ? 'Exclusive Dishes' : 'Eksklyuziv Taomlar',
+              sub: lang === 'ru' ? 'Национальные и европейские' : lang === 'en' ? 'National & European' : 'Milliy va Yevropa'
+            },
+            {
+              value: "12K+",
+              label: lang === 'ru' ? 'Довольных Гостей' : lang === 'en' ? 'Delighted Guests' : 'Mamnun Mehmonlar',
+              sub: lang === 'ru' ? 'Ташкент и зарубежные гости' : lang === 'en' ? 'Tashkent & International' : 'Toshkent & Xorijiy'
+            },
+            {
+              value: "4.9 ★",
+              label: lang === 'ru' ? 'Кулинарный Рейтинг' : lang === 'en' ? 'Culinary Rating' : 'Oshpazlik Bahosi',
+              sub: lang === 'ru' ? '5-звездочный сервис' : lang === 'en' ? '5-star premium service' : '5 yulduzli servis'
+            }
           ].map((stat, idx) => (
             <div
               key={idx}
@@ -170,10 +186,10 @@ export const HomePage = ({ setActivePage, onOpenConcierge }) => {
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gold-500/10 text-gold-500 text-xs font-bold tracking-wider uppercase mb-2">
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Shohona Tavsiyalar</span>
+              <span>{lang === 'ru' ? 'Королевские Рекомендации' : lang === 'en' ? 'Royal Recommendations' : 'Shohona Tavsiyalar'}</span>
             </div>
             <h2 className="font-serif font-black text-3xl sm:text-4xl text-gray-900 dark:text-white">
-              Bosh Oshpaz Shoh Asarlari
+              {lang === 'ru' ? 'Шедевры Главного Шефа' : lang === 'en' ? "Chef's Masterpieces" : 'Bosh Oshpaz Shoh Asarlari'}
             </h2>
           </div>
           <button
@@ -184,7 +200,7 @@ export const HomePage = ({ setActivePage, onOpenConcierge }) => {
             }}
             className="inline-flex items-center gap-2 text-sm font-bold text-gold-500 hover:text-gold-400 transition-colors group"
           >
-            <span>Barcha taomlarni ko'rish</span>
+            <span>{lang === 'ru' ? 'Смотреть все меню' : lang === 'en' ? 'View all menu dishes' : "Barcha taomlarni ko'rish"}</span>
             <ChevronRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
           </button>
         </div>
@@ -245,7 +261,9 @@ export const HomePage = ({ setActivePage, onOpenConcierge }) => {
 
                   <div className="pt-3 border-t border-gray-100 dark:border-white/5 flex items-center justify-between">
                     <div>
-                      <span className="text-[10px] text-gray-400 uppercase tracking-wider block">Narxi</span>
+                      <span className="text-[10px] text-gray-400 uppercase tracking-wider block">
+                        {lang === 'ru' ? 'Цена' : lang === 'en' ? 'Price' : 'Narxi'}
+                      </span>
                       <span className="text-base font-bold gold-gradient-text">
                         {formatPrice(dish.price)}
                       </span>
@@ -254,7 +272,7 @@ export const HomePage = ({ setActivePage, onOpenConcierge }) => {
                     <button
                       onClick={(e) => handleAddToCart(e, dish)}
                       className="p-2.5 rounded-xl gold-gradient-bg text-dark-950 hover:scale-105 active:scale-95 transition-all shadow-md"
-                      title="Savatga qo'shish"
+                      title={lang === 'ru' ? 'Добавить в корзину' : lang === 'en' ? 'Add to cart' : "Savatga qo'shish"}
                     >
                       <ShoppingBag className="w-4 h-4" />
                     </button>
@@ -276,10 +294,14 @@ export const HomePage = ({ setActivePage, onOpenConcierge }) => {
               <span>Smart VIP Assistant</span>
             </div>
             <h3 className="font-serif font-black text-3xl sm:text-4xl text-white leading-tight">
-              Qaysi taomni tanlashda ikkilanyapsizmi?
+              {lang === 'ru' ? 'Не знаете, какое блюдо выбрать?' : lang === 'en' ? 'Hesitating which dish to choose?' : 'Qaysi taomni tanlashda ikkilanyapsizmi?'}
             </h3>
             <p className="text-sm sm:text-base text-gray-300 font-light leading-relaxed">
-              Zafaron Aqlli Sommelier tizimi sizning kayfiyatingiz, mehmonlar soni va tadbir turiga qarab ideal 3-bosqichli shohona to'plamni 10% chegirma bilan taqdim etadi.
+              {lang === 'ru'
+                ? 'Умный сомелье Zafaron подберет идеальный сет из 3 блюд с 10% скидкой в зависимости от настроения, компании и повода.'
+                : lang === 'en'
+                ? 'Zafaron Smart Sommelier will craft an ideal 3-course royal set with a 10% discount tailored to your mood, party size, and occasion.'
+                : "Zafaron Aqlli Sommelier tizimi sizning kayfiyatingiz, mehmonlar soni va tadbir turiga qarab ideal 3-bosqichli shohona to'plamni 10% chegirma bilan taqdim etadi."}
             </p>
             <div className="pt-2">
               <button
@@ -290,7 +312,7 @@ export const HomePage = ({ setActivePage, onOpenConcierge }) => {
                 className="px-6 py-3.5 rounded-2xl gold-gradient-bg text-dark-950 font-bold text-sm inline-flex items-center gap-2 shadow-xl hover:scale-105 transition-transform"
               >
                 <Sparkles className="w-4 h-4" />
-                <span>Aqlli Sommelierni Ishga Tushirish</span>
+                <span>{lang === 'ru' ? 'Запустить Умного Сомелье' : lang === 'en' ? 'Launch Smart Sommelier' : 'Aqlli Sommelierni Ishga Tushirish'}</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>

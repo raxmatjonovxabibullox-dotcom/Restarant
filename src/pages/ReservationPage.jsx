@@ -18,7 +18,7 @@ const TODAY_DATE = new Date().toISOString().split('T')[0];
 const getTomorrowDate = () => new Date(Date.now() + 86400000).toISOString().split('T')[0];
 
 export const ReservationPage = ({ setActivePage }) => {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const { makeReservation } = useRestaurant();
 
   const [viewMode, setViewMode] = useState('floorplan'); // 'floorplan' or 'form'
@@ -41,27 +41,27 @@ export const ReservationPage = ({ setActivePage }) => {
   const zones = [
     {
       id: 'main',
-      name: "Asosiy Hashamatli Zal",
-      desc: "Shohona sharqona bezaklar, jonli musiqiy dastur va qulay divanlar",
-      capacity: "1 - 8 kishi"
+      name: lang === 'ru' ? 'Главный Роскошный Зал' : lang === 'en' ? 'Main Luxury Hall' : 'Asosiy Hashamatli Zal',
+      desc: lang === 'ru' ? 'Роскошный восточный декор, живая музыка и удобные диваны' : lang === 'en' ? 'Royal oriental decor, live musical performance and comfortable lounges' : 'Shohona sharqona bezaklar, jonli musiqiy dastur va qulay divanlar',
+      capacity: lang === 'ru' ? '1 - 8 гостей' : lang === 'en' ? '1 - 8 guests' : '1 - 8 kishi'
     },
     {
       id: 'vip',
-      name: "VIP Alohida Xona (6-12 kishi)",
-      desc: "To'liq shaxsiy muhit, alohida ofitsiant va premium kamin",
-      capacity: "6 - 14 kishi"
+      name: lang === 'ru' ? 'VIP Кабинет (6-12 гостей)' : lang === 'en' ? 'VIP Private Room (6-12 guests)' : 'VIP Alohida Xona (6-12 kishi)',
+      desc: lang === 'ru' ? 'Полное уединение, отдельный официант и премиальный камин' : lang === 'en' ? 'Complete private ambiance, dedicated waiter and premium fireplace' : "To'liq shaxsiy muhit, alohida ofitsiant va premium kamin",
+      capacity: lang === 'ru' ? '6 - 14 гостей' : lang === 'en' ? '6 - 14 guests' : '6 - 14 kishi'
     },
     {
       id: 'terrace',
-      name: "Ochiq Havo Terrasasi (Manzarali)",
-      desc: "Toshkent kechki panoramasi, toza havo va shamlar yog'dusi",
-      capacity: "2 - 8 kishi"
+      name: lang === 'ru' ? 'Летняя Терраса (Панорамная)' : lang === 'en' ? 'Open-Air Terrace (Scenic)' : 'Ochiq Havo Terrasasi (Manzarali)',
+      desc: lang === 'ru' ? 'Вечерняя панорама Ташкента, свежий воздух и мерцание свечей' : lang === 'en' ? 'Evening panorama of Tashkent, fresh breeze and candlelight' : "Toshkent kechki panoramasi, toza havo va shamlar yog'dusi",
+      capacity: lang === 'ru' ? '2 - 8 гостей' : lang === 'en' ? '2 - 8 guests' : '2 - 8 kishi'
     },
     {
       id: 'family',
-      name: "Shinam Oila Hududi",
-      desc: "Bolalar o'yin maydonchasi yaqinida, keng va xotirjam stollar",
-      capacity: "3 - 8 kishi"
+      name: lang === 'ru' ? 'Уютная Семейная Зона' : lang === 'en' ? 'Cozy Family Area' : 'Shinam Oila Hududi',
+      desc: lang === 'ru' ? 'Рядом с детской игровой площадкой, просторные спокойные столы' : lang === 'en' ? 'Near kids play area, spacious calm tables' : "Bolalar o'yin maydonchasi yaqinida, keng va xotirjam stollar",
+      capacity: lang === 'ru' ? '3 - 8 гостей' : lang === 'en' ? '3 - 8 guests' : '3 - 8 kishi'
     }
   ];
 
@@ -85,12 +85,12 @@ export const ReservationPage = ({ setActivePage }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.fullName.trim()) {
-      alert("Iltimos, ismingizni kiriting!");
+      alert(lang === 'ru' ? 'Пожалуйста, введите ваше имя!' : lang === 'en' ? 'Please enter your name!' : "Iltimos, ismingizni kiriting!");
       return;
     }
 
     if (!isValidUzPhone(formData.phone)) {
-      alert("Iltimos, to'liq telefon raqamingizni kiriting:\nMasalan: +998 (90) 123-45-67");
+      alert(lang === 'ru' ? 'Пожалуйста, введите корректный номер телефона:\nНапример: +998 (90) 123-45-67' : lang === 'en' ? 'Please enter a valid phone number:\nExample: +998 (90) 123-45-67' : "Iltimos, to'liq telefon raqamingizni kiriting:\nMasalan: +998 (90) 123-45-67");
       return;
     }
 
@@ -124,7 +124,7 @@ export const ReservationPage = ({ setActivePage }) => {
       <div className="text-center max-w-3xl mx-auto space-y-3">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gold-500/10 text-gold-500 text-xs font-bold uppercase tracking-wider">
           <Sparkles className="w-3.5 h-3.5" />
-          <span>VIP Stol Band Qilish</span>
+          <span>{lang === 'ru' ? 'Бронирование VIP Стола' : lang === 'en' ? 'VIP Table Reservation' : 'VIP Stol Band Qilish'}</span>
         </div>
         <h1 className="font-serif font-black text-3xl sm:text-5xl text-gray-900 dark:text-white">
           {t('reservationPage.title')}
@@ -143,38 +143,38 @@ export const ReservationPage = ({ setActivePage }) => {
 
           <div>
             <span className="text-xs font-bold uppercase tracking-widest text-gold-500 block mb-1">
-              BANDLIK TASDIQLANDI
+              {lang === 'ru' ? 'БРОНЬ ПОДТВЕРЖДЕНА' : lang === 'en' ? 'RESERVATION CONFIRMED' : 'BANDLIK TASDIQLANDI'}
             </span>
             <h2 className="font-serif font-black text-2xl sm:text-3xl text-gray-900 dark:text-white">
-              Buyurtmangiz Qabul Qilindi!
+              {lang === 'ru' ? 'Ваша Бронь Принята!' : lang === 'en' ? 'Your Reservation is Received!' : 'Buyurtmangiz Qabul Qilindi!'}
             </h2>
             <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 mt-2">
-              Bandlik raqami: <b className="text-gold-500 font-mono">#{submittedReservation.id}</b>
+              {lang === 'ru' ? 'Номер брони: ' : lang === 'en' ? 'Booking ID: ' : 'Bandlik raqami: '}<b className="text-gold-500 font-mono">#{submittedReservation.id}</b>
             </p>
           </div>
 
           <div className="p-4 rounded-2xl bg-gray-50 dark:bg-dark-800 text-left text-xs space-y-2 border border-gray-200 dark:border-white/10">
             <div className="flex justify-between">
-              <span className="text-gray-500">Mehmon:</span>
+              <span className="text-gray-500">{lang === 'ru' ? 'Гость:' : lang === 'en' ? 'Guest:' : 'Mehmon:'}</span>
               <span className="font-bold text-gray-900 dark:text-white">{submittedReservation.fullName}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-500">Telefon:</span>
+              <span className="text-gray-500">{lang === 'ru' ? 'Телефон:' : lang === 'en' ? 'Phone:' : 'Telefon:'}</span>
               <span className="font-bold text-gray-900 dark:text-white">{submittedReservation.phone}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-500">Sana & Vaqt:</span>
+              <span className="text-gray-500">{lang === 'ru' ? 'Дата и Время:' : lang === 'en' ? 'Date & Time:' : 'Sana & Vaqt:'}</span>
               <span className="font-bold text-gold-500">{submittedReservation.date} | {submittedReservation.time}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-500">Hudud / Stol:</span>
+              <span className="text-gray-500">{lang === 'ru' ? 'Зона / Стол:' : lang === 'en' ? 'Zone / Table:' : 'Hudud / Stol:'}</span>
               <span className="font-bold text-gray-900 dark:text-white">
-                {submittedReservation.zone} {submittedReservation.tableNumber && `(Stol #${submittedReservation.tableNumber})`}
+                {submittedReservation.zone} {submittedReservation.tableNumber && `(${lang === 'ru' ? 'Стол #' : lang === 'en' ? 'Table #' : 'Stol #'}${submittedReservation.tableNumber})`}
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-500">Mehmonlar soni:</span>
-              <span className="font-bold text-gray-900 dark:text-white">{submittedReservation.guests} kishi</span>
+              <span className="text-gray-500">{lang === 'ru' ? 'Количество гостей:' : lang === 'en' ? 'Guests count:' : 'Mehmonlar soni:'}</span>
+              <span className="font-bold text-gray-900 dark:text-white">{submittedReservation.guests} {lang === 'ru' ? 'чел.' : lang === 'en' ? 'guests' : 'kishi'}</span>
             </div>
           </div>
 
@@ -186,7 +186,7 @@ export const ReservationPage = ({ setActivePage }) => {
               }}
               className="w-full sm:flex-1 py-3 rounded-xl gold-gradient-bg text-dark-950 font-bold text-xs sm:text-sm"
             >
-              Yana stol band qilish
+              {lang === 'ru' ? 'Забронировать еще стол' : lang === 'en' ? 'Book another table' : 'Yana stol band qilish'}
             </button>
             <button
               onClick={() => {
@@ -195,7 +195,7 @@ export const ReservationPage = ({ setActivePage }) => {
               }}
               className="w-full sm:w-auto px-6 py-3 rounded-xl bg-gray-100 dark:bg-dark-800 text-gray-800 dark:text-gray-200 border border-gray-300 dark:border-white/10 text-xs sm:text-sm font-semibold"
             >
-              Taomnoma (Menyu) ga o'tish
+              {lang === 'ru' ? 'Перейти в Меню' : lang === 'en' ? 'Browse Menu' : "Taomnoma (Menyu) ga o'tish"}
             </button>
           </div>
         </div>
@@ -218,7 +218,7 @@ export const ReservationPage = ({ setActivePage }) => {
                 }`}
               >
                 <LayoutGrid className="w-4 h-4" />
-                <span>Interaktiv Stol Xaritasi</span>
+                <span>{lang === 'ru' ? 'Интерактивная Карта Столов' : lang === 'en' ? 'Interactive Floor Map' : 'Interaktiv Stol Xaritasi'}</span>
               </button>
 
               <button
@@ -234,7 +234,7 @@ export const ReservationPage = ({ setActivePage }) => {
                 }`}
               >
                 <List className="w-4 h-4" />
-                <span>Oddiy Ro'yxat Rejimi</span>
+                <span>{lang === 'ru' ? 'Обычный Список' : lang === 'en' ? 'Standard List' : "Oddiy Ro'yxat Rejimi"}</span>
               </button>
             </div>
           </div>
@@ -247,10 +247,10 @@ export const ReservationPage = ({ setActivePage }) => {
                   <div>
                     <h3 className="font-serif font-bold text-xl text-gray-900 dark:text-white flex items-center gap-2">
                       <Crown className="w-5 h-5 text-gold-500" />
-                      Interaktiv Zal Rejasi va Stol Tanlash
+                      {lang === 'ru' ? 'План Зала и Выбор Стола' : lang === 'en' ? 'Floor Plan & Table Selection' : 'Interaktiv Zal Rejasi va Stol Tanlash'}
                     </h3>
                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                      Zaldagi o'zingizga ma'qul stol ustiga bosing
+                      {lang === 'ru' ? 'Нажмите на любой свободный стол на карте' : lang === 'en' ? 'Click on any available table on the map' : "Zaldagi o'zingizga ma'qul stol ustiga bosing"}
                     </p>
                   </div>
                 </div>
@@ -263,7 +263,7 @@ export const ReservationPage = ({ setActivePage }) => {
             ) : (
               <div className="glass-card p-6 sm:p-8 rounded-3xl space-y-4">
                 <h3 className="font-serif font-bold text-xl text-gray-900 dark:text-white">
-                  Restoran Hududini Tanlang
+                  {lang === 'ru' ? 'Выберите Зону Ресторана' : lang === 'en' ? 'Select Restaurant Zone' : 'Restoran Hududini Tanlang'}
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {zones.map((zone) => {
@@ -303,13 +303,13 @@ export const ReservationPage = ({ setActivePage }) => {
               <div className="glass-card p-6 sm:p-8 rounded-3xl space-y-4">
                 <h3 className="font-serif font-bold text-lg text-gray-900 dark:text-white flex items-center gap-2">
                   <CalendarDays className="w-5 h-5 text-gold-500" />
-                  Sana va Vaqtni Tanlang
+                  {lang === 'ru' ? 'Выберите Дату и Время' : lang === 'en' ? 'Select Date & Time' : 'Sana va Vaqtni Tanlang'}
                 </h3>
 
                 <div className="space-y-4">
                   <div>
                     <label className="text-xs font-bold uppercase tracking-wider text-gray-500 block mb-1.5">
-                      Tashrif Sanasi
+                      {lang === 'ru' ? 'Дата Визита' : lang === 'en' ? 'Visit Date' : 'Tashrif Sanasi'}
                     </label>
                     <input
                       type="date"
@@ -323,7 +323,7 @@ export const ReservationPage = ({ setActivePage }) => {
 
                   <div>
                     <label className="text-xs font-bold uppercase tracking-wider text-gray-500 block mb-1.5">
-                      Vaqtni Tanlang
+                      {lang === 'ru' ? 'Выберите Время' : lang === 'en' ? 'Select Time' : 'Vaqtni Tanlang'}
                     </label>
                     <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
                       {timeSlots.map((slot) => (
@@ -348,7 +348,7 @@ export const ReservationPage = ({ setActivePage }) => {
 
                   <div>
                     <label className="text-xs font-bold uppercase tracking-wider text-gray-500 block mb-1.5">
-                      Mehmonlar Soni
+                      {lang === 'ru' ? 'Количество Гостей' : lang === 'en' ? 'Number of Guests' : 'Mehmonlar Soni'}
                     </label>
                     <div className="flex flex-wrap gap-2">
                       {guestOptions.map((opt) => (
@@ -378,17 +378,17 @@ export const ReservationPage = ({ setActivePage }) => {
                 <div className="space-y-4">
                   <h3 className="font-serif font-bold text-lg text-gray-900 dark:text-white flex items-center gap-2">
                     <Users className="w-5 h-5 text-gold-500" />
-                    Mehmon Ma'lumotlari
+                    {lang === 'ru' ? 'Данные Гостя' : lang === 'en' ? 'Guest Information' : "Mehmon Ma'lumotlari"}
                   </h3>
 
                   <div>
                     <label className="text-xs font-bold uppercase tracking-wider text-gray-500 block mb-1.5">
-                      Ism va Familiyangiz *
+                      {lang === 'ru' ? 'Ваше Имя и Фамилия *' : lang === 'en' ? 'Full Name *' : 'Ism va Familiyangiz *'}
                     </label>
                     <input
                       type="text"
                       required
-                      placeholder="Masalan: Sardor Rahimov"
+                      placeholder={lang === 'ru' ? 'Например: Сардор Рахимов' : lang === 'en' ? 'e.g. Sardor Rahimov' : 'Masalan: Sardor Rahimov'}
                       value={formData.fullName}
                       onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                       className="w-full glass-input"
@@ -397,7 +397,7 @@ export const ReservationPage = ({ setActivePage }) => {
 
                   <div>
                     <label className="text-xs font-bold uppercase tracking-wider text-gray-500 block mb-1.5">
-                      Telefon Raqamingiz *
+                      {lang === 'ru' ? 'Номер Телефона *' : lang === 'en' ? 'Phone Number *' : 'Telefon Raqamingiz *'}
                     </label>
                     <input
                       type="tel"
@@ -414,17 +414,17 @@ export const ReservationPage = ({ setActivePage }) => {
                       className="w-full glass-input font-mono"
                     />
                     <span className="text-[10px] text-gray-400 mt-1 block">
-                      Faqat raqamlar qabul qilinadi
+                      {lang === 'ru' ? 'Только цифры' : lang === 'en' ? 'Digits only' : 'Faqat raqamlar qabul qilinadi'}
                     </span>
                   </div>
 
                   <div>
                     <label className="text-xs font-bold uppercase tracking-wider text-gray-500 block mb-1.5">
-                      Maxsus istaklar (Tug'ilgan kun, shamlar, bezak...)
+                      {lang === 'ru' ? 'Особые пожелания (День рождения, свечи, оформление...)' : lang === 'en' ? 'Special requests (Birthday, candles, decoration...)' : "Maxsus istaklar (Tug'ilgan kun, shamlar, bezak...)"}
                     </label>
                     <textarea
                       rows="2"
-                      placeholder="Romantik bezak, shirinlikka sham qo'yish yoki bolalar o'rindig'i..."
+                      placeholder={lang === 'ru' ? 'Романтический декор, свеча в десерт, детский стульчик...' : lang === 'en' ? 'Romantic decoration, candle for dessert, baby chair...' : "Romantik bezak, shirinlikka sham qo'yish yoki bolalar o'rindig'i..."}
                       value={formData.specialRequests}
                       onChange={(e) => setFormData({ ...formData, specialRequests: e.target.value })}
                       className="w-full glass-input resize-none text-xs"
@@ -439,7 +439,7 @@ export const ReservationPage = ({ setActivePage }) => {
                     className="w-full py-4 rounded-2xl gold-gradient-bg text-dark-950 font-bold text-base flex items-center justify-center gap-2 shadow-xl hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50"
                   >
                     <Sparkles className="w-5 h-5" />
-                    <span>{isSubmitting ? "Band qilinmoqda..." : "Stolni Band Qilish"}</span>
+                    <span>{isSubmitting ? (lang === 'ru' ? 'Бронирование...' : lang === 'en' ? 'Booking...' : 'Band qilinmoqda...') : (lang === 'ru' ? 'Забронировать Стол' : lang === 'en' ? 'Book Table' : 'Stolni Band Qilish')}</span>
                   </button>
                 </div>
               </div>

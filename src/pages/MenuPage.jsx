@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 
 export const MenuPage = ({ onOpenConcierge }) => {
-  const { t, getLocalized } = useLanguage();
+  const { t, getLocalized, lang } = useLanguage();
   const {
     menuItems,
     searchQuery,
@@ -46,11 +46,11 @@ export const MenuPage = ({ onOpenConcierge }) => {
   ];
 
   const tagFilters = [
-    { id: '', label: "Barcha turlar" },
-    { id: 'chef', label: "👨‍🍳 Bosh oshpaz saralagan" },
-    { id: 'popular', label: "🔥 Eng xaridorgir" },
-    { id: 'halal', label: "✨ 100% Halol" },
-    { id: 'spicy', label: "🌶️ Achchiq" }
+    { id: '', label: lang === 'ru' ? 'Все категории' : lang === 'en' ? 'All Types' : 'Barcha turlar' },
+    { id: 'chef', label: lang === 'ru' ? '👨‍🍳 Выбор шефа' : lang === 'en' ? "👨‍🍳 Chef's Choice" : "👨‍🍳 Bosh oshpaz saralagan" },
+    { id: 'popular', label: lang === 'ru' ? '🔥 Популярное' : lang === 'en' ? '🔥 Popular' : '🔥 Eng xaridorgir' },
+    { id: 'halal', label: lang === 'ru' ? '✨ 100% Халяль' : lang === 'en' ? '✨ 100% Halal' : '✨ 100% Halol' },
+    { id: 'spicy', label: lang === 'ru' ? '🌶️ Острое' : lang === 'en' ? '🌶️ Spicy' : '🌶️ Achchiq' }
   ];
 
   // Filter & Sort
@@ -131,7 +131,7 @@ export const MenuPage = ({ onOpenConcierge }) => {
           className="self-start md:self-end px-5 py-3 rounded-2xl gold-gradient-bg text-dark-950 font-bold text-xs sm:text-sm flex items-center gap-2 shadow-lg hover:scale-105 transition-transform"
         >
           <Sparkles className="w-4 h-4" />
-          <span>Aqlli Sommelier Tavsiyasi</span>
+          <span>{lang === 'ru' ? 'Рекомендации Сомелье' : lang === 'en' ? 'Smart Sommelier Pick' : 'Aqlli Sommelier Tavsiyasi'}</span>
         </button>
       </div>
 
@@ -140,13 +140,14 @@ export const MenuPage = ({ onOpenConcierge }) => {
         {/* Search Input & Sort Dropdown */}
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Taom nomi yoki masalliqlarni izlang..."
-              className="w-full glass-input pl-11 pr-4 py-3 text-sm rounded-2xl"
+              placeholder={lang === 'ru' ? 'Поиск блюда или ингредиентов...' : lang === 'en' ? 'Search dishes or ingredients...' : 'Taom nomi yoki masalliqlarni izlang...'}
+              style={{ paddingLeft: '2.75rem' }}
+              className="w-full glass-input !pl-11 pr-4 py-3 text-sm rounded-2xl"
             />
             {searchQuery && (
               <button
@@ -168,11 +169,11 @@ export const MenuPage = ({ onOpenConcierge }) => {
                 }}
                 className="w-full glass-input py-3 px-4 text-xs font-semibold rounded-2xl appearance-none pr-8 cursor-pointer"
               >
-                <option value="default">Saralash: Standart</option>
-                <option value="priceAsc">Narx: Arzonroq</option>
-                <option value="priceDesc">Narx: Qimmatroq</option>
-                <option value="rating">Eng yuqori reyting</option>
-                <option value="popular">Eng ko'p buyurtma qilingan</option>
+                <option value="default">{lang === 'ru' ? 'Сортировка: По умолчанию' : lang === 'en' ? 'Sort: Default' : 'Saralash: Standart'}</option>
+                <option value="priceAsc">{lang === 'ru' ? 'Цена: Сначала дешевле' : lang === 'en' ? 'Price: Low to High' : 'Narx: Arzonroq'}</option>
+                <option value="priceDesc">{lang === 'ru' ? 'Цена: Сначала дороже' : lang === 'en' ? 'Price: High to Low' : 'Narx: Qimmatroq'}</option>
+                <option value="rating">{lang === 'ru' ? 'По рейтингу' : lang === 'en' ? 'Highest Rating' : 'Eng yuqori reyting'}</option>
+                <option value="popular">{lang === 'ru' ? 'По популярности' : lang === 'en' ? 'Most Popular' : "Eng ko'p buyurtma qilingan"}</option>
               </select>
               <ArrowUpDown className="w-3.5 h-3.5 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
             </div>
@@ -226,7 +227,13 @@ export const MenuPage = ({ onOpenConcierge }) => {
 
       {/* Results Count */}
       <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-        <span>Topilgan taomlar soni: <b className="text-gold-500">{filteredDishes.length}</b> ta</span>
+        <span>
+          {lang === 'ru'
+            ? <>Найдено блюд: <b className="text-gold-500">{filteredDishes.length}</b></>
+            : lang === 'en'
+            ? <>Dishes found: <b className="text-gold-500">{filteredDishes.length}</b></>
+            : <>Topilgan taomlar soni: <b className="text-gold-500">{filteredDishes.length}</b> ta</>}
+        </span>
         {(selectedCategory !== 'all' || selectedTag || searchQuery) && (
           <button
             onClick={() => {
@@ -236,7 +243,7 @@ export const MenuPage = ({ onOpenConcierge }) => {
             }}
             className="text-gold-500 hover:underline font-medium"
           >
-            Filtrlarni tozalash
+            {lang === 'ru' ? 'Очистить фильтры' : lang === 'en' ? 'Reset filters' : 'Filtrlarni tozalash'}
           </button>
         )}
       </div>
@@ -246,10 +253,14 @@ export const MenuPage = ({ onOpenConcierge }) => {
         <div className="glass-card rounded-3xl p-12 text-center space-y-4">
           <UtensilsCrossed className="w-12 h-12 text-gold-500/50 mx-auto" />
           <h3 className="font-serif font-bold text-xl text-gray-900 dark:text-white">
-            Hech qanday taom topilmadi
+            {lang === 'ru' ? 'Ничего не найдено' : lang === 'en' ? 'No dishes found' : 'Hech qanday taom topilmadi'}
           </h3>
           <p className="text-xs text-gray-500 max-w-sm mx-auto">
-            Boshqa qidiruv so'zini sinab ko'ring yoki tanlangan toifa filtrlarni tozalang.
+            {lang === 'ru'
+              ? 'Попробуйте изменить поисковый запрос или сбросить активные фильтры.'
+              : lang === 'en'
+              ? 'Try another search term or clear active filters.'
+              : "Boshqa qidiruv so'zini sinab ko'ring yoki tanlangan toifa filtrlarni tozalang."}
           </p>
         </div>
       ) : (
@@ -309,17 +320,19 @@ export const MenuPage = ({ onOpenConcierge }) => {
                   <div className="flex items-center justify-between text-[11px] text-gray-500 dark:text-gray-400 pt-1">
                     <span className="flex items-center gap-1">
                       <Clock className="w-3 h-3 text-gold-500" />
-                      {dish.prepTime || 20} daq.
+                      {dish.prepTime || 20} {lang === 'ru' ? 'мин.' : lang === 'en' ? 'min' : 'daq.'}
                     </span>
                     <span className="flex items-center gap-1">
                       <Flame className="w-3 h-3 text-orange-500" />
-                      {dish.calories || 450} kkal
+                      {dish.calories || 450} {lang === 'ru' ? 'ккал' : lang === 'en' ? 'kcal' : 'kkal'}
                     </span>
                   </div>
 
                   <div className="pt-3 border-t border-gray-100 dark:border-white/5 flex items-center justify-between">
                     <div>
-                      <span className="text-[10px] text-gray-400 uppercase tracking-wider block">Narxi</span>
+                      <span className="text-[10px] text-gray-400 uppercase tracking-wider block">
+                        {lang === 'ru' ? 'Цена' : lang === 'en' ? 'Price' : 'Narxi'}
+                      </span>
                       <span className="text-base font-bold gold-gradient-text">
                         {formatPrice(dish.price)}
                       </span>
@@ -328,7 +341,7 @@ export const MenuPage = ({ onOpenConcierge }) => {
                     <button
                       onClick={(e) => handleAddToCart(e, dish)}
                       className="p-2.5 rounded-xl gold-gradient-bg text-dark-950 hover:scale-105 active:scale-95 transition-all shadow-md"
-                      title="Savatga qo'shish"
+                      title={lang === 'ru' ? 'Добавить в корзину' : lang === 'en' ? 'Add to cart' : "Savatga qo'shish"}
                     >
                       <ShoppingBag className="w-4 h-4" />
                     </button>

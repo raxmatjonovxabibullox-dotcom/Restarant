@@ -10,53 +10,69 @@ import {
 } from 'lucide-react';
 
 export const AboutPage = ({ setActivePage }) => {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const [activeGalleryTab, setActiveGalleryTab] = useState('all');
 
   const galleryImages = [
     {
       url: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80",
-      title: "Asosiy Hashamatli Zal",
-      caption: "Shohona sharqona dizayn va yumshoq mebellar",
+      title: lang === 'ru' ? 'Главный Роскошный Зал' : lang === 'en' ? 'Main Luxury Hall' : "Asosiy Hashamatli Zal",
+      caption: lang === 'ru' ? 'Роскошный восточный дизайн и мягкая мебель' : lang === 'en' ? 'Royal oriental design and plush seating' : "Shohona sharqona dizayn va yumshoq mebellar",
       category: "halls"
     },
     {
       url: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80",
-      title: "Ochiq Oshxona",
-      caption: "Mehmonlar ko'z o'ngida cho'g'da pishadigan taomlar",
+      title: lang === 'ru' ? 'Открытая Кухня' : lang === 'en' ? 'Open Kitchen' : "Ochiq Oshxona",
+      caption: lang === 'ru' ? 'Блюда на углях готовятся на глазах у гостей' : lang === 'en' ? 'Charcoal grilling right before the guests' : "Mehmonlar ko'z o'ngida cho'g'da pishadigan taomlar",
       category: "kitchen"
     },
     {
       url: "https://images.unsplash.com/photo-1578474846511-04ba529f0b88?auto=format&fit=crop&w=800&q=80",
-      title: "VIP Oltin Xonalar",
-      caption: "Maxsus tantanalar va shaxsiy suhbatlar uchun",
+      title: lang === 'ru' ? 'Золотые VIP Кабинеты' : lang === 'en' ? 'VIP Gold Suites' : "VIP Oltin Xonalar",
+      caption: lang === 'ru' ? 'Для особых торжеств и закрытых бесед' : lang === 'en' ? 'For special ceremonies and private talks' : "Maxsus tantanalar va shaxsiy suhbatlar uchun",
       category: "halls"
     },
     {
       url: "https://images.unsplash.com/photo-1543007630-9710e4a00a20?auto=format&fit=crop&w=800&q=80",
-      title: "Panoramik Terrasa",
-      caption: "Toza havo va Toshkent kechki manzarasi",
+      title: lang === 'ru' ? 'Панорамная Терраса' : lang === 'en' ? 'Panoramic Terrace' : "Panoramik Terrasa",
+      caption: lang === 'ru' ? 'Свежий воздух и вечерние виды Ташкента' : lang === 'en' ? 'Fresh air and Tashkent evening panorama' : "Toza havo va Toshkent kechki manzarasi",
       category: "halls"
     },
     {
       url: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80",
-      title: "Qozon Kabob San'ati",
-      caption: "Oltin kartoshka va yosh qo'zichoq qovurg'asi",
+      title: lang === 'ru' ? 'Искусство Казан-Кабоба' : lang === 'en' ? 'Art of Qozon Kabob' : "Qozon Kabob San'ati",
+      caption: lang === 'ru' ? 'Золотистый картофель и сочные бараньи ребрышки' : lang === 'en' ? 'Golden potatoes and tender lamb ribs' : "Oltin kartoshka va yosh qo'zichoq qovurg'asi",
       category: "dishes"
     },
     {
       url: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=800&q=80",
-      title: "Zafaron To'y Palovi",
-      caption: "Lazer guruch, tog' zafaroni va sarxil kazy",
+      title: lang === 'ru' ? 'Свадебный Плов Zafaron' : lang === 'en' ? 'Zafaron Royal Wedding Plov' : "Zafaron To'y Palovi",
+      caption: lang === 'ru' ? 'Рис лазер, горный шафран и отборный казы' : lang === 'en' ? 'Lazer rice, mountain saffron and choice kazy' : "Lazer guruch, tog' zafaroni va sarxil kazy",
       category: "dishes"
     }
   ];
 
   const timelineMilestones = [
-    { year: "2010", title: "Ilk Qadam", desc: "Toshkent markazida milliy taomlarni zamonaviy shukuh bilan tayyorlovchi ilk oshxona yaratildi." },
-    { year: "2016", title: "Xalqaro E'tirof", desc: "Bosh oshpazimiz Mansur Shokirov xalqaro oshpazlar tanlovida Oltin Medal sohibi bo'ldi." },
-    { year: "2022", title: "Yil Restorani", desc: "Toshkentning eng hashamatli va qulay Lounge restorani unvoniga sazovor bo'ldik." },
-    { year: "2026", title: "Zafaron Royal & Lounge", desc: "Yangi bino, panoramik terrasa, VIP suite xonalar va aqlli raqamli servis ochildi." }
+    {
+      year: "2010",
+      title: lang === 'ru' ? 'Первый Шаг' : lang === 'en' ? 'First Step' : "Ilk Qadam",
+      desc: lang === 'ru' ? 'В центре Ташкента открылась первая кухня, сочетающая национальные рецепты с современным шармом.' : lang === 'en' ? 'First kitchen in Tashkent center opened, blending national heritage with modern culinary elegance.' : "Toshkent markazida milliy taomlarni zamonaviy shukuh bilan tayyorlovchi ilk oshxona yaratildi."
+    },
+    {
+      year: "2016",
+      title: lang === 'ru' ? 'Международное Признание' : lang === 'en' ? 'International Acclaim' : "Xalqaro E'tirof",
+      desc: lang === 'ru' ? 'Наш шеф-повар Мансур Шокиров завоевал Золотую Медаль на международном конкурсе поваров.' : lang === 'en' ? 'Head chef Mansur Shokirov was awarded a Gold Medal at the international culinary competition.' : "Bosh oshpazimiz Mansur Shokirov xalqaro oshpazlar tanlovida Oltin Medal sohibi bo'ldi."
+    },
+    {
+      year: "2022",
+      title: lang === 'ru' ? 'Ресторан Года' : lang === 'en' ? 'Restaurant of the Year' : "Yil Restorani",
+      desc: lang === 'ru' ? 'Удостоены звания самого роскошного и комфортного лаундж-ресторана столицы.' : lang === 'en' ? 'Awarded the title of the most luxurious and welcoming lounge restaurant in Tashkent.' : "Toshkentning eng hashamatli va qulay Lounge restorani unvoniga sazovor bo'ldik."
+    },
+    {
+      year: "2026",
+      title: "Zafaron Royal & Lounge",
+      desc: lang === 'ru' ? 'Открыт новый флагман: терраса, VIP-сьюты, интерактивный сервис и умный сомелье.' : lang === 'en' ? 'New venue with panoramic terrace, VIP suites, and smart concierge service opened.' : "Yangi bino, panoramik terrasa, VIP suite xonalar va aqlli raqamli servis ochildi."
+    }
   ];
 
   const filteredGallery = activeGalleryTab === 'all'
@@ -89,16 +105,24 @@ export const AboutPage = ({ setActivePage }) => {
             <div className="flex items-start gap-3 p-3.5 rounded-2xl bg-gray-50 dark:bg-dark-800/80 border border-gray-200 dark:border-white/10">
               <ShieldCheck className="w-5 h-5 text-gold-500 flex-shrink-0 mt-0.5" />
               <div>
-                <h4 className="font-bold text-sm text-gray-900 dark:text-white">100% Halol</h4>
-                <p className="text-xs text-gray-500 dark:text-gray-400">Sertifikatlangan sarxil go'sht</p>
+                <h4 className="font-bold text-sm text-gray-900 dark:text-white">
+                  {lang === 'ru' ? '100% Халяль' : lang === 'en' ? '100% Halal' : '100% Halol'}
+                </h4>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  {lang === 'ru' ? 'Сертифицированное свежее мясо' : lang === 'en' ? 'Certified fresh meat' : "Sertifikatlangan sarxil go'sht"}
+                </p>
               </div>
             </div>
 
             <div className="flex items-start gap-3 p-3.5 rounded-2xl bg-gray-50 dark:bg-dark-800/80 border border-gray-200 dark:border-white/10">
               <Crown className="w-5 h-5 text-gold-500 flex-shrink-0 mt-0.5" />
               <div>
-                <h4 className="font-bold text-sm text-gray-900 dark:text-white">Asl Tog' Zafaroni</h4>
-                <p className="text-xs text-gray-500 dark:text-gray-400">Eng qimmatbaho tabiiy ziravor</p>
+                <h4 className="font-bold text-sm text-gray-900 dark:text-white">
+                  {lang === 'ru' ? 'Горный Шафран' : lang === 'en' ? 'Mountain Saffron' : "Asl Tog' Zafaroni"}
+                </h4>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  {lang === 'ru' ? 'Благороднейшая натуральная специя' : lang === 'en' ? 'The most prized natural spice' : 'Eng qimmatbaho tabiiy ziravor'}
+                </p>
               </div>
             </div>
           </div>
@@ -115,10 +139,10 @@ export const AboutPage = ({ setActivePage }) => {
             <div className="absolute inset-0 bg-gradient-to-t from-dark-950/80 via-transparent to-transparent" />
             <div className="absolute bottom-6 left-6 text-white max-w-sm">
               <span className="text-xs uppercase tracking-widest text-gold-400 font-bold block mb-1">
-                Toshkent markazida
+                {lang === 'ru' ? 'В центре Ташкента' : lang === 'en' ? 'In the heart of Tashkent' : 'Toshkent markazida'}
               </span>
               <h3 className="font-serif font-bold text-2xl">
-                Sharq Mehmondo'stligi va Nafis Lazzat
+                {lang === 'ru' ? 'Восточное Гостеприимство и Изысканный Вкус' : lang === 'en' ? 'Oriental Hospitality & Exquisite Taste' : "Sharq Mehmondo'stligi va Nafis Lazzat"}
               </h3>
             </div>
           </div>
@@ -129,10 +153,10 @@ export const AboutPage = ({ setActivePage }) => {
       <div className="space-y-8">
         <div className="text-center max-w-2xl mx-auto">
           <span className="text-xs font-bold uppercase tracking-wider text-gold-500 block mb-1">
-            Bizning Tarix
+            {lang === 'ru' ? 'Наша История' : lang === 'en' ? 'Our History' : 'Bizning Tarix'}
           </span>
           <h2 className="font-serif font-black text-3xl sm:text-4xl text-gray-900 dark:text-white">
-            15 Yillik Shohona An'ana
+            {lang === 'ru' ? '15 Лет Королевских Традиций' : lang === 'en' ? '15 Years of Royal Traditions' : "15 Yillik Shohona An'ana"}
           </h2>
         </div>
 
@@ -178,7 +202,11 @@ export const AboutPage = ({ setActivePage }) => {
               {t('aboutPage.chefBio')}
             </p>
             <p className="text-sm text-gray-500 dark:text-gray-400 italic">
-              "Pazandachilik — bu shunchaki qorin to'ydirish emas. Bu inson ruhiga, oilaviy xotiralarga va qalb huzuriga ta'sir qiluvchi samimiy san'atdir."
+              {lang === 'ru'
+                ? '«Кулинария — это не просто еда. Это душевное искусство, дарящее тепло семейных воспоминаний и покой сердцу.»'
+                : lang === 'en'
+                ? '"Gastronomy is not merely food. It is a heartfelt art that touches human spirit, family memories, and soulful tranquility."'
+                : "\"Pazandachilik — bu shunchaki qorin to'ydirish emas. Bu inson ruhiga, oilaviy xotiralarga va qalb huzuriga ta'sir qiluvchi samimiy san'atdir.\""}
             </p>
 
             <div className="pt-4 flex flex-wrap gap-4">
@@ -223,10 +251,10 @@ export const AboutPage = ({ setActivePage }) => {
 
           <div className="flex items-center gap-2 p-1 rounded-2xl bg-gray-100 dark:bg-dark-800 border border-gray-200 dark:border-white/10 self-start sm:self-auto">
             {[
-              { id: 'all', label: "Barchasi" },
-              { id: 'halls', label: "Hashamatli Zallar" },
-              { id: 'kitchen', label: "Ochiq Oshxona" },
-              { id: 'dishes', label: "Shohona Taomlar" }
+              { id: 'all', label: lang === 'ru' ? 'Все' : lang === 'en' ? 'All' : "Barchasi" },
+              { id: 'halls', label: lang === 'ru' ? 'Роскошные Залы' : lang === 'en' ? 'Luxury Halls' : "Hashamatli Zallar" },
+              { id: 'kitchen', label: lang === 'ru' ? 'Открытая Кухня' : lang === 'en' ? 'Open Kitchen' : "Ochiq Oshxona" },
+              { id: 'dishes', label: lang === 'ru' ? 'Королевские Блюда' : lang === 'en' ? 'Royal Dishes' : "Shohona Taomlar" }
             ].map((tab) => (
               <button
                 key={tab.id}

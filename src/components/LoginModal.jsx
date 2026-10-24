@@ -15,6 +15,47 @@ export const LoginModal = ({ setIsAdminView }) => {
 
   if (!isLoginModalOpen) return null;
 
+  const tLogin = {
+    uz: {
+      title: "Admin Panelga Kirish",
+      subtitle: "Faqat Supabase'dagi tasdiqlangan administratorlar uchun",
+      securityBadge: "Faqat Supabase Authentication foydalanuvchilari qabul qilinadi",
+      emailLabel: "Supabase Email",
+      emailPlaceholder: "admin@zafaron.uz yoki emailingiz",
+      passwordLabel: "Maxfiy Parol",
+      submitting: "Supabase tekshirilmoqda...",
+      submitBtn: "Tizimga Kirish",
+      notice: "Admin akkauntlarini qo'shish yoki parolni o'zgartirish Supabase Dashboard > Authentication > Users bo'limida amalga oshiriladi.",
+      defaultError: "Login yoki parol noto'g'ri!"
+    },
+    ru: {
+      title: "Вход в Панель Управления",
+      subtitle: "Только для авторизованных администраторов через Supabase",
+      securityBadge: "Принимаются только пользователи Supabase Authentication",
+      emailLabel: "Email (Supabase)",
+      emailPlaceholder: "admin@zafaron.uz или ваш email",
+      passwordLabel: "Пароль",
+      submitting: "Проверка в Supabase...",
+      submitBtn: "Войти в Систему",
+      notice: "Добавление администраторов и смена паролей выполняется в панели Supabase Dashboard > Authentication > Users.",
+      defaultError: "Неверный логин или пароль!"
+    },
+    en: {
+      title: "Administrator Login",
+      subtitle: "Strict authentication via Supabase Database users only",
+      securityBadge: "Only registered Supabase Authentication users accepted",
+      emailLabel: "Supabase Email",
+      emailPlaceholder: "admin@zafaron.uz or your email",
+      passwordLabel: "Password",
+      submitting: "Verifying with Supabase...",
+      submitBtn: "Sign In",
+      notice: "Admin accounts management and password resets are handled in Supabase Dashboard > Authentication > Users.",
+      defaultError: "Invalid credentials!"
+    }
+  };
+
+  const cur = tLogin[lang] || tLogin.uz;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMsg('');
@@ -31,10 +72,10 @@ export const LoginModal = ({ setIsAdminView }) => {
         }
       } else {
         soundFx.playChime();
-        setErrorMsg(res.message || t('auth.invalidCredentials'));
+        setErrorMsg(res.message || cur.defaultError);
       }
     } catch (err) {
-      setErrorMsg(err.message || "Tizimga kirishda xatolik yuz berdi");
+      setErrorMsg(err.message || cur.defaultError);
     } finally {
       setIsSubmitting(false);
     }
@@ -65,21 +106,17 @@ export const LoginModal = ({ setIsAdminView }) => {
             </div>
           </div>
           <h2 className="font-serif font-bold text-2xl text-gray-900 dark:text-white">
-            {lang === 'ru' ? 'Вход в Панель Управления' : lang === 'en' ? 'Administrator Login' : 'Admin Panelga Kirish'}
+            {cur.title}
           </h2>
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 max-w-xs mx-auto">
-            {lang === 'ru'
-              ? 'Только для авторизованных администраторов через Supabase'
-              : lang === 'en'
-              ? 'Strict authentication via Supabase Database users only'
-              : "Faqat Supabase'dagi tasdiqlangan administratorlar uchun"}
+            {cur.subtitle}
           </p>
         </div>
 
         {/* Supabase Security Badge */}
         <div className="mb-4 p-2.5 rounded-xl bg-amber-500/10 border border-gold-500/20 flex items-center gap-2.5 text-xs text-gold-500 font-medium">
           <Database className="w-4 h-4 shrink-0 text-gold-400" />
-          <span>Faqat Supabase Authentication foydalanuvchilari qabul qilinadi</span>
+          <span>{cur.securityBadge}</span>
         </div>
 
         {/* Error message */}
@@ -93,18 +130,21 @@ export const LoginModal = ({ setIsAdminView }) => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
-              Supabase Email
+              {cur.emailLabel}
             </label>
             <div className="relative">
-              <Mail className="w-4 h-4 text-gray-400 absolute left-3.5 top-3.5" />
+              <div className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 flex items-center justify-center">
+                <Mail className="w-4 h-4" />
+              </div>
               <input
                 id="login-email"
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@zafaron.uz yoki emailingiz"
-                className="glass-input w-full pl-10 text-sm"
+                placeholder={cur.emailPlaceholder}
+                style={{ paddingLeft: '2.75rem' }}
+                className="glass-input w-full !pl-11 text-sm"
                 disabled={isSubmitting}
               />
             </div>
@@ -112,10 +152,12 @@ export const LoginModal = ({ setIsAdminView }) => {
 
           <div>
             <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
-              {t('auth.password') || 'Parol'}
+              {cur.passwordLabel}
             </label>
             <div className="relative">
-              <Lock className="w-4 h-4 text-gray-400 absolute left-3.5 top-3.5" />
+              <div className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 flex items-center justify-center">
+                <Lock className="w-4 h-4" />
+              </div>
               <input
                 id="login-password"
                 type="password"
@@ -123,7 +165,8 @@ export const LoginModal = ({ setIsAdminView }) => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="glass-input w-full pl-10 text-sm"
+                style={{ paddingLeft: '2.75rem' }}
+                className="glass-input w-full !pl-11 text-sm"
                 disabled={isSubmitting}
               />
             </div>
@@ -138,11 +181,11 @@ export const LoginModal = ({ setIsAdminView }) => {
             {isSubmitting ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
-                <span>Supabase tekshirilmoqda...</span>
+                <span>{cur.submitting}</span>
               </>
             ) : (
               <>
-                <span>{lang === 'ru' ? 'Войти в Систему' : lang === 'en' ? 'Sign In' : 'Tizimga Kirish'}</span>
+                <span>{cur.submitBtn}</span>
                 <ArrowRight className="w-4 h-4" />
               </>
             )}
@@ -152,7 +195,7 @@ export const LoginModal = ({ setIsAdminView }) => {
         {/* Notice on how to manage admins in Supabase */}
         <div className="mt-5 pt-3.5 border-t border-gray-200 dark:border-gray-800 text-center">
           <p className="text-[11px] text-gray-400 dark:text-gray-500 leading-relaxed">
-            Admin akkauntlarini qo'shish yoki parolni o'zgartirish Supabase Dashboard &gt; <strong>Authentication &gt; Users</strong> bo'limida amalga oshiriladi.
+            {cur.notice}
           </p>
         </div>
       </div>

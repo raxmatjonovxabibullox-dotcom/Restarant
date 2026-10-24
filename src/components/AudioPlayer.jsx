@@ -12,6 +12,7 @@ import {
   Radio,
   Loader2
 } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 import { soundFx } from '../hooks/useSoundEffects';
 
 // Curated high-reliability restaurant lounge streams + offline ambient synthesizer
@@ -20,7 +21,6 @@ const LOUNGE_STREAMS = [
     id: 'groove',
     title: "Zafaron Sunset Chillout",
     artist: "SomaFM Ambient Lounge",
-    badge: "Jonli Efir",
     url: "https://ice1.somafm.com/groovesalad-128-mp3",
     isStream: true
   },
@@ -28,7 +28,6 @@ const LOUNGE_STREAMS = [
     id: 'jazz',
     title: "Royal Dining Jazz",
     artist: "Classic Cocktail & Spy Lounge",
-    badge: "Jonli Efir",
     url: "https://ice1.somafm.com/secretagent-128-mp3",
     isStream: true
   },
@@ -36,7 +35,6 @@ const LOUNGE_STREAMS = [
     id: 'lush',
     title: "Oqshom Bog'i Melodiyalari",
     artist: "Sensuous Mellow Chill",
-    badge: "Jonli Efir",
     url: "https://ice1.somafm.com/lush-128-mp3",
     isStream: true
   },
@@ -44,13 +42,51 @@ const LOUNGE_STREAMS = [
     id: 'synth',
     title: "Zafaron Zen Sanctuary",
     artist: "Oflayn Relaks & Meditatsiya",
-    badge: "100% Oflayn",
     url: "",
     isStream: false
   }
 ];
 
 export const AudioPlayer = () => {
+  const { lang } = useLanguage();
+
+  const tAudio = {
+    uz: {
+      live: "Jonli Efir",
+      offline: "100% Oflayn",
+      offlineMode: "Oflayn Rejim",
+      prev: "Oldingi kanal",
+      next: "Keyingi kanal",
+      pause: "Musiqani to'xtatish",
+      play: "Zafaron Lounge musiqasini yoqish",
+      connecting: "Ulanmoqda...",
+      clickToPlay: "Yoqish uchun bosing"
+    },
+    ru: {
+      live: "Прямой Эфир",
+      offline: "100% Офлайн",
+      offlineMode: "Офлайн Режим",
+      prev: "Предыдущая станция",
+      next: "Следующая станция",
+      pause: "Приостановить музыку",
+      play: "Включить музыку Zafaron Lounge",
+      connecting: "Подключение...",
+      clickToPlay: "Нажмите для воспроизведения"
+    },
+    en: {
+      live: "Live Stream",
+      offline: "100% Offline",
+      offlineMode: "Offline Mode",
+      prev: "Previous station",
+      next: "Next station",
+      pause: "Pause music",
+      play: "Play Zafaron Lounge music",
+      connecting: "Connecting...",
+      clickToPlay: "Click to play"
+    }
+  };
+
+  const cur = tAudio[lang] || tAudio.uz;
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [volume, setVolume] = useState(0.45);
@@ -219,7 +255,7 @@ export const AudioPlayer = () => {
                 <span className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md ${
                   currentTrack.isStream ? 'bg-amber-500/20 text-amber-300' : 'bg-emerald-500/20 text-emerald-300'
                 }`}>
-                  {streamError ? "Oflayn Rejim" : currentTrack.badge}
+                  {streamError ? cur.offlineMode : (currentTrack.isStream ? cur.live : cur.offline)}
                 </span>
               </div>
               <p className="text-xs font-bold text-white truncate mt-0.5">{currentTrack.title}</p>
@@ -269,7 +305,7 @@ export const AudioPlayer = () => {
               <button
                 onClick={handlePrevTrack}
                 className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
-                title="Oldingi kanal"
+                title={cur.prev}
               >
                 <SkipBack className="w-3.5 h-3.5" />
               </button>
@@ -291,7 +327,7 @@ export const AudioPlayer = () => {
               <button
                 onClick={handleNextTrack}
                 className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
-                title="Keyingi kanal"
+                title={cur.next}
               >
                 <SkipForward className="w-3.5 h-3.5" />
               </button>
@@ -333,7 +369,7 @@ export const AudioPlayer = () => {
               ? 'bg-gradient-to-tr from-amber-500 to-gold-400 text-dark-950 shadow-glow'
               : 'bg-white/10 text-gold-400 hover:bg-gold-500/20'
           }`}
-          title={isPlaying ? "Musiqani to'xtatish" : "Zafaron Lounge musiqasini yoqish"}
+          title={isPlaying ? cur.pause : cur.play}
         >
           {isLoading ? (
             <Loader2 className="w-4 h-4 animate-spin text-gold-400" />
@@ -357,7 +393,7 @@ export const AudioPlayer = () => {
             {isPlaying && <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping inline-block" />}
           </span>
           <span className="block text-[11px] text-gray-300 font-light truncate max-w-[110px]">
-            {isLoading ? "Ulanmoqda..." : isPlaying ? currentTrack.title : "Yoqish uchun bosing"}
+            {isLoading ? cur.connecting : isPlaying ? currentTrack.title : cur.clickToPlay}
           </span>
         </button>
       </div>

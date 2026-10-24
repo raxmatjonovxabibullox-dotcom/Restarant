@@ -1,28 +1,282 @@
 import React, { useState } from 'react';
 import { Users, Sparkles, Check, Eye, Crown, Info, Sun } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 import { soundFx } from '../hooks/useSoundEffects';
 
-// Floor plan table layout data
+// Floor plan table layout data with multilingual zone and view
 const TABLES = [
   // ZAL 1: Shohona Asosiy Zal
-  { id: 'T-1', number: '1', zone: 'Asosiy Hashamatli Zal', seats: 2, type: 'romantic', shape: 'round', x: 18, y: 25, status: 'available', view: 'Sahnaga yaqin' },
-  { id: 'T-2', number: '2', zone: 'Asosiy Hashamatli Zal', seats: 4, type: 'standard', shape: 'square', x: 38, y: 25, status: 'available', view: 'Markaziy zal' },
-  { id: 'T-3', number: '3', zone: 'Asosiy Hashamatli Zal', seats: 4, type: 'standard', shape: 'square', x: 58, y: 25, status: 'occupied', view: 'Markaziy zal' },
-  { id: 'T-4', number: '4', zone: 'Asosiy Hashamatli Zal', seats: 6, type: 'lounge', shape: 'rect', x: 28, y: 55, status: 'available', view: 'Katta divan' },
-  { id: 'T-5', number: '5', zone: 'Asosiy Hashamatli Zal', seats: 8, type: 'banquet', shape: 'rect', x: 58, y: 55, status: 'available', view: 'Shohona zal markazi' },
+  {
+    id: 'T-1',
+    number: '1',
+    seats: 2,
+    type: 'romantic',
+    shape: 'round',
+    x: 18,
+    y: 25,
+    status: 'available',
+    zone: {
+      uz: 'Asosiy Hashamatli Zal',
+      ru: 'Главный Роскошный Зал',
+      en: 'Main Luxury Hall'
+    },
+    view: {
+      uz: 'Sahnaga yaqin',
+      ru: 'Близко к сцене',
+      en: 'Near live stage'
+    }
+  },
+  {
+    id: 'T-2',
+    number: '2',
+    seats: 4,
+    type: 'standard',
+    shape: 'square',
+    x: 38,
+    y: 25,
+    status: 'available',
+    zone: {
+      uz: 'Asosiy Hashamatli Zal',
+      ru: 'Главный Роскошный Зал',
+      en: 'Main Luxury Hall'
+    },
+    view: {
+      uz: 'Markaziy zal',
+      ru: 'Центральный зал',
+      en: 'Central hall view'
+    }
+  },
+  {
+    id: 'T-3',
+    number: '3',
+    seats: 4,
+    type: 'standard',
+    shape: 'square',
+    x: 58,
+    y: 25,
+    status: 'occupied',
+    zone: {
+      uz: 'Asosiy Hashamatli Zal',
+      ru: 'Главный Роскошный Зал',
+      en: 'Main Luxury Hall'
+    },
+    view: {
+      uz: 'Markaziy zal',
+      ru: 'Центральный зал',
+      en: 'Central hall view'
+    }
+  },
+  {
+    id: 'T-4',
+    number: '4',
+    seats: 6,
+    type: 'lounge',
+    shape: 'rect',
+    x: 28,
+    y: 55,
+    status: 'available',
+    zone: {
+      uz: 'Asosiy Hashamatli Zal',
+      ru: 'Главный Роскошный Зал',
+      en: 'Main Luxury Hall'
+    },
+    view: {
+      uz: 'Katta divan',
+      ru: 'Большой мягкий диван',
+      en: 'Large lounge sofa'
+    }
+  },
+  {
+    id: 'T-5',
+    number: '5',
+    seats: 8,
+    type: 'banquet',
+    shape: 'rect',
+    x: 58,
+    y: 55,
+    status: 'available',
+    zone: {
+      uz: 'Asosiy Hashamatli Zal',
+      ru: 'Главный Роскошный Зал',
+      en: 'Main Luxury Hall'
+    },
+    view: {
+      uz: 'Shohona zal markazi',
+      ru: 'Центр роскошного зала',
+      en: 'Center of luxury hall'
+    }
+  },
 
   // ZAL 2: Ochiq Havo Terrasasi (Panoramik)
-  { id: 'T-6', number: '6', zone: "Ochiq Havo Terrasasi (Manzarali)", seats: 2, type: 'panoramic', shape: 'round', x: 82, y: 20, status: 'available', view: 'Toshkent kechki panoramasi' },
-  { id: 'T-7', number: '7', zone: "Ochiq Havo Terrasasi (Manzarali)", seats: 4, type: 'panoramic', shape: 'square', x: 82, y: 45, status: 'available', view: 'Shahar chiroqlari' },
-  { id: 'T-8', number: '8', zone: "Ochiq Havo Terrasasi (Manzarali)", seats: 6, type: 'panoramic', shape: 'rect', x: 82, y: 72, status: 'available', view: 'Terrasa burchagi' },
+  {
+    id: 'T-6',
+    number: '6',
+    seats: 2,
+    type: 'panoramic',
+    shape: 'round',
+    x: 82,
+    y: 20,
+    status: 'available',
+    zone: {
+      uz: "Ochiq Havo Terrasasi (Manzarali)",
+      ru: "Летняя Терраса (Панорама)",
+      en: "Open Air Terrace (Panoramic)"
+    },
+    view: {
+      uz: 'Toshkent kechki panoramasi',
+      ru: 'Вечерняя панорама Ташкента',
+      en: 'Tashkent evening skyline'
+    }
+  },
+  {
+    id: 'T-7',
+    number: '7',
+    seats: 4,
+    type: 'panoramic',
+    shape: 'square',
+    x: 82,
+    y: 45,
+    status: 'available',
+    zone: {
+      uz: "Ochiq Havo Terrasasi (Manzarali)",
+      ru: "Летняя Терраса (Панорама)",
+      en: "Open Air Terrace (Panoramic)"
+    },
+    view: {
+      uz: 'Shahar chiroqlari',
+      ru: 'Огни ночного города',
+      en: 'City night lights'
+    }
+  },
+  {
+    id: 'T-8',
+    number: '8',
+    seats: 6,
+    type: 'panoramic',
+    shape: 'rect',
+    x: 82,
+    y: 72,
+    status: 'available',
+    zone: {
+      uz: "Ochiq Havo Terrasasi (Manzarali)",
+      ru: "Летняя Терраса (Панорама)",
+      en: "Open Air Terrace (Panoramic)"
+    },
+    view: {
+      uz: 'Terrasa burchagi',
+      ru: 'Уютный угол террасы',
+      en: 'Cozy terrace corner'
+    }
+  },
 
   // ZAL 3: VIP Alohida Xonalar
-  { id: 'VIP-1', number: 'VIP 1', zone: "VIP Alohida Xona (6-12 kishi)", seats: 10, type: 'vip', shape: 'vip', x: 18, y: 82, status: 'available', view: 'Alohida VIP xona & Kamin' },
-  { id: 'VIP-2', number: 'VIP 2', zone: "VIP Alohida Xona (6-12 kishi)", seats: 14, type: 'vip', shape: 'vip', x: 45, y: 82, status: 'occupied', view: 'Prezident VIP Suite' },
+  {
+    id: 'VIP-1',
+    number: 'VIP 1',
+    seats: 10,
+    type: 'vip',
+    shape: 'vip',
+    x: 18,
+    y: 82,
+    status: 'available',
+    zone: {
+      uz: "VIP Alohida Xona (6-12 kishi)",
+      ru: "VIP Отдельный Зал (6-12 гостей)",
+      en: "VIP Private Chamber (6-12 guests)"
+    },
+    view: {
+      uz: 'Alohida VIP xona & Kamin',
+      ru: 'Приватная комната и камин',
+      en: 'Private room with fireplace'
+    }
+  },
+  {
+    id: 'VIP-2',
+    number: 'VIP 2',
+    seats: 14,
+    type: 'vip',
+    shape: 'vip',
+    x: 45,
+    y: 82,
+    status: 'occupied',
+    zone: {
+      uz: "VIP Alohida Xona (6-12 kishi)",
+      ru: "VIP Отдельный Зал (6-12 гостей)",
+      en: "VIP Private Chamber (6-12 guests)"
+    },
+    view: {
+      uz: 'Prezident VIP Suite',
+      ru: 'Президентский VIP Сьют',
+      en: 'Presidential VIP Suite'
+    }
+  },
 ];
 
 export const TableFloorPlan = ({ selectedTable, onSelectTable }) => {
+  const { lang } = useLanguage();
   const [hoveredTable, setHoveredTable] = useState(null);
+
+  const tPlan = {
+    uz: {
+      legendFree: "Bo'sh stol",
+      legendSelected: "Tanlangan",
+      legendOccupied: "Band qilingan",
+      legendHint: "Stolni tanlash uchun uning ustiga bosing",
+      zoneMain: "Shohona Zal",
+      zoneTerrace: "Panoramik Terrasa",
+      zoneVip: "VIP Oltin Xonalar",
+      tablePrefix: "Stol #",
+      seats: (s) => `${s} kishilik`,
+      statusOccupied: "Band qilingan",
+      statusFree: "Bo'sh",
+      selectedAlert: (num, seats, zone) => (
+        <>Tanlandi: <b className="text-gold-500 font-bold">Stol #{num}</b> ({seats} kishilik, {zone})</>
+      ),
+      confirmedBadge: "Joy tasdiqlandi"
+    },
+    ru: {
+      legendFree: "Свободен",
+      legendSelected: "Выбран",
+      legendOccupied: "Занят",
+      legendHint: "Нажмите на стол, чтобы выбрать его",
+      zoneMain: "Роскошный Зал",
+      zoneTerrace: "Панорамная Терраса",
+      zoneVip: "VIP Золотые Залы",
+      tablePrefix: "Стол #",
+      seats: (s) => `на ${s} персон`,
+      statusOccupied: "Занят",
+      statusFree: "Свободен",
+      selectedAlert: (num, seats, zone) => (
+        <>Выбран: <b className="text-gold-500 font-bold">Стол #{num}</b> (на {seats} персон, {zone})</>
+      ),
+      confirmedBadge: "Стол выбран"
+    },
+    en: {
+      legendFree: "Available",
+      legendSelected: "Selected",
+      legendOccupied: "Occupied",
+      legendHint: "Click on any table to reserve it",
+      zoneMain: "Luxury Hall",
+      zoneTerrace: "Panoramic Terrace",
+      zoneVip: "VIP Golden Rooms",
+      tablePrefix: "Table #",
+      seats: (s) => `${s} seats`,
+      statusOccupied: "Occupied",
+      statusFree: "Available",
+      selectedAlert: (num, seats, zone) => (
+        <>Selected: <b className="text-gold-500 font-bold">Table #{num}</b> ({seats} seats, {zone})</>
+      ),
+      confirmedBadge: "Table Confirmed"
+    }
+  };
+
+  const cur = tPlan[lang] || tPlan.uz;
+
+  const getLocalizedField = (field) => {
+    if (!field) return '';
+    if (typeof field === 'string') return field;
+    return field[lang] || field.uz || field.en || '';
+  };
 
   const handleTableClick = (table) => {
     if (table.status === 'occupied') {
@@ -30,7 +284,11 @@ export const TableFloorPlan = ({ selectedTable, onSelectTable }) => {
       return;
     }
     soundFx.playChime();
-    onSelectTable(table);
+    // Normalize localized zone name before emitting
+    onSelectTable({
+      ...table,
+      zone: getLocalizedField(table.zone)
+    });
   };
 
   return (
@@ -40,21 +298,21 @@ export const TableFloorPlan = ({ selectedTable, onSelectTable }) => {
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-1.5">
             <span className="w-3.5 h-3.5 rounded-full bg-emerald-500/20 border-2 border-emerald-500 inline-block" />
-            <span className="text-gray-700 dark:text-gray-300 font-medium">Bo'sh stol</span>
+            <span className="text-gray-700 dark:text-gray-300 font-medium">{cur.legendFree}</span>
           </div>
           <div className="flex items-center gap-1.5">
             <span className="w-3.5 h-3.5 rounded-full bg-amber-500/20 border-2 border-gold-500 shadow-glow inline-block" />
-            <span className="text-gold-500 font-bold">Tanlangan</span>
+            <span className="text-gold-500 font-bold">{cur.legendSelected}</span>
           </div>
           <div className="flex items-center gap-1.5">
             <span className="w-3.5 h-3.5 rounded-full bg-gray-400/20 border-2 border-gray-400 dark:border-gray-600 inline-block" />
-            <span className="text-gray-400 font-medium">Band qilingan</span>
+            <span className="text-gray-400 font-medium">{cur.legendOccupied}</span>
           </div>
         </div>
 
         <div className="text-[11px] text-gray-500 dark:text-gray-400 flex items-center gap-1">
           <Info className="w-3.5 h-3.5 text-gold-500" />
-          <span>Stolni tanlash uchun uning ustiga bosing</span>
+          <span>{cur.legendHint}</span>
         </div>
       </div>
 
@@ -66,17 +324,17 @@ export const TableFloorPlan = ({ selectedTable, onSelectTable }) => {
         {/* Zone Markers / Labels */}
         <div className="absolute top-3 left-4 flex items-center gap-1.5 text-[11px] font-bold text-gray-400 uppercase tracking-widest pointer-events-none">
           <Crown className="w-3.5 h-3.5 text-gold-500" />
-          <span>Shohona Zal</span>
+          <span>{cur.zoneMain}</span>
         </div>
 
         <div className="absolute top-3 right-4 flex items-center gap-1.5 text-[11px] font-bold text-amber-500 uppercase tracking-widest pointer-events-none">
           <Sun className="w-3.5 h-3.5" />
-          <span>Panoramik Terrasa</span>
+          <span>{cur.zoneTerrace}</span>
         </div>
 
         <div className="absolute bottom-3 left-4 flex items-center gap-1.5 text-[11px] font-bold text-amber-400 uppercase tracking-widest pointer-events-none">
           <Crown className="w-3.5 h-3.5 text-amber-400" />
-          <span>VIP Oltin Xonalar</span>
+          <span>{cur.zoneVip}</span>
         </div>
 
         {/* Divider lines between zones */}
@@ -155,25 +413,25 @@ export const TableFloorPlan = ({ selectedTable, onSelectTable }) => {
                   <div className="flex items-center justify-between gap-2">
                     <span className="font-bold text-sm text-gray-900 dark:text-white flex items-center gap-1.5">
                       <Sparkles className="w-3.5 h-3.5 text-gold-500" />
-                      Stol #{active.number}
+                      {cur.tablePrefix}{active.number}
                     </span>
                     <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
                       active.status === 'occupied'
                         ? 'bg-red-500/10 text-red-500'
                         : 'bg-emerald-500/10 text-emerald-500'
                     }`}>
-                      {active.status === 'occupied' ? 'Band qilingan' : "Bo'sh"}
+                      {active.status === 'occupied' ? cur.statusOccupied : cur.statusFree}
                     </span>
                   </div>
-                  <p className="text-xs text-gold-500 font-medium">{active.zone}</p>
+                  <p className="text-xs text-gold-500 font-medium">{getLocalizedField(active.zone)}</p>
                   <div className="flex items-center gap-3 text-[11px] text-gray-600 dark:text-gray-300 pt-1">
                     <span className="flex items-center gap-1">
                       <Users className="w-3 h-3 text-gold-500" />
-                      {active.seats} kishilik
+                      {cur.seats(active.seats)}
                     </span>
                     <span className="flex items-center gap-1">
                       <Eye className="w-3 h-3 text-gold-500" />
-                      {active.view}
+                      {getLocalizedField(active.view)}
                     </span>
                   </div>
                 </div>
@@ -189,11 +447,11 @@ export const TableFloorPlan = ({ selectedTable, onSelectTable }) => {
           <div className="flex items-center gap-2">
             <Check className="w-4 h-4 text-gold-500 flex-shrink-0" />
             <span className="text-gray-900 dark:text-white font-medium">
-              Tanlandi: <b className="text-gold-500 font-bold">Stol #{selectedTable.number}</b> ({selectedTable.seats} kishilik, {selectedTable.zone})
+              {cur.selectedAlert(selectedTable.number, selectedTable.seats, getLocalizedField(selectedTable.zone))}
             </span>
           </div>
           <span className="text-[11px] text-emerald-500 font-bold uppercase tracking-wider">
-            Joy tasdiqlandi
+            {cur.confirmedBadge}
           </span>
         </div>
       )}

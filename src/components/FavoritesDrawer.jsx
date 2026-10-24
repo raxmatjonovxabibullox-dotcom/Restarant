@@ -10,9 +10,21 @@ export const FavoritesDrawer = () => {
   const { favorites, isFavoritesOpen, closeFavorites, toggleFavorite, clearFavorites } = useFavorites();
   const { addToCart, openCart } = useCart();
   const { formatPrice } = useCurrency();
-  const { getLocalized } = useLanguage();
+  const { lang, getLocalized } = useLanguage();
 
   if (!isFavoritesOpen) return null;
+
+  const tFav = {
+    title: lang === 'ru' ? 'Избранное' : lang === 'en' ? 'Favorites' : 'Sevimlilar',
+    subtitle: lang === 'ru' ? 'Список ваших любимых изысканных блюд' : lang === 'en' ? 'Your list of favorite gourmet dishes' : "Siz yoqtirgan shohona taomlar ro'yxati",
+    emptyTitle: lang === 'ru' ? 'Список избранного пуст' : lang === 'en' ? 'Your wishlist is empty' : "Sevimlilar ro'yxati bo'sh",
+    emptyDesc: lang === 'ru' ? 'Нажимайте на сердечко у блюд в меню, чтобы сохранять их сюда.' : lang === 'en' ? 'Click the heart icon on any dish in the menu to save it here.' : "Menyudagi yurakcha belgisini bosish orqali yoqtirgan taomlaringizni shu yerga saqlab qo'ying.",
+    addToCartTitle: lang === 'ru' ? 'В корзину' : lang === 'en' ? 'Add to Cart' : "Savatga qo'shish",
+    removeTitle: lang === 'ru' ? 'Удалить' : lang === 'en' ? 'Remove' : "O'chirish",
+    addAllBtn: lang === 'ru' ? 'Добавить все в корзину' : lang === 'en' ? 'Add All to Cart' : "Barchasini Savatga Qo'shish",
+    clearBtn: lang === 'ru' ? 'Очистить список' : lang === 'en' ? 'Clear wishlist' : "Ro'yxatni tozalash",
+    kcal: lang === 'ru' ? 'ккал' : lang === 'en' ? 'kcal' : 'kkal'
+  };
 
   const handleAddToCart = (dish) => {
     soundFx.playChime();
@@ -41,10 +53,10 @@ export const FavoritesDrawer = () => {
             </div>
             <div>
               <h3 className="font-serif font-bold text-lg text-gray-900 dark:text-white">
-                Sevimlilar ({favorites.length})
+                {tFav.title} ({favorites.length})
               </h3>
               <span className="text-xs text-gray-500 dark:text-gray-400">
-                Siz yoqtirgan shohona taomlar ro'yxati
+                {tFav.subtitle}
               </span>
             </div>
           </div>
@@ -65,10 +77,10 @@ export const FavoritesDrawer = () => {
               </div>
               <div>
                 <h4 className="font-bold text-gray-900 dark:text-white text-base">
-                  Sevimlilar ro'yxati bo'sh
+                  {tFav.emptyTitle}
                 </h4>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 max-w-xs">
-                  Menyudagi yurakcha belgisini bosish orqali yoqtirgan taomlaringizni shu yerga saqlab qo'ying.
+                  {tFav.emptyDesc}
                 </p>
               </div>
             </div>
@@ -91,20 +103,20 @@ export const FavoritesDrawer = () => {
                     {formatPrice(dish.price)}
                   </span>
                   <span className="text-[11px] text-gray-500 dark:text-gray-400 block truncate">
-                    {dish.portion} • {dish.calories} kkal
+                    {dish.portion} • {dish.calories} {tFav.kcal}
                   </span>
                 </div>
                 <div className="flex items-center gap-1">
                   <button
                     onClick={() => handleAddToCart(dish)}
-                    title="Savatga qo'shish"
+                    title={tFav.addToCartTitle}
                     className="p-2 rounded-xl gold-gradient-bg text-dark-950 hover:scale-105 transition-transform shadow-sm"
                   >
                     <ShoppingBag className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => toggleFavorite(dish)}
-                    title="O'chirish"
+                    title={tFav.removeTitle}
                     className="p-2 rounded-xl text-gray-400 hover:text-red-500 hover:bg-red-500/10 transition-colors"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -123,14 +135,14 @@ export const FavoritesDrawer = () => {
               className="w-full py-3.5 rounded-xl gold-gradient-bg text-dark-950 font-bold text-sm flex items-center justify-center gap-2 shadow-lg hover:scale-[1.02] transition-transform"
             >
               <ShoppingBag className="w-4 h-4" />
-              <span>Barchasini Savatga Qo'shish</span>
+              <span>{tFav.addAllBtn}</span>
             </button>
 
             <button
               onClick={clearFavorites}
               className="w-full py-2 text-center text-xs text-gray-500 hover:text-red-500 transition-colors"
             >
-              Ro'yxatni tozalash
+              {tFav.clearBtn}
             </button>
           </div>
         )}

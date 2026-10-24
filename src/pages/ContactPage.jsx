@@ -17,7 +17,7 @@ import {
 import { handlePhoneInputChange, blockNonPhoneKeys, isValidUzPhone } from '../lib/phoneUtils';
 
 export const ContactPage = () => {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const { showToast } = useRestaurant();
 
   const [formData, setFormData] = useState({
@@ -34,12 +34,12 @@ export const ContactPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.name.trim() || !formData.message.trim()) {
-      alert("Iltimos, ismingiz va xabarni kiriting!");
+      alert(lang === 'ru' ? 'Пожалуйста, введите имя и сообщение!' : lang === 'en' ? 'Please enter your name and message!' : "Iltimos, ismingiz va xabarni kiriting!");
       return;
     }
 
     if (!isValidUzPhone(formData.phone)) {
-      alert("Iltimos, to'liq telefon raqamingizni kiriting:\nMasalan: +998 (90) 123-45-67");
+      alert(lang === 'ru' ? 'Пожалуйста, введите номер телефона:\nНапример: +998 (90) 123-45-67' : lang === 'en' ? 'Please enter your phone number:\nExample: +998 (90) 123-45-67' : "Iltimos, to'liq telefon raqamingizni kiriting:\nMasalan: +998 (90) 123-45-67");
       return;
     }
 
@@ -47,7 +47,7 @@ export const ContactPage = () => {
     try {
       await sendTelegramContactMessage(formData);
       setIsSent(true);
-      showToast(t('contactPage.messageSent') || "Xabaringiz muvaffaqiyatli yuborildi!", "success");
+      showToast(t('contactPage.messageSent') || (lang === 'ru' ? 'Сообщение успешно отправлено!' : lang === 'en' ? 'Message sent successfully!' : "Xabaringiz muvaffaqiyatli yuborildi!"), "success");
       setFormData({
         name: '',
         phone: '',
@@ -56,7 +56,7 @@ export const ContactPage = () => {
       });
     } catch (err) {
       console.error(err);
-      showToast("Xabar yuborishda xatolik yuz berdi", "error");
+      showToast(lang === 'ru' ? 'Ошибка при отправке сообщения' : lang === 'en' ? 'Error sending message' : "Xabar yuborishda xatolik yuz berdi", "error");
     } finally {
       setIsSubmitting(false);
     }
@@ -64,20 +64,20 @@ export const ContactPage = () => {
 
   const faqs = [
     {
-      q: "Katta marosim va banketlar o'tkazish mumkinmi?",
-      a: "Albatta! Zafaron restoranida 150 kishigacha bo'lgan to'y, yubiley, korporativ yoki boshqa tantanalarni o'tkazish uchun maxsus banket zali mavjud. Alohida mualliflik menyusi tuziladi."
+      q: lang === 'ru' ? 'Возможно ли проведение банкетов и мероприятий?' : lang === 'en' ? 'Can we host banquets and corporate events?' : "Katta marosim va banketlar o'tkazish mumkinmi?",
+      a: lang === 'ru' ? 'Конечно! В ресторане Zafaron есть банкетный зал вместимостью до 150 персон для свадеб, юбилеев и корпоративов. Составляется индивидуальное авторское меню.' : lang === 'en' ? 'Certainly! Zafaron restaurant features a private banquet hall accommodating up to 150 guests for weddings, anniversaries, and corporate events with custom signature menus.' : "Albatta! Zafaron restoranida 150 kishigacha bo'lgan to'y, yubiley, korporativ yoki boshqa tantanalarni o'tkazish uchun maxsus banket zali mavjud. Alohida mualliflik menyusi tuziladi."
     },
     {
-      q: "Yetkazib berish xizmati (Dostavka) qanday ishlaydi?",
-      a: "Toshkent shahri bo'ylab buyurtmalar 40-50 daqiqa ichida yetkaziladi. Issiq taomlar maxsus termo-sumkalarda saqlanadi va issiqligini yo'qotmaydi."
+      q: lang === 'ru' ? 'Как работает служба доставки?' : lang === 'en' ? 'How does delivery service work?' : "Yetkazib berish xizmati (Dostavka) qanday ishlaydi?",
+      a: lang === 'ru' ? 'Доставка по Ташкенту осуществляется в течение 40-50 минут. Горячие блюда доставляются в термосумках с сохранением температуры и аромата.' : lang === 'en' ? 'Delivery across Tashkent takes 40-50 minutes. Hot dishes are delivered in specialized thermal bags preserving aroma and temperature.' : "Toshkent shahri bo'ylab buyurtmalar 40-50 daqiqa ichida yetkaziladi. Issiq taomlar maxsus termo-sumkalarda saqlanadi va issiqligini yo'qotmaydi."
     },
     {
-      q: "Bolalar uchun maxsus sharoit bormi?",
-      a: "Ha, bizda bolalar uchun qulay bolalar o'rindiqlari (child chairs), xavfsiz o'yin hududi va maxsus foydali bolalar menyusi mavjud."
+      q: lang === 'ru' ? 'Есть ли условия для детей?' : lang === 'en' ? 'Are there child-friendly facilities?' : "Bolalar uchun maxsus sharoit bormi?",
+      a: lang === 'ru' ? 'Да, у нас есть удобные детские стульчики, безопасная игровая зона и специальное полезное детское меню.' : lang === 'en' ? 'Yes, we provide comfortable high chairs, a safe play area, and a nutritious kids menu.' : "Ha, bizda bolalar uchun qulay bolalar o'rindiqlari (child chairs), xavfsiz o'yin hududi va maxsus foydali bolalar menyusi mavjud."
     },
     {
-      q: "Qanday to'lov usullari qabul qilinadi?",
-      a: "Naqd pul, barcha milliy plastik kartalar (Uzcard, Humo), shuningdek Payme, Click, Uzum orqali onlayn to'lovlarni qabul qilamiz."
+      q: lang === 'ru' ? 'Какие способы оплаты принимаются?' : lang === 'en' ? 'What payment methods are accepted?' : "Qanday to'lov usullari qabul qilinadi?",
+      a: lang === 'ru' ? 'Наличные, национальные карты (Uzcard, Humo), а также онлайн-оплата через Payme, Click, Uzum.' : lang === 'en' ? 'Cash, national bank cards (Uzcard, Humo), as well as online payments via Payme, Click, and Uzum.' : "Naqd pul, barcha milliy plastik kartalar (Uzcard, Humo), shuningdek Payme, Click, Uzum orqali onlayn to'lovlarni qabul qilamiz."
     }
   ];
 
@@ -111,7 +111,7 @@ export const ContactPage = () => {
             {t('contactPage.addressDesc')}
           </p>
           <span className="text-[11px] text-gold-500 font-semibold block pt-1">
-            Mo'ljal: Amir Temur Hiyoboni metrosi
+            {lang === 'ru' ? 'Ориентир: метро Сквер Амира Темура' : lang === 'en' ? 'Landmark: Amir Temur Square Metro' : "Mo'ljal: Amir Temur Hiyoboni metrosi"}
           </span>
         </div>
 
@@ -130,7 +130,7 @@ export const ContactPage = () => {
             href="tel:+998712008899"
             className="text-[11px] text-gold-500 font-semibold block pt-1 hover:underline"
           >
-            Qo'ng'iroq qilish: +998 71 200 88 99
+            {lang === 'ru' ? 'Позвонить: +998 71 200 88 99' : lang === 'en' ? 'Call now: +998 71 200 88 99' : "Qo'ng'iroq qilish: +998 71 200 88 99"}
           </a>
         </div>
 
@@ -146,7 +146,7 @@ export const ContactPage = () => {
             {t('contactPage.hoursDesc')}
           </p>
           <span className="text-[11px] text-emerald-500 font-semibold block pt-1">
-            Har kuni dam olish kunlarisiz
+            {lang === 'ru' ? 'Ежедневно без выходных' : lang === 'en' ? 'Daily without days off' : 'Har kuni dam olish kunlarisiz'}
           </span>
         </div>
 
@@ -159,7 +159,11 @@ export const ContactPage = () => {
             Telegram Bot
           </h3>
           <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
-            Barcha xabarlar va buyurtmalar to'g'ridan-to'g'ri telegramga tushadi
+            {lang === 'ru'
+              ? 'Все сообщения и заказы мгновенно поступают в Telegram'
+              : lang === 'en'
+              ? 'All messages and orders go directly to Telegram'
+              : "Barcha xabarlar va buyurtmalar to'g'ridan-to'g'ri telegramga tushadi"}
           </p>
           <span className="text-[11px] text-gold-500 font-semibold block pt-1">
             @zafaron_restaurant_bot
@@ -208,7 +212,9 @@ export const ContactPage = () => {
                 <div>
                   <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5 flex items-center justify-between">
                     <span>{t('common.phone')} *</span>
-                    <span className="text-[10px] text-gray-400 font-normal">Faqat raqamlar</span>
+                    <span className="text-[10px] text-gray-400 font-normal">
+                      {lang === 'ru' ? 'Только цифры' : lang === 'en' ? 'Digits only' : 'Faqat raqamlar'}
+                    </span>
                   </label>
                   <input
                     type="tel"
@@ -232,7 +238,7 @@ export const ContactPage = () => {
                 </label>
                 <input
                   type="text"
-                  placeholder="Masalan: Banket xizmati yoki fikr-mulohaza"
+                  placeholder={lang === 'ru' ? 'Например: Банкетный сервис или отзыв' : lang === 'en' ? 'e.g. Banquet inquiry or feedback' : 'Masalan: Banket xizmati yoki fikr-mulohaza'}
                   value={formData.subject}
                   onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                   className="glass-input w-full"
@@ -287,10 +293,14 @@ export const ContactPage = () => {
 
             <div className="p-6 space-y-4">
               <h3 className="font-serif font-bold text-lg text-gray-900 dark:text-white">
-                Toshkentning eng qulay nuqtasida
+                {lang === 'ru' ? 'В самом удобном центре Ташкента' : lang === 'en' ? 'In the most convenient location of Tashkent' : 'Toshkentning eng qulay nuqtasida'}
               </h3>
               <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
-                Toshkent sh., Amir Temur shoh ko'chasi 45-uy. Markaziy maydon ro'parasida, transport qulay va mashina qo'yish uchun keng bepul avtoturargoh mavjud.
+                {lang === 'ru'
+                  ? 'г. Ташкент, пр-т Амира Темура 45. Напротив центральной площади, удобная транспортная развязка и бесплатная просторная парковка.'
+                  : lang === 'en'
+                  ? 'Tashkent city, 45 Amir Temur Ave. Opposite central square, convenient transport and spacious free parking available.'
+                  : "Toshkent sh., Amir Temur shoh ko'chasi 45-uy. Markaziy maydon ro'parasida, transport qulay va mashina qo'yish uchun keng bepul avtoturargoh mavjud."}
               </p>
 
               <div className="pt-2 flex flex-col sm:flex-row gap-3">
@@ -301,7 +311,7 @@ export const ContactPage = () => {
                   className="flex-1 py-3 px-4 rounded-xl gold-gradient-bg text-dark-950 text-xs font-bold flex items-center justify-center gap-2 hover:scale-105 transition-all text-center"
                 >
                   <Navigation className="w-4 h-4" />
-                  <span>Google Maps'da ochish</span>
+                  <span>{lang === 'ru' ? 'Открыть в Google Maps' : lang === 'en' ? 'Open in Google Maps' : "Google Maps'da ochish"}</span>
                   <ExternalLink className="w-3.5 h-3.5" />
                 </a>
 
@@ -311,7 +321,7 @@ export const ContactPage = () => {
                   rel="noopener noreferrer"
                   className="flex-1 py-3 px-4 rounded-xl border border-gray-300 dark:border-gray-700 hover:border-gold-500 text-xs font-semibold text-gray-700 dark:text-gray-200 flex items-center justify-center gap-2 hover:bg-gray-100 dark:hover:bg-dark-800 transition-all text-center"
                 >
-                  <span>Yandex Xarita</span>
+                  <span>{lang === 'ru' ? 'Яндекс Карты' : lang === 'en' ? 'Yandex Maps' : 'Yandex Xarita'}</span>
                   <ExternalLink className="w-3.5 h-3.5" />
                 </a>
               </div>
@@ -324,10 +334,10 @@ export const ContactPage = () => {
       <div className="max-w-4xl mx-auto space-y-6 pt-6">
         <div className="text-center space-y-2">
           <h2 className="font-serif font-black text-2xl sm:text-3xl text-gray-900 dark:text-white">
-            Ko'p Beriladigan Savollar (FAQ)
+            {lang === 'ru' ? 'Часто Задаваемые Вопросы (FAQ)' : lang === 'en' ? 'Frequently Asked Questions (FAQ)' : "Ko'p Beriladigan Savollar (FAQ)"}
           </h2>
           <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
-            Mehmonlarimiz tomonidan tez-tez so'raladigan savollarga javoblar
+            {lang === 'ru' ? 'Ответы на популярные вопросы наших дорогих гостей' : lang === 'en' ? 'Answers to questions frequently asked by our guests' : "Mehmonlarimiz tomonidan tez-tez so'raladigan savollarga javoblar"}
           </p>
         </div>
 
