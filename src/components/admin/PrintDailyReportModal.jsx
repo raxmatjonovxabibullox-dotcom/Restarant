@@ -1,10 +1,12 @@
 import React from 'react';
-import { X, Printer } from 'lucide-react';
+import { X, Printer, Sun, Moon } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
+import { useTheme } from '../../context/ThemeContext';
 import { soundFx } from '../../hooks/useSoundEffects';
 
 export const PrintDailyReportModal = ({ isOpen, onClose, orders, reservations, menuItems, formatPrice }) => {
   const { lang, getLocalized } = useLanguage();
+  const { isDark, toggleTheme } = useTheme();
 
   if (!isOpen) return null;
 
@@ -70,23 +72,41 @@ export const PrintDailyReportModal = ({ isOpen, onClose, orders, reservations, m
       <div onClick={onClose} className="absolute inset-0 bg-black/80 backdrop-blur-md print:hidden" />
 
       {/* Modal Container */}
-      <div className="relative w-full max-w-lg bg-white dark:bg-dark-900 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-white/10 rounded-3xl shadow-2xl p-6 sm:p-8 animate-slide-up print:bg-white print:text-black print:border-none print:shadow-none print:m-0 print:p-2 print:w-full print:max-w-none">
+      <div className={`relative w-full max-w-lg rounded-3xl shadow-2xl p-6 sm:p-8 animate-slide-up border transition-colors ${
+        isDark ? 'bg-[#0f1115] text-white border-white/10 shadow-[0_25px_60px_rgba(0,0,0,0.9)]' : 'bg-white text-gray-900 border-gray-200'
+      } dark:bg-[#0f1115] dark:text-white dark:border-white/10 print:!bg-white print:!text-black print:border-none print:shadow-none print:m-0 print:p-2 print:w-full print:max-w-none`}>
         {/* Action Bar (hidden in print) */}
-        <div className="flex items-center justify-between pb-4 mb-4 border-b border-gray-200 dark:border-white/10 print:hidden">
+        <div className={`flex items-center justify-between pb-4 mb-4 border-b ${isDark ? 'border-white/10' : 'border-gray-200'} dark:border-white/10 print:hidden`}>
           <span className="text-xs font-bold uppercase tracking-wider gold-gradient-text">
             {tReport.barTitle}
           </span>
           <div className="flex items-center gap-2">
+            {/* Direct Theme Switcher */}
+            <button
+              onClick={() => {
+                soundFx.playPop();
+                toggleTheme();
+              }}
+              className={`p-1.5 rounded-xl border transition-colors ${
+                isDark ? 'bg-dark-800 border-white/10 text-amber-400 hover:text-amber-300' : 'bg-gray-100 border-gray-200 text-gray-600 hover:text-gray-900'
+              } dark:bg-dark-800 dark:border-white/10 dark:text-amber-400`}
+              title="Mavzuni o'zgartirish (Dark / Light)"
+            >
+              {isDark ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
+            </button>
+
             <button
               onClick={handlePrint}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl gold-gradient-bg text-dark-950 font-bold text-xs shadow-md hover:scale-105 active:scale-95 transition-all"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl gold-gradient-bg text-dark-950 font-bold text-xs shadow-md hover:scale-105 active:scale-95 transition-all"
             >
-              <Printer className="w-4 h-4" />
+              <Printer className="w-3.5 h-3.5" />
               <span>{tReport.printBtn}</span>
             </button>
             <button
               onClick={onClose}
-              className="p-1.5 rounded-xl bg-gray-100 dark:bg-dark-800 hover:bg-gray-200 dark:hover:bg-dark-700 text-gray-600 dark:text-gray-300 transition-colors"
+              className={`p-1.5 rounded-xl transition-colors ${
+                isDark ? 'bg-dark-800 hover:bg-dark-700 text-gray-300' : 'bg-gray-100 hover:bg-gray-200 text-gray-600'
+              } dark:bg-dark-800 dark:text-gray-300`}
             >
               <X className="w-4 h-4" />
             </button>
