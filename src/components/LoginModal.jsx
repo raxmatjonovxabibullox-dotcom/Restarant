@@ -1,41 +1,42 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
-import { X, Lock, User, ShieldCheck, KeyRound, ArrowRight } from 'lucide-react';
+import { X, Lock, Mail, ShieldCheck, ArrowRight, Loader2, Database } from 'lucide-react';
+import { soundFx } from '../hooks/useSoundEffects';
 
 export const LoginModal = ({ setIsAdminView }) => {
   const { isLoginModalOpen, closeLoginModal, login } = useAuth();
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
 
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (!isLoginModalOpen) return null;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMsg('');
+    setIsSubmitting(true);
 
-    const res = login(username, password);
-    if (res.success) {
-      closeLoginModal();
-      if (res.user.role === 'admin') {
-        setIsAdminView(true);
+    try {
+      soundFx.playPop();
+      const res = await login(email, password);
+      if (res.success) {
+        soundFx.playSuccessFanfare();
+        closeLoginModal();
+        if (setIsAdminView) {
+          setIsAdminView(true);
+        }
+      } else {
+        soundFx.playChime();
+        setErrorMsg(res.message || t('auth.invalidCredentials'));
       }
-    } else {
-      setErrorMsg(res.message || t('auth.invalidCredentials'));
-    }
-  };
-
-  // Quick Demo Admin Helper
-  const handleQuickAdminLogin = () => {
-    setUsername('admin');
-    setPassword('admin123');
-    const res = login('admin', 'admin123');
-    if (res.success) {
-      closeLoginModal();
-      setIsAdminView(true);
+    } catch (err) {
+      setErrorMsg(err.message || "Tizimga kirishda xatolik yuz berdi");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -44,7 +45,7 @@ export const LoginModal = ({ setIsAdminView }) => {
       {/* Backdrop */}
       <div
         onClick={closeLoginModal}
-        className="absolute inset-0 bg-black/70 backdrop-blur-md transition-opacity"
+        className="absolute inset-0 bg-black/80 backdrop-blur-md transition-opacity"
       />
 
       <div className="relative w-full max-w-md bg-white dark:bg-dark-900 border border-gray-200 dark:border-white/10 rounded-3xl shadow-2xl p-6 sm:p-8 animate-slide-up">
@@ -64,16 +65,26 @@ export const LoginModal = ({ setIsAdminView }) => {
             </div>
           </div>
           <h2 className="font-serif font-bold text-2xl text-gray-900 dark:text-white">
-            {t('auth.loginTitle')}
+            {lang === 'ru' ? 'Вход в Панель Управления' : lang === 'en' ? 'Administrator Login' : 'Admin Panelga Kirish'}
           </h2>
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 max-w-xs mx-auto">
-            {t('auth.loginSubtitle')}
+            {lang === 'ru'
+              ? 'Только для авторизованных администраторов через Supabase'
+              : lang === 'en'
+              ? 'Strict authentication via Supabase Database users only'
+              : "Faqat Supabase'dagi tasdiqlangan administratorlar uchun"}
           </p>
+        </div>
+
+        {/* Supabase Security Badge */}
+        <div className="mb-4 p-2.5 rounded-xl bg-amber-500/10 border border-gold-500/20 flex items-center gap-2.5 text-xs text-gold-500 font-medium">
+          <Database className="w-4 h-4 shrink-0 text-gold-400" />
+          <span>Faqat Supabase Authentication foydalanuvchilari qabul qilinadi</span>
         </div>
 
         {/* Error message */}
         {errorMsg && (
-          <div className="mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-xs text-red-500 text-center font-medium">
+          <div className="mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-xs text-red-500 text-center font-medium leading-relaxed">
             {errorMsg}
           </div>
         )}
@@ -82,28 +93,29 @@ export const LoginModal = ({ setIsAdminView }) => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
-              {t('auth.username')}
+              Supabase Email
             </label>
             <div className="relative">
-              <User className="w-4 h-4 text-gray-400 absolute left-3.5 top-3" />
+              <Mail className="w-4 h-4 text-gray-400 absolute left-3.5 top-3.5" />
               <input
-                id="login-username"
-                type="text"
+                id="login-email"
+                type="email"
                 required
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="admin yoki username"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="admin@zafaron.uz yoki emailingiz"
                 className="glass-input w-full pl-10 text-sm"
+                disabled={isSubmitting}
               />
             </div>
           </div>
 
           <div>
             <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
-              {t('auth.password')}
+              {t('auth.password') || 'Parol'}
             </label>
             <div className="relative">
-              <Lock className="w-4 h-4 text-gray-400 absolute left-3.5 top-3" />
+              <Lock className="w-4 h-4 text-gray-400 absolute left-3.5 top-3.5" />
               <input
                 id="login-password"
                 type="password"
@@ -112,6 +124,7 @@ export const LoginModal = ({ setIsAdminView }) => {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
                 className="glass-input w-full pl-10 text-sm"
+                disabled={isSubmitting}
               />
             </div>
           </div>
@@ -119,26 +132,28 @@ export const LoginModal = ({ setIsAdminView }) => {
           <button
             id="submit-login-btn"
             type="submit"
-            className="w-full py-3 rounded-xl gold-gradient-bg flex items-center justify-center gap-2 text-sm font-bold shadow-lg transition-all hover:scale-[1.02]"
+            disabled={isSubmitting}
+            className="w-full py-3 rounded-xl gold-gradient-bg flex items-center justify-center gap-2 text-sm font-bold shadow-lg transition-all hover:scale-[1.02] disabled:opacity-60 disabled:pointer-events-none"
           >
-            <span>{t('auth.signIn')}</span>
-            <ArrowRight className="w-4 h-4" />
+            {isSubmitting ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                <span>Supabase tekshirilmoqda...</span>
+              </>
+            ) : (
+              <>
+                <span>{lang === 'ru' ? 'Войти в Систему' : lang === 'en' ? 'Sign In' : 'Tizimga Kirish'}</span>
+                <ArrowRight className="w-4 h-4" />
+              </>
+            )}
           </button>
         </form>
 
-        {/* Quick Demo Admin Button */}
-        <div className="mt-5 pt-4 border-t border-gray-200 dark:border-gray-800 text-center">
-          <div className="text-[11px] text-gray-500 dark:text-gray-400 mb-2">
-            {t('auth.adminHint')}
-          </div>
-          <button
-            type="button"
-            onClick={handleQuickAdminLogin}
-            className="w-full py-2 px-3 rounded-xl bg-gray-100 dark:bg-dark-800 hover:bg-gold-500/10 hover:border-gold-500/40 border border-gray-200 dark:border-gray-700 text-xs font-semibold text-gold-500 transition-all flex items-center justify-center gap-2"
-          >
-            <KeyRound className="w-3.5 h-3.5" />
-            1-Klikda Tezkor Admin Kirish (Demo)
-          </button>
+        {/* Notice on how to manage admins in Supabase */}
+        <div className="mt-5 pt-3.5 border-t border-gray-200 dark:border-gray-800 text-center">
+          <p className="text-[11px] text-gray-400 dark:text-gray-500 leading-relaxed">
+            Admin akkauntlarini qo'shish yoki parolni o'zgartirish Supabase Dashboard &gt; <strong>Authentication &gt; Users</strong> bo'limida amalga oshiriladi.
+          </p>
         </div>
       </div>
     </div>

@@ -3,6 +3,7 @@ import { useRestaurant } from '../context/RestaurantContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useTheme } from '../context/ThemeContext';
 import { useCurrency } from '../context/CurrencyContext';
+import { useAuth } from '../context/AuthContext';
 import { useFullscreen } from '../hooks/useFullscreen';
 import { soundFx } from '../hooks/useSoundEffects';
 import { testTelegramBot, sendToTelegramApi, sendPhotoToTelegramApi } from '../services/telegramService';
@@ -45,10 +46,40 @@ import {
   Phone,
   Coins,
   Globe,
-  ChevronDown
+  ChevronDown,
+  LogOut,
+  Lock
 } from 'lucide-react';
 
 export const AdminDashboard = ({ setIsAdminView }) => {
+  const { user, isAdmin, logout } = useAuth();
+
+  // Hard Security Guard: Strictly deny non-authenticated users
+  if (!isAdmin) {
+    return (
+      <div className="min-h-screen bg-dark-950 text-white flex items-center justify-center p-4">
+        <div className="glass-card max-w-md w-full p-8 rounded-3xl text-center space-y-4 border border-red-500/20 shadow-2xl">
+          <div className="w-16 h-16 rounded-2xl bg-red-500/10 text-red-400 mx-auto flex items-center justify-center">
+            <Lock className="w-8 h-8" />
+          </div>
+          <h2 className="font-serif font-black text-2xl text-white">Ruxsat Etilmagan Kirish (403)</h2>
+          <p className="text-xs text-gray-400 leading-relaxed">
+            Admin panelga faqat Supabase Authentication orqali tizimga kirgan tasdiqlangan administratorlar kira oladi.
+          </p>
+          <button
+            onClick={() => {
+              soundFx.playPop();
+              setIsAdminView(false);
+            }}
+            className="w-full py-3 rounded-xl gold-gradient-bg text-dark-950 font-bold text-xs"
+          >
+            Bosh sahifaga qaytish
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   const {
     menuItems,
     orders,
@@ -557,6 +588,27 @@ export const AdminDashboard = ({ setIsAdminView }) => {
             >
               <span>{t('admin.backToSite') || (lang === 'ru' ? 'Сайт' : lang === 'en' ? 'Site' : 'Sayt')}</span>
               <ExternalLink className="w-3.5 h-3.5" />
+            </button>
+
+            {/* Authenticated Supabase User Badge */}
+            {user?.email && (
+              <span className="hidden md:inline-flex items-center px-2.5 py-1.5 rounded-xl bg-gold-500/10 border border-gold-500/20 text-[11px] font-semibold text-gold-400 truncate max-w-[170px]" title={user.email}>
+                👤 {user.email}
+              </span>
+            )}
+
+            {/* Supabase Admin Logout Button */}
+            <button
+              onClick={() => {
+                soundFx.playPop();
+                logout();
+                setIsAdminView(false);
+              }}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/25 text-xs font-bold text-red-400 hover:text-red-300 transition-colors shadow-sm"
+              title="Admin paneldan to'liq chiqish (Supabase SignOut)"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Chiqish</span>
             </button>
           </div>
         </div>

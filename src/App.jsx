@@ -44,17 +44,36 @@ const parseCurrentRoute = () => {
 
 function MainApp() {
   const [activePage, setActivePage] = useState(() => parseCurrentRoute().page);
-  const [isAdminView, setIsAdminView] = useState(() => parseCurrentRoute().isAdmin);
+  const [isAdminView, setIsAdminView] = useState(false);
   const [isConciergeOpen, setIsConciergeOpen] = useState(false);
-  const { isAdmin, openLoginModal } = useAuth();
+  const { isAdmin, openLoginModal, isLoadingAuth } = useAuth();
 
-  // Listen to browser Back / Forward buttons and hash changes
+  // Route & URL listener strictly guarded by Supabase Auth
   useEffect(() => {
     const handleUrlChange = () => {
       const parsed = parseCurrentRoute();
       setActivePage(parsed.page);
-      setIsAdminView(parsed.isAdmin);
+
+      if (parsed.isAdmin) {
+        if (isAdmin) {
+          setIsAdminView(true);
+        } else {
+          setIsAdminView(false);
+          openLoginModal();
+          // Reset URL to clean / if unauthorized
+          if (window.location.pathname === '/admin') {
+            window.history.replaceState({}, '', '/');
+          }
+        }
+      } else {
+        setIsAdminView(false);
+      }
     };
+
+    // Evaluate on initial load once auth loading completes
+    if (!isLoadingAuth) {
+      handleUrlChange();
+    }
 
     window.addEventListener('popstate', handleUrlChange);
     window.addEventListener('hashchange', handleUrlChange);
@@ -62,7 +81,7 @@ function MainApp() {
       window.removeEventListener('popstate', handleUrlChange);
       window.removeEventListener('hashchange', handleUrlChange);
     };
-  }, []);
+  }, [isAdmin, isLoadingAuth]);
 
   // Handle page change (Home, Menu, About, Reservation, Contact)
   const handlePageChange = (page) => {
