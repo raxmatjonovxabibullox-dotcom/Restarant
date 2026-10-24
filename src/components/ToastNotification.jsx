@@ -1,6 +1,6 @@
 import React from 'react';
 import { useRestaurant } from '../context/RestaurantContext';
-import { CheckCircle2, AlertCircle, Info, X } from 'lucide-react';
+import { CheckCircle2, AlertCircle, Info } from 'lucide-react';
 
 export const ToastNotification = () => {
   const { toast } = useRestaurant();

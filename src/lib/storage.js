@@ -107,14 +107,21 @@ export const getStoredSettings = () => {
       localStorage.setItem(KEYS.SETTINGS, JSON.stringify(defaults));
       return defaults;
     }
-    const parsed = JSON.parse(data);
     let updated = false;
     if (!parsed.telegramChatId) {
-      parsed.telegramChatId = '8170197389';
+      parsed.telegramChatId = defaults.telegramChatId;
       updated = true;
     }
     if (!parsed.telegramBotToken) {
-      parsed.telegramBotToken = '8975969633:AAGyCg0Y38OvLae3EOnuWDCMXuJwS_9jY9Y';
+      parsed.telegramBotToken = defaults.telegramBotToken;
+      updated = true;
+    }
+    if (!parsed.supabaseUrl) {
+      parsed.supabaseUrl = defaults.supabaseUrl;
+      updated = true;
+    }
+    if (!parsed.supabaseAnonKey) {
+      parsed.supabaseAnonKey = defaults.supabaseAnonKey;
       updated = true;
     }
     if (updated) {

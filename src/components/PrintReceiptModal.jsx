@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Printer, CheckCircle2, UtensilsCrossed, Calendar, Clock, MapPin, Phone } from 'lucide-react';
+import { X, Printer } from 'lucide-react';
 import { useCurrency } from '../context/CurrencyContext';
 import { useLanguage } from '../context/LanguageContext';
 import { soundFx } from '../hooks/useSoundEffects';
@@ -15,13 +15,16 @@ export const PrintReceiptModal = ({ order, isOpen, onClose }) => {
     window.print();
   };
 
-  const currentDate = new Date(order.createdAt || Date.now()).toLocaleString('uz-UZ', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit'
-  });
+  const parsedDate = order.createdAt ? new Date(order.createdAt) : new Date();
+  const currentDate = !isNaN(parsedDate.getTime())
+    ? parsedDate.toLocaleString('uz-UZ', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit'
+      })
+    : '';
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -134,7 +137,7 @@ export const PrintReceiptModal = ({ order, isOpen, onClose }) => {
             </div>
             <div className="flex justify-between text-base font-bold text-gray-900 pt-1 border-t">
               <span>JAMI TO'LOV:</span>
-              <span className="text-gold-600 font-black">{formatPrice(order.totalPrice)}</span>
+              <span className="text-gold-600 font-black">{formatPrice(order.totalPrice || order.totalAmount || 0)}</span>
             </div>
             <div className="flex justify-between text-[11px] text-gray-500">
               <span>To'lov usuli:</span>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Users, Sparkles, Check, Info, Eye, Crown, Trees, Sun } from 'lucide-react';
+import { Users, Sparkles, Check, Eye, Crown, Info, Sun } from 'lucide-react';
 import { soundFx } from '../hooks/useSoundEffects';
 
 // Floor plan table layout data

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { useRestaurant } from '../context/RestaurantContext';
 import { useCart } from '../context/CartContext';
@@ -7,7 +7,6 @@ import { useFavorites } from '../context/FavoritesContext';
 import { soundFx } from '../hooks/useSoundEffects';
 import {
   Search,
-  SlidersHorizontal,
   Star,
   Clock,
   Flame,
@@ -15,7 +14,6 @@ import {
   Sparkles,
   Heart,
   UtensilsCrossed,
-  Filter,
   ArrowUpDown
 } from 'lucide-react';
 
@@ -33,7 +31,7 @@ export const MenuPage = ({ onOpenConcierge }) => {
     setSortBy,
     setSelectedDishModal
   } = useRestaurant();
-  const { addToCart, openCart } = useCart();
+  const { addToCart } = useCart();
   const { formatPrice } = useCurrency();
   const { isFavorite, toggleFavorite } = useFavorites();
 

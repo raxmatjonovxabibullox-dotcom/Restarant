@@ -56,7 +56,7 @@ class SoundSynthesizer {
       osc2.start(now);
       osc1.stop(now + 0.35);
       osc2.stop(now + 0.35);
-    } catch (e) {
+    } catch {
       // AudioContext might be blocked until user interacts
     }
   }
@@ -84,7 +84,7 @@ class SoundSynthesizer {
 
       osc.start(now);
       osc.stop(now + 0.08);
-    } catch (e) {}
+    } catch {}
   }
 
   // Success fanfare when order or reservation is successfully placed
@@ -118,7 +118,7 @@ class SoundSynthesizer {
         osc.start(now + time);
         osc.stop(now + time + dur);
       });
-    } catch (e) {}
+    } catch {}
   }
 }
 

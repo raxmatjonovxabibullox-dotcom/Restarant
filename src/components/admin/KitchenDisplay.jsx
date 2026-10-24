@@ -1,8 +1,8 @@
 import React from 'react';
-import { ChefHat, Clock, CheckCircle2, Flame, Bike, UtensilsCrossed, AlertCircle } from 'lucide-react';
+import { ChefHat, Clock, CheckCircle2, Flame, Bike, UtensilsCrossed } from 'lucide-react';
 import { soundFx } from '../../hooks/useSoundEffects';
 
-export const KitchenDisplay = ({ orders, updateOrderStatus, formatPrice, getLocalized }) => {
+export const KitchenDisplay = ({ orders, updateOrderStatus, getLocalized }) => {
   // Filter only active orders for the kitchen (pending or cooking)
   const kitchenOrders = orders.filter(
     (o) => o.status === 'pending' || o.status === 'cooking'

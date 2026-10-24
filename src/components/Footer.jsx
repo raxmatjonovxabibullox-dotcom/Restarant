@@ -2,6 +2,8 @@ import React from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { UtensilsCrossed, Phone, MapPin, Clock, Send, Heart } from 'lucide-react';
 
+const CURRENT_YEAR = new Date().getFullYear();
+
 export const Footer = ({ setActivePage, setIsAdminView }) => {
   const { t } = useLanguage();
 
@@ -131,7 +133,7 @@ export const Footer = ({ setActivePage, setIsAdminView }) => {
 
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-gray-200 dark:border-gray-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-500 dark:text-gray-400">
-          <p>© {new Date().getFullYear()} ZAFARON Restaurant & Lounge. Barcha huquqlar himoyalangan.</p>
+          <p>© {CURRENT_YEAR} ZAFARON Restaurant & Lounge. Barcha huquqlar himoyalangan.</p>
           <div className="flex items-center gap-4">
             <button
               onClick={() => { setIsAdminView(true); window.scrollTo(0, 0); }}

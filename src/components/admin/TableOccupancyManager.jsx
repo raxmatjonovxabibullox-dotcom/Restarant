@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Users, Crown, Check, X, Sparkles, RefreshCw, Eye, Sun, Calendar } from 'lucide-react';
+import { Crown, RefreshCw } from 'lucide-react';
 import { soundFx } from '../../hooks/useSoundEffects';
 
 const INITIAL_TABLES = [
@@ -15,7 +15,7 @@ const INITIAL_TABLES = [
   { id: 'VIP-2', number: 'VIP 2', zone: 'VIP Oltin Xona', seats: 14, status: 'free', currentGuest: null },
 ];
 
-export const TableOccupancyManager = ({ reservations }) => {
+export const TableOccupancyManager = () => {
   const [tables, setTables] = useState(() => {
     try {
       const stored = localStorage.getItem('zafaron_admin_tables_v1');

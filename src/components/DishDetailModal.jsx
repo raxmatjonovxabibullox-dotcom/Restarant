@@ -13,12 +13,10 @@ import {
   Plus,
   Minus,
   ShoppingBag,
-  CheckCircle2,
   Sparkles,
   Heart,
   MessageSquare,
-  Send,
-  UserCheck
+  Send
 } from 'lucide-react';
 
 const PORTION_OPTIONS = [
@@ -84,7 +82,7 @@ export const DishDetailModal = () => {
           ];
           setReviews(initial);
         }
-      } catch (e) {
+      } catch {
         setReviews([]);
       }
     }

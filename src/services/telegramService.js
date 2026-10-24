@@ -3,8 +3,8 @@ import { getStoredSettings } from '../lib/storage';
 
 const getBotCredentials = () => {
   const settings = getStoredSettings();
-  const token = settings.telegramBotToken || import.meta.env.VITE_TELEGRAM_BOT_TOKEN;
-  const chatId = settings.telegramChatId || import.meta.env.VITE_TELEGRAM_CHAT_ID;
+  const token = settings.telegramBotToken || import.meta.env.VITE_TELEGRAM_BOT_TOKEN || import.meta.env.NEXT_PUBLIC_TELEGRAM_BOT_TOKEN;
+  const chatId = settings.telegramChatId || import.meta.env.VITE_TELEGRAM_CHAT_ID || import.meta.env.NEXT_PUBLIC_TELEGRAM_CHAT_ID;
   return { token, chatId };
 };
 
@@ -65,7 +65,14 @@ export const sendTelegramOrder = async (order) => {
   let itemsText = order.items.map((item, idx) => {
     const name = typeof item.name === 'object' ? (item.name.uz || item.name.en) : item.name;
     const subtotal = (item.price * item.quantity).toLocaleString();
-    return `${idx + 1}. <b>${name}</b> x ${item.quantity} = ${subtotal} so'm`;
+    let detail = `${idx + 1}. <b>${name}</b> x ${item.quantity} = ${subtotal} so'm`;
+    if (item.portion && item.portion !== '1x Standart') {
+      detail += ` <i>(${item.portion})</i>`;
+    }
+    if (item.selectedAddons && item.selectedAddons.length > 0) {
+      detail += `\n   └ <i>+ ${item.selectedAddons.join(', ')}</i>`;
+    }
+    return detail;
   }).join('\n');
 
   const formattedMessage =
@@ -78,8 +85,9 @@ export const sendTelegramOrder = async (order) => {
     `━━━━━━━━━━━━━━━━━━━━\n` +
     `📋 <b>BUYURTMA TARKIBI:</b>\n` +
     `${itemsText}\n` +
+    (order.notes ? `📝 <b>Izoh:</b> <i>${order.notes}</i>\n` : '') +
     `━━━━━━━━━━━━━━━━━━━━\n` +
-    `💰 <b>JAMI SUMMA:</b> <b>${Number(order.totalAmount).toLocaleString()} so'm</b>\n` +
+    `💰 <b>JAMI SUMMA:</b> <b>${Number(order.totalPrice || order.totalAmount || 0).toLocaleString()} so'm</b>\n` +
     `⏰ <b>Vaqt:</b> ${new Date().toLocaleTimeString('uz-UZ', { hour: '2-digit', minute: '2-digit' })}, ${new Date().toLocaleDateString('uz-UZ')}\n` +
     `🚀 <i>Iltimos, buyurtmani darhol qabul qiling!</i>`;
 
@@ -98,7 +106,7 @@ export const sendTelegramReservation = async (reservation) => {
     `📅 <b>Sana:</b> ${reservation.date}\n` +
     `⏰ <b>Vaqt:</b> ${reservation.time}\n` +
     `👥 <b>Mehmonlar soni:</b> ${reservation.guests} kishi\n` +
-    `🏛 <b>Tanlangan hudud:</b> ${reservation.zone}\n` +
+    `🏛 <b>Tanlangan hudud:</b> ${reservation.zone}${reservation.tableNumber ? ` (Stol #${reservation.tableNumber})` : ''}\n` +
     (reservation.specialRequests ? `📝 <b>Maxsus istak:</b> <i>${reservation.specialRequests}</i>\n` : '') +
     `━━━━━━━━━━━━━━━━━━━━\n` +
     `📌 <i>Mijoz bilan bog'lanib, bandlikni tasdiqlang!</i>`;

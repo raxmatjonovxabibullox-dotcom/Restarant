@@ -11,12 +11,7 @@ import {
   Minus,
   Trash2,
   ShoppingBag,
-  ArrowRight,
   Sparkles,
-  MapPin,
-  Phone,
-  User,
-  Clock,
   Printer,
   CheckCircle2,
   ChefHat,
@@ -27,7 +22,7 @@ import { handlePhoneInputChange, blockNonPhoneKeys, isValidUzPhone } from '../li
 export const CartDrawer = () => {
   const { cart, updateQuantity, removeFromCart, clearCart, isCartOpen, closeCart } = useCart();
   const { placeOrder } = useRestaurant();
-  const { t, getLocalized } = useLanguage();
+  const { getLocalized } = useLanguage();
   const { formatPrice } = useCurrency();
 
   const [customerName, setCustomerName] = useState('');
@@ -380,6 +375,16 @@ export const CartDrawer = () => {
                       />
                     </div>
                   )}
+
+                  <div>
+                    <input
+                      type="text"
+                      placeholder="Qo'shimcha izoh (masalan: ko'proq sous, piyozsiz...)"
+                      value={notes}
+                      onChange={(e) => setNotes(e.target.value)}
+                      className="w-full glass-input text-xs py-2"
+                    />
+                  </div>
 
                   {/* Payment Method */}
                   <div className="flex items-center gap-3 pt-1">

@@ -126,7 +126,7 @@ export const RestaurantProvider = ({ children }) => {
         spread: 70,
         origin: { y: 0.6 }
       });
-    } catch (e) {
+    } catch {
       // ignore
     }
 
@@ -167,7 +167,7 @@ export const RestaurantProvider = ({ children }) => {
     // 2. Confetti
     try {
       confetti({ particleCount: 60, spread: 60, origin: { y: 0.7 } });
-    } catch (e) {}
+    } catch {}
 
     // 3. Supabase
     sendReservationToSupabase(newReservation);

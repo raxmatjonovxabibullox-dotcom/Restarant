@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sparkles, X, Heart, Users, UtensilsCrossed, CheckCircle2, ArrowRight, ShoppingBag, Wine, Flame, Award } from 'lucide-react';
+import { Sparkles, X, ArrowRight, ShoppingBag } from 'lucide-react';
 import { useRestaurant } from '../context/RestaurantContext';
 import { useCart } from '../context/CartContext';
 import { useCurrency } from '../context/CurrencyContext';

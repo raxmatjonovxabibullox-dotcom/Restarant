@@ -2,18 +2,11 @@ import React, { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { soundFx } from '../hooks/useSoundEffects';
 import {
-  Award,
   Sparkles,
-  Heart,
   ShieldCheck,
-  CheckCircle2,
   CalendarDays,
   UtensilsCrossed,
-  Clock,
-  Crown,
-  ChefHat,
-  Flame,
-  Star
+  Crown
 } from 'lucide-react';
 
 export const AboutPage = ({ setActivePage }) => {

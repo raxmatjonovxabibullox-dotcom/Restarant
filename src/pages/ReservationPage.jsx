@@ -7,19 +7,14 @@ import {
   CalendarDays,
   Sparkles,
   CheckCircle2,
-  ShieldCheck,
-  Music,
-  Car,
-  Baby,
-  Phone,
   LayoutGrid,
   List,
   Crown,
-  Clock,
   Users
 } from 'lucide-react';
 import { handlePhoneInputChange, blockNonPhoneKeys, isValidUzPhone } from '../lib/phoneUtils';
 
+const TODAY_DATE = new Date().toISOString().split('T')[0];
 const getTomorrowDate = () => new Date(Date.now() + 86400000).toISOString().split('T')[0];
 
 export const ReservationPage = ({ setActivePage }) => {
@@ -319,7 +314,7 @@ export const ReservationPage = ({ setActivePage }) => {
                     <input
                       type="date"
                       required
-                      min={new Date().toISOString().split('T')[0]}
+                      min={TODAY_DATE}
                       value={formData.date}
                       onChange={(e) => setFormData({ ...formData, date: e.target.value })}
                       className="w-full glass-input"

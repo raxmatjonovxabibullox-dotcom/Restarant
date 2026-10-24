@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { useRestaurant } from '../context/RestaurantContext';
 import { useCart } from '../context/CartContext';
@@ -13,23 +13,17 @@ import {
   ShieldCheck,
   Music,
   Star,
-  Clock,
-  Flame,
   Award,
-  Users,
   Heart,
   ChevronRight,
   CalendarDays,
-  ShoppingBag,
-  Wine,
-  CheckCircle2,
-  PhoneCall
+  ShoppingBag
 } from 'lucide-react';
 
 export const HomePage = ({ setActivePage, onOpenConcierge }) => {
   const { t, getLocalized } = useLanguage();
   const { menuItems, setSelectedDishModal } = useRestaurant();
-  const { addToCart, openCart } = useCart();
+  const { addToCart } = useCart();
   const { formatPrice } = useCurrency();
   const { isFavorite, toggleFavorite } = useFavorites();
 

@@ -43,8 +43,6 @@ import {
   ChefHat,
   Printer,
   Phone,
-  LayoutGrid,
-  Bell,
   Coins
 } from 'lucide-react';
 
@@ -63,9 +61,9 @@ export const AdminDashboard = ({ setIsAdminView }) => {
     showToast
   } = useRestaurant();
 
-  const { lang, setLang, t, getLocalized } = useLanguage();
+  const { getLocalized } = useLanguage();
   const { theme, toggleTheme } = useTheme();
-  const { formatPrice, currency } = useCurrency();
+  const { formatPrice } = useCurrency();
   const { isFullscreen, toggleFullscreen } = useFullscreen();
 
   const [activeTab, setActiveTab] = useState('dashboard'); // dashboard, kds, menu, orders, reservations, settings
@@ -256,7 +254,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
         showToast(res.message || "Xabar yuborishda xatolik", "error");
       }
     } catch (e) {
-      showToast("Xatolik yuz berdi", "error");
+      showToast(e.message || "Xatolik yuz berdi", "error");
     } finally {
       setSendingBroadcast(false);
     }
@@ -283,7 +281,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
         showToast(res.reason || "Supabase ulanishida xatolik", "error");
       }
     } catch (err) {
-      showToast("Supabase xatosi", "error");
+      showToast(err.message || "Supabase xatosi", "error");
     } finally {
       setSyncingSupabase(false);
     }

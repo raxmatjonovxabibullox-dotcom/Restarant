@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Heart, ShoppingBag, Trash2, ArrowRight } from 'lucide-react';
+import { X, Heart, ShoppingBag, Trash2 } from 'lucide-react';
 import { useFavorites } from '../context/FavoritesContext';
 import { useCart } from '../context/CartContext';
 import { useCurrency } from '../context/CurrencyContext';
@@ -10,7 +10,7 @@ export const FavoritesDrawer = () => {
   const { favorites, isFavoritesOpen, closeFavorites, toggleFavorite, clearFavorites } = useFavorites();
   const { addToCart, openCart } = useCart();
   const { formatPrice } = useCurrency();
-  const { getLocalized, t } = useLanguage();
+  const { getLocalized } = useLanguage();
 
   if (!isFavoritesOpen) return null;
 
