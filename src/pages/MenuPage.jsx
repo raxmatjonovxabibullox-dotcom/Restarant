@@ -57,8 +57,12 @@ export const MenuPage = ({ onOpenConcierge }) => {
   const filteredDishes = useMemo(() => {
     return menuItems.filter((dish) => {
       // Category match
-      if (selectedCategory !== 'all' && dish.category !== selectedCategory) {
-        return false;
+      if (selectedCategory !== 'all') {
+        if (selectedCategory === 'european' || selectedCategory === 'mains') {
+          if (dish.category !== 'european' && dish.category !== 'mains') return false;
+        } else if (dish.category !== selectedCategory) {
+          return false;
+        }
       }
       // Tag match
       if (selectedTag && !dish.tags?.includes(selectedTag)) {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Printer, Calendar, DollarSign, TrendingUp, ShoppingBag, UtensilsCrossed } from 'lucide-react';
+import { X, Printer } from 'lucide-react';
 import { soundFx } from '../../hooks/useSoundEffects';
 
 export const PrintDailyReportModal = ({ isOpen, onClose, orders, reservations, menuItems, formatPrice }) => {

@@ -7,7 +7,7 @@ import { useFullscreen } from '../hooks/useFullscreen';
 import { soundFx } from '../hooks/useSoundEffects';
 import { testTelegramBot, sendToTelegramApi } from '../services/telegramService';
 import { getStoredSettings, saveStoredSettings } from '../lib/storage';
-import { syncMenuWithSupabase } from '../lib/supabase';
+import { syncMenuWithSupabase, testSupabaseConnection } from '../lib/supabase';
 import { KitchenDisplay } from '../components/admin/KitchenDisplay';
 import { TableOccupancyManager } from '../components/admin/TableOccupancyManager';
 import { PrintDailyReportModal } from '../components/admin/PrintDailyReportModal';
@@ -116,6 +116,8 @@ export const AdminDashboard = ({ setIsAdminView }) => {
   const [customBroadcastMsg, setCustomBroadcastMsg] = useState('');
   const [sendingBroadcast, setSendingBroadcast] = useState(false);
   const [syncingSupabase, setSyncingSupabase] = useState(false);
+  const [testingSupabase, setTestingSupabase] = useState(false);
+  const [supabaseTestResult, setSupabaseTestResult] = useState(null);
 
   // --- STATS COMPUTATIONS (Fixed totalPrice & totalAmount support) ---
   const totalRevenue = orders.reduce(
@@ -267,6 +269,28 @@ export const AdminDashboard = ({ setIsAdminView }) => {
     showToast("Sozlamalar muvaffaqiyatli saqlandi!", "success");
   };
 
+  // --- TEST SUPABASE CONNECTION ---
+  const handleTestSupabase = async () => {
+    soundFx.playPop();
+    setTestingSupabase(true);
+    setSupabaseTestResult(null);
+    try {
+      const res = await testSupabaseConnection(settingsForm.supabaseUrl, settingsForm.supabaseAnonKey);
+      setSupabaseTestResult(res);
+      if (res.success) {
+        soundFx.playSuccessFanfare();
+        showToast(res.message || "Supabase ulanishi muvaffaqiyatli!", "success");
+      } else {
+        showToast(res.message || "Supabase ulanishida xatolik", "error");
+      }
+    } catch (err) {
+      setSupabaseTestResult({ success: false, message: err.message });
+      showToast(err.message || "Supabase ulanishida xatolik", "error");
+    } finally {
+      setTestingSupabase(false);
+    }
+  };
+
   // --- SYNC SUPABASE ---
   const handleSyncSupabase = async () => {
     soundFx.playPop();
@@ -319,7 +343,13 @@ export const AdminDashboard = ({ setIsAdminView }) => {
 
   // Filtered menu
   const filteredDishes = menuItems.filter(dish => {
-    if (menuCategoryFilter !== 'all' && dish.category !== menuCategoryFilter) return false;
+    if (menuCategoryFilter !== 'all') {
+      if (menuCategoryFilter === 'mains' || menuCategoryFilter === 'european') {
+        if (dish.category !== 'mains' && dish.category !== 'european') return false;
+      } else if (dish.category !== menuCategoryFilter) {
+        return false;
+      }
+    }
     if (menuSearch.trim()) {
       const q = menuSearch.toLowerCase();
       const n = (typeof dish.name === 'object' ? (dish.name.uz + dish.name.ru + dish.name.en) : dish.name).toLowerCase();
@@ -1283,7 +1313,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                   <input
                     type="text"
                     placeholder="8170197389"
-                    value={settingsForm.telegramChatId || '8170197389'}
+                    value={settingsForm.telegramChatId ?? ''}
                     onChange={(e) => setSettingsForm({ ...settingsForm, telegramChatId: e.target.value })}
                     className="glass-input w-full font-mono text-xs sm:text-sm"
                   />
@@ -1390,7 +1420,27 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                   />
                 </div>
 
+                {supabaseTestResult && (
+                  <div className={`p-4 rounded-2xl text-xs sm:text-sm font-semibold flex items-center gap-2 ${
+                    supabaseTestResult.success
+                      ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-400'
+                      : 'bg-red-500/10 border border-red-500/30 text-red-400'
+                  }`}>
+                    {supabaseTestResult.success ? <CheckCircle2 className="w-5 h-5 flex-shrink-0" /> : <AlertCircle className="w-5 h-5 flex-shrink-0" />}
+                    <span>{supabaseTestResult.message}</span>
+                  </div>
+                )}
+
                 <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                  <button
+                    onClick={handleTestSupabase}
+                    disabled={testingSupabase || !settingsForm.supabaseUrl || !settingsForm.supabaseAnonKey}
+                    className="px-5 py-3 rounded-xl border border-gray-300 dark:border-gray-700 hover:border-gold-500 text-xs font-bold text-gray-800 dark:text-gray-200 flex items-center justify-center gap-2 disabled:opacity-40"
+                  >
+                    <Database className="w-4 h-4 text-emerald-500" />
+                    <span>{testingSupabase ? 'Tekshirilmoqda...' : 'Ulanishni Tekshirish'}</span>
+                  </button>
+
                   <button
                     onClick={handleSyncSupabase}
                     disabled={syncingSupabase}

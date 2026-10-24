@@ -65,10 +65,10 @@ export const KitchenDisplay = ({ orders, updateOrderStatus, getLocalized }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {kitchenOrders.map((order) => {
             const isCooking = order.status === 'cooking';
-            const elapsedMinutes = Math.max(
-              1,
-              Math.floor((Date.now() - new Date(order.createdAt).getTime()) / 60000)
-            );
+            const orderTime = order.createdAt ? new Date(order.createdAt).getTime() : NaN;
+            const elapsedMinutes = !isNaN(orderTime)
+              ? Math.max(1, Math.floor((Date.now() - orderTime) / 60000))
+              : 1;
 
             return (
               <div
