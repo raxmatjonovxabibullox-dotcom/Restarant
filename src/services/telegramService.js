@@ -1,5 +1,5 @@
 // Telegram Bot Service for Zafaron Restaurant & Lounge
-// Enhanced with Photo support, Telegram Stickers, and Telegram Premium HTML styling
+// Enhanced with Photo support and Telegram Premium HTML styling
 import { getStoredSettings } from '../lib/storage.js';
 
 // Default Luxury Photo Banners
@@ -10,38 +10,11 @@ const DEFAULT_BANNERS = {
   test: 'https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=1200&q=80' // Restaurant facade
 };
 
-// Verified Telegram Sticker File IDs
-const TELEGRAM_STICKERS = {
-  orderCelebration: 'CAACAgQAAxkDAAMGaty7pxyedq3PChlSw-VT4bPzkfwAAlcEAALMFl1T0kCOOWkCHhw9BA',
-  reservationVip: 'CAACAgQAAxkDAAMGaty7pxyedq3PChlSw-VT4bPzkfwAAlcEAALMFl1T0kCOOWkCHhw9BA',
-  contactEnvelope: 'CAACAgQAAxkDAAMGaty7pxyedq3PChlSw-VT4bPzkfwAAlcEAALMFl1T0kCOOWkCHhw9BA'
-};
-
 const getBotCredentials = () => {
   const settings = getStoredSettings();
   const token = settings.telegramBotToken || import.meta.env.VITE_TELEGRAM_BOT_TOKEN || import.meta.env.NEXT_PUBLIC_TELEGRAM_BOT_TOKEN;
   const chatId = settings.telegramChatId || import.meta.env.VITE_TELEGRAM_CHAT_ID || import.meta.env.NEXT_PUBLIC_TELEGRAM_CHAT_ID;
   return { token, chatId };
-};
-
-// Send Sticker (non-blocking)
-export const sendTelegramSticker = async (token, chatId, stickerIdOrUrl) => {
-  if (!token || !chatId || !stickerIdOrUrl) return null;
-  try {
-    const url = `https://api.telegram.org/bot${token}/sendSticker`;
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        chat_id: chatId,
-        sticker: stickerIdOrUrl
-      })
-    });
-    return await response.json();
-  } catch (err) {
-    console.warn("Telegram sticker send skipped:", err);
-    return null;
-  }
 };
 
 // Send raw HTML message to Telegram
@@ -139,10 +112,10 @@ export const sendPhotoToTelegramApi = async (token, chatId, photoUrl, caption, r
   return await sendToTelegramApi(token, chatId, caption, replyMarkup);
 };
 
-// Test bot connection with Photo & Sticker
+// Test bot connection with Photo
 export const testTelegramBot = async (token, chatId) => {
-  // Send celebration sticker first
-  await sendTelegramSticker(token, chatId, TELEGRAM_STICKERS.orderCelebration);
+  // 1. Send welcoming greeting with waving hand first
+  await sendToTelegramApi(token, chatId, "👋 <b>Assalomu alaykum! Zafaron Telegram Bot aloqasi muvaffaqiyatli tekshirildi!</b>");
 
   const caption =
     `👑 <b>ZAFARON RESTAURANT & LOUNGE</b>\n` +
@@ -166,15 +139,19 @@ export const testTelegramBot = async (token, chatId) => {
   return await sendPhotoToTelegramApi(token, chatId, DEFAULT_BANNERS.test, caption, replyMarkup);
 };
 
-// Format & Send Order with Photo, Sticker, and Telegram Premium formatting
+// Format & Send Order with Photo and Telegram Premium formatting
 export const sendTelegramOrder = async (order) => {
   const { token, chatId } = getBotCredentials();
   if (!token || !chatId) {
     return { success: false, notConfigured: true, message: "Telegram sozlanmagan" };
   }
 
-  // 1. Send celebrating animated sticker
-  await sendTelegramSticker(token, chatId, TELEGRAM_STICKERS.orderCelebration);
+  // 1. Send welcoming greeting with waving hand first (jirafa emas 👋 chiqadi)
+  await sendToTelegramApi(
+    token,
+    chatId,
+    `👋 <b>Assalomu alaykum! Zafaron Restaurant & Lounge tizimiga yangi buyurtma qabul qilindi:</b>`
+  );
 
   // 2. Format delivery title
   const deliveryTypeTitle = order.deliveryType === 'dineIn'
@@ -184,7 +161,7 @@ export const sendTelegramOrder = async (order) => {
   const paymentTitle = order.paymentMethod === 'card' ? "💳 Karta (Click/Payme)" : "💵 Naqd pul";
 
   // 3. Format items list
-  const itemsText = (order.items || []).map((item, idx) => {
+  const itemsText = (order.items || []).map((item) => {
     const name = typeof item.name === 'object' ? (item.name.uz || item.name.en) : item.name;
     const subtotal = (item.price * item.quantity).toLocaleString();
     let detail = `• <b>${name}</b> × ${item.quantity} = <code>${subtotal} so'm</code>`;
@@ -240,15 +217,19 @@ export const sendTelegramOrder = async (order) => {
   return await sendPhotoToTelegramApi(token, chatId, photoUrl, caption, replyMarkup);
 };
 
-// Format & Send Reservation with Photo, Sticker, and Premium styling
+// Format & Send Reservation with Photo and Premium styling
 export const sendTelegramReservation = async (reservation) => {
   const { token, chatId } = getBotCredentials();
   if (!token || !chatId) {
     return { success: false, notConfigured: true, message: "Telegram sozlanmagan" };
   }
 
-  // 1. Send VIP reservation sticker
-  await sendTelegramSticker(token, chatId, TELEGRAM_STICKERS.reservationVip);
+  // 1. Send welcoming greeting with waving hand first (jirafa emas 👋 chiqadi)
+  await sendToTelegramApi(
+    token,
+    chatId,
+    `👋 <b>Assalomu alaykum! Zafaron tizimida yangi stol bandligi (bron) qabul qilindi:</b>`
+  );
 
   // 2. Telegram Premium Reservation Card
   const caption =
@@ -287,6 +268,13 @@ export const sendTelegramContactMessage = async (msg) => {
   if (!token || !chatId) {
     return { success: false, notConfigured: true, message: "Telegram sozlanmagan" };
   }
+
+  // 1. Send welcoming greeting with waving hand first
+  await sendToTelegramApi(
+    token,
+    chatId,
+    `👋 <b>Assalomu alaykum! Yangi mijoz murojaati qabul qilindi:</b>`
+  );
 
   const caption =
     `👑 <b>ZAFARON RESTAURANT & LOUNGE</b>\n` +
