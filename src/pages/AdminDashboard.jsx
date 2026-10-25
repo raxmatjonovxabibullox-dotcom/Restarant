@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRestaurant } from '../context/RestaurantContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useTheme } from '../context/ThemeContext';
@@ -49,7 +49,13 @@ import {
   Globe,
   ChevronDown,
   LogOut,
-  Lock
+  Lock,
+  Volume2,
+  VolumeX,
+  Clock,
+  Sparkles,
+  ShieldAlert,
+  ArrowRight
 } from 'lucide-react';
 
 export const AdminDashboard = ({ setIsAdminView }) => {
@@ -117,11 +123,43 @@ export const AdminDashboard = ({ setIsAdminView }) => {
   // --- FILTER STATES ---
   const [menuSearch, setMenuSearch] = useState('');
   const [menuCategoryFilter, setMenuCategoryFilter] = useState('all');
+  const [menuAvailabilityFilter, setMenuAvailabilityFilter] = useState('all'); // 'all', 'available', 'out_of_stock'
   const [orderSearch, setOrderSearch] = useState('');
   const [orderStatusFilter, setOrderStatusFilter] = useState('all');
   const [reservationSearch, setReservationSearch] = useState('');
   const [reservationStatusFilter, setReservationStatusFilter] = useState('all');
   const [reservationSubTab, setReservationSubTab] = useState('list'); // 'list' or 'floorplan'
+
+  // --- AUDIO & LIVE CLOCK (PRO MAX) ---
+  const [audioEnabled, setAudioEnabled] = useState(() => {
+    try {
+      return localStorage.getItem('zafaron_sound_enabled') !== 'false';
+    } catch {
+      return true;
+    }
+  });
+
+  const [liveTime, setLiveTime] = useState(() =>
+    new Date().toLocaleTimeString('uz-UZ', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+  );
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setLiveTime(new Date().toLocaleTimeString('uz-UZ', { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const toggleAudio = () => {
+    const nextVal = !audioEnabled;
+    setAudioEnabled(nextVal);
+    try {
+      localStorage.setItem('zafaron_sound_enabled', String(nextVal));
+    } catch {}
+    if (nextVal) {
+      soundFx.playChime();
+    }
+  };
 
   // --- MODALS FOR PRINTING ---
   const [isDailyReportOpen, setIsDailyReportOpen] = useState(false);
@@ -136,6 +174,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
   const [syncingSupabase, setSyncingSupabase] = useState(false);
   const [testingSupabase, setTestingSupabase] = useState(false);
   const [supabaseTestResult, setSupabaseTestResult] = useState(null);
+  const [showTokenInput, setShowTokenInput] = useState(false);
 
   // Hard Security Guard: Strictly deny non-authenticated users AFTER all hooks run
   if (!isAdmin) {
@@ -180,7 +219,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
     );
   }
 
-  // --- STATS COMPUTATIONS (Fixed totalPrice & totalAmount support) ---
+  // --- STATS & KPI COMPUTATIONS (PRO MAX EXECUTIVE) ---
   const totalRevenue = orders.reduce(
     (sum, o) => (o.status !== 'cancelled' ? sum + Number(o.totalPrice || o.totalAmount || 0) : sum),
     0
@@ -188,6 +227,45 @@ export const AdminDashboard = ({ setIsAdminView }) => {
   const activeReservationsCount = reservations.filter(r => r.status === 'new' || r.status === 'confirmed').length;
   const pendingOrdersCount = orders.filter(o => o.status === 'pending' || o.status === 'cooking').length;
   const averageCheck = orders.length > 0 ? Math.round(totalRevenue / orders.length) : 0;
+
+  // Daily target (25,000,000 UZS)
+  const dailyTarget = 25000000;
+  const dailyTargetPercent = Math.min(100, Math.round((totalRevenue / dailyTarget) * 100));
+
+  // Payment breakdown
+  const cardOrdersTotal = orders
+    .filter(o => o.paymentMethod === 'card' && o.status !== 'cancelled')
+    .reduce((sum, o) => sum + Number(o.totalPrice || o.totalAmount || 0), 0);
+  const cashOrdersTotal = orders
+    .filter(o => o.paymentMethod !== 'card' && o.status !== 'cancelled')
+    .reduce((sum, o) => sum + Number(o.totalPrice || o.totalAmount || 0), 0);
+
+  // Delivery type counts
+  const dineInOrdersCount = orders.filter(o => o.deliveryType === 'dineIn').length;
+  const deliveryOrdersCount = orders.filter(o => o.deliveryType !== 'dineIn').length;
+
+  // Menu Stock stats
+  const availableDishesCount = menuItems.filter(d => d.isAvailable !== false).length;
+  const outOfStockCount = menuItems.filter(d => d.isAvailable === false).length;
+
+  // Order counts per status
+  const ordersCountByStatus = {
+    all: orders.length,
+    pending: orders.filter(o => o.status === 'pending').length,
+    cooking: orders.filter(o => o.status === 'cooking').length,
+    delivering: orders.filter(o => o.status === 'delivering').length,
+    completed: orders.filter(o => o.status === 'completed').length,
+    cancelled: orders.filter(o => o.status === 'cancelled').length,
+  };
+
+  // Reservation counts per status
+  const resCountByStatus = {
+    all: reservations.length,
+    new: reservations.filter(r => r.status === 'new').length,
+    confirmed: reservations.filter(r => r.status === 'confirmed').length,
+    finished: reservations.filter(r => r.status === 'finished').length,
+    cancelled: reservations.filter(r => r.status === 'cancelled').length,
+  };
 
   // --- OPEN ADD DISH MODAL ---
   const handleOpenAddDish = () => {
@@ -425,6 +503,73 @@ export const AdminDashboard = ({ setIsAdminView }) => {
     showToast(lang === 'ru' ? 'Заказы успешно экспортированы в Excel (CSV)!' : lang === 'en' ? 'Orders exported to Excel (CSV) successfully!' : "Buyurtmalar Excel (CSV) formatida yuklab olindi!", 'success');
   };
 
+  // --- EXPORT RESERVATIONS AS EXCEL/CSV (NEW PRO UPGRADE) ---
+  const handleExportReservationsCSV = () => {
+    soundFx.playChime();
+    const headers = ['Booking ID', 'Guest Name', 'Phone', 'Date', 'Time', 'Guests Count', 'Zone / Hall', 'Table #', 'Status', 'Special Requests', 'Created At'];
+    const rows = reservations.map(r => [
+      `"${r.id || ''}"`,
+      `"${(r.fullName || '').replace(/"/g, '""')}"`,
+      `"${r.phone || ''}"`,
+      `"${r.date || ''}"`,
+      `"${r.time || ''}"`,
+      r.guests || 1,
+      `"${(typeof r.zone === 'object' ? (r.zone[lang] || r.zone.uz) : (r.zone || '')).replace(/"/g, '""')}"`,
+      `"${r.tableNumber || '-'}"`,
+      `"${r.status || 'new'}"`,
+      `"${(r.specialRequests || '').replace(/"/g, '""')}"`,
+      `"${r.createdAt ? new Date(r.createdAt).toLocaleString() : ''}"`
+    ]);
+
+    const csvContent = '\uFEFF' + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `zafaron_reservations_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    showToast(
+      lang === 'ru' ? 'Брони успешно экспортированы в Excel (CSV)!' :
+      lang === 'en' ? 'Reservations exported to Excel (CSV) successfully!' :
+      'Bandliklar Excel (CSV) formatida yuklab olindi!',
+      'success'
+    );
+  };
+
+  // --- QUICK PRICE ADJUSTMENT (+/- 5,000 UZS) ---
+  const handleQuickPriceAdjust = async (dishId, currentPrice, delta) => {
+    soundFx.playPop();
+    const newPrice = Math.max(1000, Number(currentPrice) + delta);
+    await updateDish(dishId, { price: newPrice });
+    showToast(
+      lang === 'ru' ? `Цена обновлена: ${formatPrice(newPrice)}` :
+      lang === 'en' ? `Price updated: ${formatPrice(newPrice)}` :
+      `Narx yangilandi: ${formatPrice(newPrice)}`,
+      'success'
+    );
+  };
+
+  // --- QUICK 1-CLICK ORDER STATUS STEPPER ---
+  const handleQuickOrderStatusStep = (order) => {
+    const nextMap = {
+      pending: 'cooking',
+      cooking: 'delivering',
+      delivering: 'completed'
+    };
+    const nextStatus = nextMap[order.status];
+    if (!nextStatus) return;
+    soundFx.playChime();
+    updateOrderStatus(order.id, nextStatus);
+    showToast(
+      lang === 'ru' ? `Статус заказа #${order.id} изменен на: ${nextStatus}` :
+      lang === 'en' ? `Order #${order.id} status changed to: ${nextStatus}` :
+      `#${order.id} buyurtma holati o'zgartirildi: ${nextStatus}`,
+      'success'
+    );
+  };
+
   // Categories list
   const categories = [
     { id: 'all', label: t('categories.all') || (lang === 'ru' ? 'Все' : lang === 'en' ? 'All' : 'Barchasi') },
@@ -437,8 +582,11 @@ export const AdminDashboard = ({ setIsAdminView }) => {
     { id: 'drinks', label: t('categories.drinks') || (lang === 'ru' ? 'Напитки' : lang === 'en' ? 'Beverages' : 'Ichimliklar') },
   ];
 
-  // Filtered menu
+  // Filtered menu with category, search and availability filter
   const filteredDishes = menuItems.filter(dish => {
+    if (menuAvailabilityFilter === 'available' && dish.isAvailable === false) return false;
+    if (menuAvailabilityFilter === 'out_of_stock' && dish.isAvailable !== false) return false;
+
     if (menuCategoryFilter !== 'all') {
       if (menuCategoryFilter === 'mains' || menuCategoryFilter === 'european') {
         if (dish.category !== 'mains' && dish.category !== 'european') return false;
@@ -557,6 +705,27 @@ export const AdminDashboard = ({ setIsAdminView }) => {
 
           {/* Right Tools: Print Report, Language, Theme, Fullscreen, Back to Public */}
           <div className="flex items-center gap-2">
+            {/* Quick Shift Report Print */}
+            {/* Live Clock & Pulse Indicator (Tashkent Time) */}
+            <div className="hidden xl:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gray-100 dark:bg-dark-800 border border-gray-200 dark:border-white/10 text-xs font-mono font-bold text-gray-700 dark:text-gray-300">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <Clock className="w-3.5 h-3.5 text-gold-500" />
+              <span>{liveTime}</span>
+            </div>
+
+            {/* Sound FX Audio Toggle */}
+            <button
+              onClick={toggleAudio}
+              className={`p-2 rounded-xl transition-colors shadow-sm ${
+                audioEnabled
+                  ? 'bg-gold-500/10 text-gold-500 border border-gold-500/30 hover:bg-gold-500/20'
+                  : 'bg-gray-100 dark:bg-dark-800 border border-gray-200 dark:border-gray-700 text-gray-400'
+              }`}
+              title={audioEnabled ? 'Ovozli effektlar yoqilgan (Faol)' : "Ovozli effektlar o'chirilgan"}
+            >
+              {audioEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+            </button>
+
             {/* Quick Shift Report Print */}
             <button
               onClick={() => {
@@ -706,6 +875,110 @@ export const AdminDashboard = ({ setIsAdminView }) => {
         {/* ================= TAB 1: DASHBOARD OVERVIEW ================= */}
         {activeTab === 'dashboard' && (
           <div className="space-y-8">
+            {/* Executive Quick Action Hub & Daily KPI Target Bar (PRO UPGRADE) */}
+            <div className="glass-card p-6 rounded-3xl border border-gray-200 dark:border-white/10 space-y-5 bg-gradient-to-br from-white/90 via-white/50 to-amber-500/5 dark:from-dark-900/90 dark:via-dark-900/50 dark:to-amber-500/5 shadow-xl">
+              <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-gold-500/20 text-gold-500 border border-gold-500/30">
+                      ⚡ Executive Live Hub
+                    </span>
+                    <span className="text-xs text-gray-400 font-medium">
+                      {lang === 'ru' ? 'Синхронизация в реальном времени' : lang === 'en' ? 'Live Cloud Sync' : "Real-vaqt sinxronlashuvi"}
+                    </span>
+                  </div>
+                  <h2 className="font-serif font-black text-xl sm:text-2xl text-gray-900 dark:text-white mt-1">
+                    {lang === 'ru' ? 'Главная Панель Управления' : lang === 'en' ? 'Executive Operations Command' : "Bosh Boshqaruv Markazi"}
+                  </h2>
+                </div>
+
+                {/* Quick Action Buttons */}
+                <div className="flex items-center gap-2 flex-wrap w-full md:w-auto">
+                  <button
+                    onClick={handleOpenAddDish}
+                    className="flex-1 md:flex-initial px-3.5 py-2 rounded-xl gold-gradient-bg text-dark-950 font-bold text-xs flex items-center justify-center gap-1.5 shadow-md hover:scale-105 transition-all"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>{lang === 'ru' ? '+ Блюдо' : lang === 'en' ? '+ Dish' : "+ Taom"}</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      soundFx.playChime();
+                      setIsDailyReportOpen(true);
+                    }}
+                    className="flex-1 md:flex-initial px-3.5 py-2 rounded-xl bg-gray-100 dark:bg-dark-800 hover:bg-gold-500/20 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-white/10 font-bold text-xs flex items-center justify-center gap-1.5 transition-all"
+                  >
+                    <Printer className="w-3.5 h-3.5 text-gold-500" />
+                    <span>{lang === 'ru' ? 'Отчет' : lang === 'en' ? 'Report' : 'Kassa'}</span>
+                  </button>
+
+                  <button
+                    onClick={handleExportOrdersCSV}
+                    className="flex-1 md:flex-initial px-3.5 py-2 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-500 border border-emerald-500/30 font-bold text-xs flex items-center justify-center gap-1.5 transition-all"
+                    title="Buyurtmalarni Excel formatida yuklab olish"
+                  >
+                    <FileSpreadsheet className="w-3.5 h-3.5" />
+                    <span>{lang === 'ru' ? 'Заказы CSV' : lang === 'en' ? 'Orders CSV' : 'Buyurtma CSV'}</span>
+                  </button>
+
+                  <button
+                    onClick={handleExportReservationsCSV}
+                    className="flex-1 md:flex-initial px-3.5 py-2 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 text-blue-500 border border-blue-500/30 font-bold text-xs flex items-center justify-center gap-1.5 transition-all"
+                    title="Stol bandliklarini Excel formatida yuklab olish"
+                  >
+                    <CalendarDays className="w-3.5 h-3.5" />
+                    <span>{lang === 'ru' ? 'Брони CSV' : lang === 'en' ? 'Bookings CSV' : 'Bandlik CSV'}</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      soundFx.playPop();
+                      setActiveTab('reservations');
+                      setReservationSubTab('floorplan');
+                    }}
+                    className="flex-1 md:flex-initial px-3.5 py-2 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-500 border border-amber-500/30 font-bold text-xs flex items-center justify-center gap-1.5 transition-all"
+                  >
+                    <span>🗺️ {lang === 'ru' ? 'Залы' : lang === 'en' ? 'Halls' : 'Zallar'}</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Daily Target Progress Bar */}
+              <div className="p-4 rounded-2xl bg-gray-50/70 dark:bg-dark-850/60 border border-gray-100 dark:border-white/5 space-y-2">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-semibold text-gray-600 dark:text-gray-300 flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-gold-500" />
+                    <span>{lang === 'ru' ? 'Цель выручки на сегодня (25 млн UZS):' : lang === 'en' ? 'Daily Revenue Target (25M UZS):' : "Kunlik maqsadli tushum (25 mln so'm):"}</span>
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono font-bold text-gold-500 text-sm">
+                      {formatPrice(totalRevenue)}
+                    </span>
+                    <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-gold-500/20 text-gold-400">
+                      {dailyTargetPercent}%
+                    </span>
+                  </div>
+                </div>
+
+                {/* Shimmering Progress Bar */}
+                <div className="w-full bg-gray-200 dark:bg-dark-800 rounded-full h-3 overflow-hidden p-0.5">
+                  <div
+                    style={{ width: `${dailyTargetPercent}%` }}
+                    className="h-full rounded-full bg-gradient-to-r from-amber-600 via-gold-400 to-amber-300 transition-all duration-1000 shadow-sm relative overflow-hidden"
+                  >
+                    <div className="absolute inset-0 bg-white/20 animate-pulse" />
+                  </div>
+                </div>
+
+                <div className="flex justify-between text-[11px] text-gray-400 pt-0.5">
+                  <span>0 UZS</span>
+                  <span>{dailyTargetPercent >= 100 ? (lang === 'ru' ? '🎉 Цель успешно достигнута!' : '🎉 Maqsad bajarildi!') : `${formatPrice(Math.max(0, dailyTarget - totalRevenue))} ${lang === 'ru' ? 'осталось до цели' : 'qoldi'}`}</span>
+                  <span>{formatPrice(dailyTarget)}</span>
+                </div>
+              </div>
+            </div>
+
             {/* Top 4 Stats Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
               {/* Revenue */}
@@ -873,6 +1146,114 @@ export const AdminDashboard = ({ setIsAdminView }) => {
               </div>
             </div>
 
+            {/* Operational Metrics: Payments, Delivery Types, and Table Occupancy */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+              {/* Payment Split */}
+              <div className="glass-card p-5 rounded-3xl border border-gray-200 dark:border-white/10 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">
+                    {lang === 'ru' ? 'Способы Оплаты' : lang === 'en' ? 'Payment Methods' : "To'lov Usullari"}
+                  </span>
+                  <Coins className="w-4 h-4 text-gold-500" />
+                </div>
+                <div className="space-y-2">
+                  <div className="flex justify-between text-xs">
+                    <span className="text-gray-600 dark:text-gray-300">💳 {lang === 'ru' ? 'Карта (Click/Payme)' : lang === 'en' ? 'Card' : 'Karta'}:</span>
+                    <span className="font-bold text-gold-500">{formatPrice(cardOrdersTotal)}</span>
+                  </div>
+                  <div className="flex justify-between text-xs">
+                    <span className="text-gray-600 dark:text-gray-300">💵 {lang === 'ru' ? 'Наличные' : lang === 'en' ? 'Cash' : 'Naqd pul'}:</span>
+                    <span className="font-bold text-emerald-500">{formatPrice(cashOrdersTotal)}</span>
+                  </div>
+                  <div className="w-full bg-gray-200 dark:bg-dark-800 rounded-full h-2 overflow-hidden flex">
+                    <div
+                      style={{ width: `${totalRevenue > 0 ? (cardOrdersTotal / totalRevenue) * 100 : 50}%` }}
+                      className="bg-gold-500 h-full"
+                      title="Karta"
+                    />
+                    <div
+                      style={{ width: `${totalRevenue > 0 ? (cashOrdersTotal / totalRevenue) * 100 : 50}%` }}
+                      className="bg-emerald-500 h-full"
+                      title="Naqd"
+                    />
+                  </div>
+                  <div className="flex justify-between text-[10px] text-gray-400">
+                    <span>{totalRevenue > 0 ? Math.round((cardOrdersTotal / totalRevenue) * 100) : 0}% Karta</span>
+                    <span>{totalRevenue > 0 ? Math.round((cashOrdersTotal / totalRevenue) * 100) : 0}% Naqd</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Service Types */}
+              <div className="glass-card p-5 rounded-3xl border border-gray-200 dark:border-white/10 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">
+                    {lang === 'ru' ? 'Тип Заказов' : lang === 'en' ? 'Service Operations' : "Xizmat Turlari"}
+                  </span>
+                  <ShoppingBag className="w-4 h-4 text-blue-500" />
+                </div>
+                <div className="space-y-2">
+                  <div className="flex justify-between text-xs">
+                    <span className="text-gray-600 dark:text-gray-300">🍽️ {lang === 'ru' ? 'В заведении' : lang === 'en' ? 'Dine-In' : 'Zalda (Stol)'}:</span>
+                    <span className="font-bold">{dineInOrdersCount} {lang === 'ru' ? 'зак.' : 'ta'}</span>
+                  </div>
+                  <div className="flex justify-between text-xs">
+                    <span className="text-gray-600 dark:text-gray-300">🛵 {lang === 'ru' ? 'Доставка' : lang === 'en' ? 'Delivery' : 'Yetkazib berish'}:</span>
+                    <span className="font-bold text-blue-500">{deliveryOrdersCount} {lang === 'ru' ? 'зак.' : 'ta'}</span>
+                  </div>
+                  <div className="w-full bg-gray-200 dark:bg-dark-800 rounded-full h-2 overflow-hidden flex">
+                    <div
+                      style={{ width: `${orders.length > 0 ? (dineInOrdersCount / orders.length) * 100 : 50}%` }}
+                      className="bg-amber-500 h-full"
+                      title="Dine-in"
+                    />
+                    <div
+                      style={{ width: `${orders.length > 0 ? (deliveryOrdersCount / orders.length) * 100 : 50}%` }}
+                      className="bg-blue-500 h-full"
+                      title="Delivery"
+                    />
+                  </div>
+                  <div className="flex justify-between text-[10px] text-gray-400">
+                    <span>{orders.length > 0 ? Math.round((dineInOrdersCount / orders.length) * 100) : 0}% Zalda</span>
+                    <span>{orders.length > 0 ? Math.round((deliveryOrdersCount / orders.length) * 100) : 0}% Yetkazish</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Table Occupancy Quick Glance */}
+              <div className="glass-card p-5 rounded-3xl border border-gray-200 dark:border-white/10 space-y-3 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">
+                      {lang === 'ru' ? 'Занятость Залов' : lang === 'en' ? 'Floor Occupancy' : "Zallar & Stollar"}
+                    </span>
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 text-center">
+                    <div className="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
+                      <span className="text-[10px] text-emerald-400 font-bold block">{lang === 'ru' ? 'Свободно' : "Bo'sh"}</span>
+                      <span className="font-serif font-black text-lg text-emerald-500">6 ta</span>
+                    </div>
+                    <div className="p-2 rounded-xl bg-amber-500/10 border border-amber-500/20">
+                      <span className="text-[10px] text-amber-400 font-bold block">{lang === 'ru' ? 'Занято' : 'Band'}</span>
+                      <span className="font-serif font-black text-lg text-amber-500">4 ta</span>
+                    </div>
+                  </div>
+                </div>
+                <button
+                  onClick={() => {
+                    soundFx.playPop();
+                    setActiveTab('reservations');
+                    setReservationSubTab('floorplan');
+                  }}
+                  className="w-full py-2 rounded-xl bg-gold-500/10 hover:bg-gold-500 text-gold-500 hover:text-dark-950 font-bold text-xs transition-colors flex items-center justify-center gap-1.5"
+                >
+                  <span>🗺️ {lang === 'ru' ? 'Интерактивная карта залов' : lang === 'en' ? 'Open Floor Plan' : "Jonli Stollar Xaritasini Ochish"}</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+
             {/* Recent Orders Overview */}
             <div className="glass-card p-6 rounded-3xl border border-gray-200 dark:border-white/10 space-y-4">
               <div className="flex items-center justify-between">
@@ -993,22 +1374,49 @@ export const AdminDashboard = ({ setIsAdminView }) => {
             </div>
 
             {/* Search & Category Filter Toolbar */}
-            <div className="glass-card p-4 rounded-2xl flex flex-col md:flex-row items-center gap-3 border border-gray-200 dark:border-white/10">
-              <div className="relative flex-1 w-full">
-                <div className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 flex items-center">
-                  <Search className="w-4 h-4" />
+            <div className="glass-card p-4 rounded-2xl flex flex-col gap-3 border border-gray-200 dark:border-white/10">
+              <div className="flex flex-col md:flex-row items-center gap-3">
+                <div className="relative flex-1 w-full">
+                  <div className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 flex items-center">
+                    <Search className="w-4 h-4" />
+                  </div>
+                  <input
+                    type="text"
+                    placeholder={lang === 'ru' ? 'Поиск блюда по названию...' : lang === 'en' ? 'Search dishes by name...' : "Taom nomi bo'yicha qidirish..."}
+                    value={menuSearch}
+                    onChange={(e) => setMenuSearch(e.target.value)}
+                    style={{ paddingLeft: '2.75rem' }}
+                    className="glass-input w-full !pl-11 text-xs sm:text-sm"
+                  />
                 </div>
-                <input
-                  type="text"
-                  placeholder={lang === 'ru' ? 'Поиск блюда по названию...' : lang === 'en' ? 'Search dishes by name...' : "Taom nomi bo'yicha qidirish..."}
-                  value={menuSearch}
-                  onChange={(e) => setMenuSearch(e.target.value)}
-                  style={{ paddingLeft: '2.75rem' }}
-                  className="glass-input w-full !pl-11 text-xs sm:text-sm"
-                />
+
+                {/* Availability Stock Filter */}
+                <div className="flex items-center gap-1.5 w-full md:w-auto">
+                  {[
+                    { id: 'all', label: `${lang === 'ru' ? 'Все' : 'Barchasi'} (${menuItems.length})` },
+                    { id: 'available', label: `🟢 ${lang === 'ru' ? 'В наличии' : 'Sotuvda'} (${availableDishesCount})` },
+                    { id: 'out_of_stock', label: `🔴 ${lang === 'ru' ? 'Стоп-лист' : 'Stop-list'} (${outOfStockCount})` }
+                  ].map(st => (
+                    <button
+                      key={st.id}
+                      onClick={() => {
+                        soundFx.playPop();
+                        setMenuAvailabilityFilter(st.id);
+                      }}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
+                        menuAvailabilityFilter === st.id
+                          ? 'gold-gradient-bg text-dark-950 font-black shadow-sm'
+                          : 'bg-gray-100 dark:bg-dark-800 text-gray-600 dark:text-gray-300'
+                      }`}
+                    >
+                      {st.label}
+                    </button>
+                  ))}
+                </div>
               </div>
 
-              <div className="flex items-center gap-1.5 overflow-x-auto w-full md:w-auto scrollbar-none">
+              {/* Category Filter Chips */}
+              <div className="flex items-center gap-1.5 overflow-x-auto w-full pt-1 border-t border-gray-100 dark:border-white/5 scrollbar-none">
                 {categories.map(c => (
                   <button
                     key={c.id}
@@ -1086,18 +1494,60 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                       </p>
                     </div>
 
-                    <div className="pt-3 border-t border-gray-100 dark:border-white/5 flex items-center justify-between">
-                      <span className="font-serif font-black text-lg gold-gradient-text">
-                        {formatPrice(dish.price)}
-                      </span>
+                    <div className="pt-3 border-t border-gray-100 dark:border-white/5 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <span className="font-serif font-black text-base sm:text-lg gold-gradient-text block leading-none">
+                            {formatPrice(dish.price)}
+                          </span>
+                          {/* Quick Price Adjuster Buttons */}
+                          <div className="flex items-center gap-1 mt-1">
+                            <button
+                              type="button"
+                              onClick={() => handleQuickPriceAdjust(dish.id, dish.price, -5000)}
+                              className="px-1.5 py-0.5 rounded text-[10px] bg-gray-100 dark:bg-dark-800 text-gray-500 hover:text-white hover:bg-red-500 font-mono font-bold transition-colors"
+                              title="-5,000 UZS"
+                            >
+                              -5k
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleQuickPriceAdjust(dish.id, dish.price, 5000)}
+                              className="px-1.5 py-0.5 rounded text-[10px] bg-gray-100 dark:bg-dark-800 text-gray-500 hover:text-dark-950 hover:bg-gold-500 font-mono font-bold transition-colors"
+                              title="+5,000 UZS"
+                            >
+                              +5k
+                            </button>
+                          </div>
+                        </div>
 
-                      <div className="flex items-center gap-1.5">
+                        {/* Direct Stock Status Toggle Pill */}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            soundFx.playPop();
+                            toggleDishAvailability(dish.id);
+                          }}
+                          className={`px-2.5 py-1 rounded-xl text-[10px] font-bold border transition-all flex items-center gap-1.5 ${
+                            dish.isAvailable !== false
+                              ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20 hover:bg-red-500/10 hover:text-red-500 hover:border-red-500/30'
+                              : 'bg-red-500/15 text-red-500 border-red-500/30 hover:bg-emerald-500/10 hover:text-emerald-500 hover:border-emerald-500/30'
+                          }`}
+                          title="Sotuv holatini o'zgartirish (Stop-list)"
+                        >
+                          <span className={`w-1.5 h-1.5 rounded-full ${dish.isAvailable !== false ? 'bg-emerald-500' : 'bg-red-500'}`} />
+                          <span>{dish.isAvailable !== false ? (lang === 'ru' ? 'В наличии' : 'Sotuvda') : (lang === 'ru' ? 'Стоп-лист' : 'Stop-list')}</span>
+                        </button>
+                      </div>
+
+                      <div className="flex items-center justify-end gap-1.5 pt-1">
                         <button
                           onClick={() => handleOpenEditDish(dish)}
-                          className="p-2 rounded-xl bg-gray-100 dark:bg-dark-800 text-gray-600 dark:text-gray-300 hover:text-gold-500 hover:bg-gold-500/10 transition-colors"
+                          className="px-3 py-1.5 rounded-xl bg-gray-100 dark:bg-dark-800 text-gray-600 dark:text-gray-300 hover:text-gold-500 hover:bg-gold-500/10 text-xs font-semibold flex items-center gap-1 transition-colors"
                           title={lang === 'ru' ? 'Редактировать' : lang === 'en' ? 'Edit' : 'Tahrirlash'}
                         >
                           <Edit className="w-3.5 h-3.5" />
+                          <span>{lang === 'ru' ? 'Изменить' : 'Tahrir'}</span>
                         </button>
 
                         <button
@@ -1107,7 +1557,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                               deleteDish(dish.id);
                             }
                           }}
-                          className="p-2 rounded-xl bg-gray-100 dark:bg-dark-800 text-gray-600 dark:text-gray-300 hover:text-red-500 hover:bg-red-500/10 transition-colors"
+                          className="p-1.5 rounded-xl bg-gray-100 dark:bg-dark-800 text-gray-600 dark:text-gray-300 hover:text-red-500 hover:bg-red-500/10 transition-colors"
                           title={lang === 'ru' ? 'Удалить' : lang === 'en' ? 'Delete' : "O'chirish"}
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -1145,32 +1595,42 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                   <span>{lang === 'ru' ? 'Экспорт в Excel (CSV)' : lang === 'en' ? 'Export Excel (CSV)' : 'Excel (CSV) Eksport'}</span>
                 </button>
 
-                {['all', 'pending', 'cooking', 'delivering', 'completed', 'cancelled'].map(st => (
-                  <button
-                    key={st}
-                    onClick={() => {
-                      soundFx.playPop();
-                      setOrderStatusFilter(st);
-                    }}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-bold capitalize transition-colors ${
-                      orderStatusFilter === st
-                        ? 'gold-gradient-bg text-dark-950 font-black'
-                        : 'bg-gray-100 dark:bg-dark-800 text-gray-600 dark:text-gray-300'
-                    }`}
-                  >
-                    {st === 'all'
-                      ? (lang === 'ru' ? 'Все' : lang === 'en' ? 'All' : 'Barchasi')
-                      : st === 'pending'
-                      ? (lang === 'ru' ? 'Ожидание' : lang === 'en' ? 'Pending' : 'Kutilmoqda')
-                      : st === 'cooking'
-                      ? (lang === 'ru' ? 'Готовится' : lang === 'en' ? 'Cooking' : 'Tayyorlanmoqda')
-                      : st === 'delivering'
-                      ? (lang === 'ru' ? 'Доставка' : lang === 'en' ? 'Delivering' : 'Yetkazilmoqda')
-                      : st === 'completed'
-                      ? (lang === 'ru' ? 'Завершен' : lang === 'en' ? 'Completed' : 'Yakunlandi')
-                      : (lang === 'ru' ? 'Отменен' : lang === 'en' ? 'Cancelled' : 'Bekor')}
-                  </button>
-                ))}
+                {['all', 'pending', 'cooking', 'delivering', 'completed', 'cancelled'].map(st => {
+                  const count = ordersCountByStatus[st] || 0;
+                  const labelMap = {
+                    all: lang === 'ru' ? 'Все' : lang === 'en' ? 'All' : 'Barchasi',
+                    pending: lang === 'ru' ? 'Ожидание' : lang === 'en' ? 'Pending' : 'Kutilmoqda',
+                    cooking: lang === 'ru' ? 'Готовится' : lang === 'en' ? 'Cooking' : 'Tayyorlanmoqda',
+                    delivering: lang === 'ru' ? 'Доставка' : lang === 'en' ? 'Delivering' : 'Yetkazilmoqda',
+                    completed: lang === 'ru' ? 'Завершен' : lang === 'en' ? 'Completed' : 'Yakunlandi',
+                    cancelled: lang === 'ru' ? 'Отменен' : lang === 'en' ? 'Cancelled' : 'Bekor'
+                  };
+                  return (
+                    <button
+                      key={st}
+                      onClick={() => {
+                        soundFx.playPop();
+                        setOrderStatusFilter(st);
+                      }}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-bold capitalize transition-all flex items-center gap-1.5 ${
+                        orderStatusFilter === st
+                          ? 'gold-gradient-bg text-dark-950 font-black shadow-md'
+                          : 'bg-gray-100 dark:bg-dark-800 text-gray-600 dark:text-gray-300'
+                      }`}
+                    >
+                      <span>{labelMap[st]}</span>
+                      <span className={`px-1.5 py-0.5 rounded-full text-[10px] ${
+                        orderStatusFilter === st
+                          ? 'bg-dark-950/20 text-dark-950 font-extrabold'
+                          : st === 'pending' && count > 0
+                          ? 'bg-amber-500 text-dark-950 font-extrabold animate-pulse'
+                          : 'bg-gray-200 dark:bg-dark-700 text-gray-500'
+                      }`}>
+                        {count}
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
@@ -1274,30 +1734,64 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                     </div>
 
                     {/* Total, Payment & Receipt Print */}
-                    <div className="pt-3 border-t border-gray-100 dark:border-white/5 flex items-center justify-between">
-                      <div>
-                        <span className="text-[10px] text-gray-400 uppercase block">{lang === 'ru' ? 'Итоговая сумма' : lang === 'en' ? 'Total amount' : 'Jami summa'}</span>
-                        <span className="font-serif font-black text-lg text-gray-900 dark:text-white">
-                          {formatPrice(order.totalPrice || order.totalAmount || 0)}
-                        </span>
+                    <div className="pt-3 border-t border-gray-100 dark:border-white/5 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <span className="text-[10px] text-gray-400 uppercase block">{lang === 'ru' ? 'Итоговая сумма' : lang === 'en' ? 'Total amount' : 'Jami summa'}</span>
+                          <span className="font-serif font-black text-lg text-gray-900 dark:text-white">
+                            {formatPrice(order.totalPrice || order.totalAmount || 0)}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => {
+                              setSelectedOrderForReceipt(order);
+                            }}
+                            className="p-2 rounded-xl bg-gray-100 dark:bg-dark-800 text-gray-700 dark:text-gray-300 hover:text-gold-500 hover:bg-gold-500/10 transition-colors"
+                            title={lang === 'ru' ? 'Печать товарного чека' : lang === 'en' ? 'Print receipt' : "Chekni ko'rish va chop etish"}
+                          >
+                            <Printer className="w-4 h-4" />
+                          </button>
+                          <span className="text-xs px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-dark-800 text-gray-600 dark:text-gray-300 font-medium">
+                            {order.paymentMethod === 'card'
+                              ? (lang === 'ru' ? '💳 Карта' : lang === 'en' ? '💳 Card' : '💳 Karta')
+                              : (lang === 'ru' ? '💵 Наличные' : lang === 'en' ? '💵 Cash' : '💵 Naqd')}
+                          </span>
+                        </div>
                       </div>
 
-                      <div className="flex items-center gap-2">
+                      {/* 1-Click Fast Status Stepper */}
+                      {order.status === 'pending' && (
                         <button
-                          onClick={() => {
-                            setSelectedOrderForReceipt(order);
-                          }}
-                          className="p-2 rounded-xl bg-gray-100 dark:bg-dark-800 text-gray-700 dark:text-gray-300 hover:text-gold-500 hover:bg-gold-500/10 transition-colors"
-                          title={lang === 'ru' ? 'Печать товарного чека' : lang === 'en' ? 'Print receipt' : "Chekni ko'rish va chop etish"}
+                          type="button"
+                          onClick={() => handleQuickOrderStatusStep(order)}
+                          className="w-full py-2.5 rounded-xl bg-amber-500/15 hover:bg-amber-500 text-amber-500 hover:text-dark-950 font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-sm"
                         >
-                          <Printer className="w-4 h-4" />
+                          <ChefHat className="w-3.5 h-3.5" />
+                          <span>{lang === 'ru' ? '👨‍🍳 Отправить на кухню' : lang === 'en' ? '👨‍🍳 Send to Kitchen' : '👨‍🍳 Oshxonaga berish'}</span>
                         </button>
-                        <span className="text-xs px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-dark-800 text-gray-600 dark:text-gray-300 font-medium">
-                          {order.paymentMethod === 'card'
-                            ? (lang === 'ru' ? '💳 Карта' : lang === 'en' ? '💳 Card' : '💳 Karta')
-                            : (lang === 'ru' ? '💵 Наличные' : lang === 'en' ? '💵 Cash' : '💵 Naqd')}
-                        </span>
-                      </div>
+                      )}
+                      {order.status === 'cooking' && (
+                        <button
+                          type="button"
+                          onClick={() => handleQuickOrderStatusStep(order)}
+                          className="w-full py-2.5 rounded-xl bg-blue-500/15 hover:bg-blue-500 text-blue-500 hover:text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-sm"
+                        >
+                          <Send className="w-3.5 h-3.5" />
+                          <span>{lang === 'ru' ? '🛵 Передать на доставку / стол' : lang === 'en' ? '🛵 Dispatch Order' : '🛵 Yetkazishga berish'}</span>
+                        </button>
+                      )}
+                      {order.status === 'delivering' && (
+                        <button
+                          type="button"
+                          onClick={() => handleQuickOrderStatusStep(order)}
+                          className="w-full py-2.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500 text-emerald-500 hover:text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-sm"
+                        >
+                          <CheckCircle2 className="w-3.5 h-3.5" />
+                          <span>{lang === 'ru' ? '✅ Завершить заказ' : lang === 'en' ? '✅ Mark Completed' : '✅ Buyurtmani yakunlash'}</span>
+                        </button>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -1319,34 +1813,45 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                 </p>
               </div>
 
-              {/* Sub-tab: List vs Floor Plan */}
-              <div className="flex items-center gap-1 p-1 rounded-2xl bg-gray-100 dark:bg-dark-800 border border-gray-200 dark:border-white/10">
+              {/* Action Toolbar: CSV Export + Sub-tab: List vs Floor Plan */}
+              <div className="flex items-center gap-2 flex-wrap">
                 <button
-                  onClick={() => {
-                    soundFx.playPop();
-                    setReservationSubTab('list');
-                  }}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
-                    reservationSubTab === 'list'
-                      ? 'gold-gradient-bg text-dark-950 shadow-sm'
-                      : 'text-gray-600 dark:text-gray-400'
-                  }`}
+                  onClick={handleExportReservationsCSV}
+                  className="px-3.5 py-2 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-500 text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm"
+                  title="Stol bandliklarini Excel (CSV) formatida yuklab olish"
                 >
-                  {lang === 'ru' ? 'Список броней' : lang === 'en' ? 'Reservations List' : "Bandliklar Ro'yxati"}
+                  <FileSpreadsheet className="w-3.5 h-3.5" />
+                  <span>{lang === 'ru' ? 'Экспорт в Excel (CSV)' : lang === 'en' ? 'Export Excel (CSV)' : 'Excel (CSV) Eksport'}</span>
                 </button>
-                <button
-                  onClick={() => {
-                    soundFx.playPop();
-                    setReservationSubTab('floorplan');
-                  }}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
-                    reservationSubTab === 'floorplan'
-                      ? 'gold-gradient-bg text-dark-950 shadow-sm'
-                      : 'text-gray-600 dark:text-gray-400'
-                  }`}
-                >
-                  🗺️ {lang === 'ru' ? 'Карта столов (Залы)' : lang === 'en' ? 'Floor Plan (Chambers)' : 'Jonli Stollar Xaritasi'}
-                </button>
+
+                <div className="flex items-center gap-1 p-1 rounded-2xl bg-gray-100 dark:bg-dark-800 border border-gray-200 dark:border-white/10">
+                  <button
+                    onClick={() => {
+                      soundFx.playPop();
+                      setReservationSubTab('list');
+                    }}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                      reservationSubTab === 'list'
+                        ? 'gold-gradient-bg text-dark-950 shadow-sm'
+                        : 'text-gray-600 dark:text-gray-400'
+                    }`}
+                  >
+                    {lang === 'ru' ? 'Список броней' : lang === 'en' ? 'Reservations List' : "Bandliklar Ro'yxati"}
+                  </button>
+                  <button
+                    onClick={() => {
+                      soundFx.playPop();
+                      setReservationSubTab('floorplan');
+                    }}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                      reservationSubTab === 'floorplan'
+                        ? 'gold-gradient-bg text-dark-950 shadow-sm'
+                        : 'text-gray-600 dark:text-gray-400'
+                    }`}
+                  >
+                    🗺️ {lang === 'ru' ? 'Карта столов (Залы)' : lang === 'en' ? 'Floor Plan (Chambers)' : 'Jonli Stollar Xaritasi'}
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -1369,32 +1874,43 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                   />
                 </div>
 
-                {/* Status filter */}
+                {/* Status filter with counts */}
                 <div className="flex items-center gap-1.5 flex-wrap">
-                  {['all', 'new', 'confirmed', 'finished', 'cancelled'].map(st => (
-                    <button
-                      key={st}
-                      onClick={() => {
-                        soundFx.playPop();
-                        setReservationStatusFilter(st);
-                      }}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-bold capitalize transition-colors ${
-                        reservationStatusFilter === st
-                          ? 'gold-gradient-bg text-dark-950 font-black'
-                          : 'bg-gray-100 dark:bg-dark-800 text-gray-600 dark:text-gray-300'
-                      }`}
-                    >
-                      {st === 'all'
-                        ? (lang === 'ru' ? 'Все' : lang === 'en' ? 'All' : 'Barchasi')
-                        : st === 'new'
-                        ? (lang === 'ru' ? 'Новые' : lang === 'en' ? 'New' : 'Yangi')
-                        : st === 'confirmed'
-                        ? (lang === 'ru' ? 'Подтвержденные' : lang === 'en' ? 'Confirmed' : 'Tasdiqlangan')
-                        : st === 'finished'
-                        ? (lang === 'ru' ? 'Прибыли' : lang === 'en' ? 'Arrived' : 'Keldilar')
-                        : (lang === 'ru' ? 'Отмененные' : lang === 'en' ? 'Cancelled' : 'Bekor')}
-                    </button>
-                  ))}
+                  {['all', 'new', 'confirmed', 'finished', 'cancelled'].map(st => {
+                    const count = resCountByStatus[st] || 0;
+                    const labelMap = {
+                      all: lang === 'ru' ? 'Все' : lang === 'en' ? 'All' : 'Barchasi',
+                      new: lang === 'ru' ? 'Новые' : lang === 'en' ? 'New' : 'Yangi',
+                      confirmed: lang === 'ru' ? 'Подтвержденные' : lang === 'en' ? 'Confirmed' : 'Tasdiqlangan',
+                      finished: lang === 'ru' ? 'Прибыли' : lang === 'en' ? 'Arrived' : 'Keldilar',
+                      cancelled: lang === 'ru' ? 'Отмененные' : lang === 'en' ? 'Cancelled' : 'Bekor'
+                    };
+                    return (
+                      <button
+                        key={st}
+                        onClick={() => {
+                          soundFx.playPop();
+                          setReservationStatusFilter(st);
+                        }}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-bold capitalize transition-all flex items-center gap-1.5 ${
+                          reservationStatusFilter === st
+                            ? 'gold-gradient-bg text-dark-950 font-black shadow-md'
+                            : 'bg-gray-100 dark:bg-dark-800 text-gray-600 dark:text-gray-300'
+                        }`}
+                      >
+                        <span>{labelMap[st]}</span>
+                        <span className={`px-1.5 py-0.5 rounded-full text-[10px] ${
+                          reservationStatusFilter === st
+                            ? 'bg-dark-950/20 text-dark-950 font-extrabold'
+                            : st === 'new' && count > 0
+                            ? 'bg-amber-500 text-dark-950 font-extrabold animate-pulse'
+                            : 'bg-gray-200 dark:bg-dark-700 text-gray-500'
+                        }`}>
+                          {count}
+                        </span>
+                      </button>
+                    );
+                  })}
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -1542,11 +2058,21 @@ export const AdminDashboard = ({ setIsAdminView }) => {
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
-                    Telegram Bot Token
-                  </label>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300">
+                      Telegram Bot Token
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => setShowTokenInput(!showTokenInput)}
+                      className="text-[11px] text-gold-500 hover:underline flex items-center gap-1 font-semibold"
+                    >
+                      {showTokenInput ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
+                      <span>{showTokenInput ? (lang === 'ru' ? 'Скрыть' : 'Yashirish') : (lang === 'ru' ? 'Показать' : "Ko'rsatish")}</span>
+                    </button>
+                  </div>
                   <input
-                    type="password"
+                    type={showTokenInput ? "text" : "password"}
                     placeholder="123456789:ABCdefGhIJKlmNoPQRsTUVwxyZ..."
                     value={settingsForm.telegramBotToken || ''}
                     onChange={(e) => setSettingsForm({ ...settingsForm, telegramBotToken: e.target.value })}
@@ -1624,6 +2150,74 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                   >
                     <span>{lang === 'ru' ? 'Сохранить Настройки' : lang === 'en' ? 'Save Settings' : 'Sozlamalarni Saqlash'}</span>
                   </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Telegram Anti-Spam & Security Suite (CRITICAL USER UPGRADE) */}
+            <div className="glass-card rounded-3xl p-6 sm:p-8 border border-amber-500/30 bg-gradient-to-br from-amber-500/5 via-dark-900/60 to-red-500/5 space-y-5 shadow-xl">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-4 border-b border-gray-100 dark:border-white/5">
+                <div className="flex items-center gap-3">
+                  <div className="p-3 rounded-2xl bg-amber-500/10 text-amber-500">
+                    <ShieldAlert className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h3 className="font-serif font-bold text-lg text-gray-900 dark:text-white">
+                      {lang === 'ru' ? 'Защита от Спама и Безопасность Бота' : lang === 'en' ? 'Bot Spam Defense & Security Hub' : 'Telegram Bot Xavfsizligi & Spamlarni Bloklash'}
+                    </h3>
+                    <span className="text-xs text-gray-400">
+                      {lang === 'ru' ? 'Что делать, если в бота сыпется реклама и спам' : lang === 'en' ? 'What to do if unwanted ads or spam flood the bot' : "Botingizga begona reklamalar va spambotlar xabar yozayotgan bo'lsa darhol choralar"}
+                    </span>
+                  </div>
+                </div>
+
+                <a
+                  href="https://t.me/BotFather"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-2 rounded-xl gold-gradient-bg text-dark-950 font-bold text-xs flex items-center gap-1.5 shadow-md hover:scale-105 transition-all"
+                >
+                  <ExternalLink className="w-3.5 h-3.5" />
+                  <span>@BotFather ga o'tish</span>
+                </a>
+              </div>
+
+              {/* 4 Emergency Steps Cards */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 text-xs">
+                <div className="p-4 rounded-2xl bg-red-500/10 border border-red-500/20 space-y-1.5">
+                  <span className="font-black text-red-400 block text-xs">
+                    1-QADAM: Tokenni Bekor Qilish (Revoke)
+                  </span>
+                  <p className="text-gray-300 leading-relaxed text-[11px]">
+                    Agar token oshkor bo'lsa, @BotFather ga kirib: <code>/mybots</code> &rarr; Botingiz &rarr; <b>API Token</b> &rarr; <b>Revoke current token</b> bosing. Barcha spamerlar shu zahoti uziladi!
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 space-y-1.5">
+                  <span className="font-black text-amber-400 block text-xs">
+                    2-QADAM: Guruhlarga Qo'shishni O'chirish
+                  </span>
+                  <p className="text-gray-300 leading-relaxed text-[11px]">
+                    Spam guruhlariga botingizni qo'sha olmasliklari uchun: @BotFather &rarr; <b>Bot Settings</b> &rarr; <b>Allow Groups?</b> &rarr; <b>Turn groups off</b> qiling.
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-blue-500/10 border border-blue-500/20 space-y-1.5">
+                  <span className="font-black text-blue-400 block text-xs">
+                    3-QADAM: Maxfiylik Rejimini Yoqish (Privacy)
+                  </span>
+                  <p className="text-gray-300 leading-relaxed text-[11px]">
+                    @BotFather &rarr; <b>Bot Settings</b> &rarr; <b>Group Privacy</b> &rarr; <b>Turn on</b> qilib qo'ying. Shunda bot begona xabarlarni o'qimaydi.
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 space-y-1.5">
+                  <span className="font-black text-emerald-400 block text-xs">
+                    4-QADAM: Yangi Tokenni Saqlash
+                  </span>
+                  <p className="text-gray-300 leading-relaxed text-[11px]">
+                    @BotFather bergan yangi tokenni yuqoridagi <b>Telegram Bot Token</b> maydoniga qo'yib, "Sozlamalarni Saqlash" tugmasini bosing.
+                  </p>
                 </div>
               </div>
             </div>
