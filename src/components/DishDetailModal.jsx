@@ -209,7 +209,9 @@ export const DishDetailModal = () => {
           <img
             src={dish.image}
             alt={getLocalized(dish.name)}
-            className="w-full h-full object-cover"
+            loading="eager"
+            decoding="async"
+            className="w-full h-full object-cover transition-transform duration-700 ease-out hover:scale-105 will-change-transform"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
@@ -234,7 +236,11 @@ export const DishDetailModal = () => {
 
           {/* Badges on image */}
           <div className="absolute bottom-4 left-4 flex flex-wrap gap-2">
-            {dish.tags?.map((tag) => (
+            <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-600 text-white shadow-lg border border-emerald-400/40 flex items-center gap-1 backdrop-blur-md">
+              <span>✨</span>
+              <span>{lang === 'ru' ? '100% Халяль' : lang === 'en' ? '100% Certified Halal' : '100% Halol Sertifikatlangan'}</span>
+            </span>
+            {dish.tags?.filter(t => t !== 'halal').map((tag) => (
               <span
                 key={tag}
                 className="px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-gold-500 text-dark-950 shadow-md"

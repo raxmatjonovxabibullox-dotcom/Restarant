@@ -7,6 +7,14 @@
     scroll-behavior: smooth;
   }
 
+  img {
+    image-rendering: auto;
+    image-rendering: -webkit-optimize-contrast;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+  }
+
   /* Custom sleek scrollbar */
   ::-webkit-scrollbar {
     width: 7px;

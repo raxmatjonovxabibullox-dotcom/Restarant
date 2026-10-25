@@ -20,7 +20,18 @@ export const getStoredMenu = () => {
       localStorage.setItem(KEYS.MENU, JSON.stringify(initialMenu));
       return initialMenu;
     }
-    return JSON.parse(data);
+    const parsed = JSON.parse(data);
+    // Guarantee 100% Halal tag and smooth HD imagery on all menu items
+    const validated = parsed.map(dish => {
+      const tags = Array.isArray(dish.tags) ? [...dish.tags] : [];
+      if (!tags.includes('halal')) tags.push('halal');
+      return {
+        ...dish,
+        tags,
+        image: dish.image ? dish.image.replace('w=800&q=80', 'w=1200&q=85') : dish.image
+      };
+    });
+    return validated;
   } catch (e) {
     console.error("Storage error:", e);
     return initialMenu;

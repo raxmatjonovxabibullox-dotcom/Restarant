@@ -286,17 +286,19 @@ export const AdminDashboard = ({ setIsAdminView }) => {
     image: '',
     prepTime: 20,
     calories: 500,
-    tags: ['chef'],
+    tags: ['chef', 'halal'],
     isAvailable: true
   });
 
   const presetImages = [
-    { label: 'Palov', url: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=800&q=80' },
-    { label: 'Kabob', url: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=800&q=80' },
-    { label: 'Salat', url: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80' },
-    { label: 'Steyk', url: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80' },
-    { label: 'Paxlava', url: 'https://images.unsplash.com/photo-1519869325930-281384150729?auto=format&fit=crop&w=800&q=80' },
-    { label: 'Choy/Sharbat', url: 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=800&q=80' },
+    { label: 'Shohona Palov (Halol)', url: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=1200&q=85' },
+    { label: 'Qo\'y Kabobi (Halol)', url: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=1200&q=85' },
+    { label: 'Achichuk Salati', url: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=1200&q=85' },
+    { label: 'Halol Ribay Steyk', url: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1200&q=85' },
+    { label: 'Buxoro Manti (Halol)', url: 'https://images.unsplash.com/photo-1496116218417-1a781b1c416c?auto=format&fit=crop&w=1200&q=85' },
+    { label: 'Turkcha Paxlava', url: 'https://images.unsplash.com/photo-1519869325930-281384150729?auto=format&fit=crop&w=1200&q=85' },
+    { label: 'Zafaronli Choy', url: 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=1200&q=85' },
+    { label: 'Anor Sharbat Fresh', url: 'https://images.unsplash.com/photo-1621263764928-df1444c5e859?auto=format&fit=crop&w=1200&q=85' },
   ];
 
   // --- FILTER STATES ---
@@ -1750,11 +1752,18 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                       theme === 'dark' ? 'bg-[#1c2032] border-[#252a42]' : 'bg-slate-50 border-slate-200'
                     }`}
                   >
-                    <img
-                      src={dish.image}
-                      alt=""
-                      className="w-20 h-20 rounded-xl object-cover shrink-0"
-                    />
+                    <div className="relative w-20 h-20 rounded-xl overflow-hidden shrink-0 shadow-sm group/img">
+                      <img
+                        src={dish.image}
+                        alt=""
+                        loading="lazy"
+                        decoding="async"
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover/img:scale-110 will-change-transform"
+                      />
+                      <span className="absolute bottom-1 left-1 px-1 py-0.5 rounded text-[8px] font-black bg-emerald-600 text-white shadow-sm flex items-center gap-0.5">
+                        <span>✨</span> HALOL
+                      </span>
+                    </div>
                     <div className="flex-1 min-w-0 flex flex-col justify-between">
                       <div>
                         <div className="flex items-center justify-between gap-2">

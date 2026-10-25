@@ -361,13 +361,13 @@ export const initialMenu = [
       en: "40 whisper-thin phyllo layers packed with roasted Gaziantep pistachios and floral saffron honey."
     },
     price: 38000,
-    image: "https://images.unsplash.com/photo-1519869325930-281384150729?auto=format&fit=crop&w=800&q=80",
+    image: "https://images.unsplash.com/photo-1519869325930-281384150729?auto=format&fit=crop&w=1200&q=85",
     prepTime: 8,
     calories: 420,
     portion: "2 dona (180 g)",
     rating: 5.0,
     ordersCount: 390,
-    tags: ["popular", "vegetarian"],
+    tags: ["popular", "vegetarian", "halal"],
     isAvailable: true,
     ingredients: {
       uz: ["Filo xamiri", "Gaziantep pistasi", "Asal qiyomi", "Sariyog'", "Vanil muzqaymoq"],
@@ -389,13 +389,13 @@ export const initialMenu = [
       en: "Velvety rich Philadelphia cream cheese cake with buttery crust and wild raspberry coulis."
     },
     price: 34000,
-    image: "https://images.unsplash.com/photo-1524351199678-941a58a3df50?auto=format&fit=crop&w=800&q=80",
+    image: "https://images.unsplash.com/photo-1524351199678-941a58a3df50?auto=format&fit=crop&w=1200&q=85",
     prepTime: 5,
     calories: 380,
     portion: "1 bo'lak (160 g)",
     rating: 4.8,
     ordersCount: 215,
-    tags: ["vegetarian"],
+    tags: ["vegetarian", "halal"],
     isAvailable: true,
     ingredients: {
       uz: ["Filadelfiya pishlog'i", "Pechenye asosi", "Rezavor sousi", "Yalpiz"],
@@ -419,13 +419,13 @@ export const initialMenu = [
       en: "Pure saffron threads, mountain thyme, cinnamon stick, lemon, and organic wildflower honey."
     },
     price: 32000,
-    image: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=800&q=80",
+    image: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=1200&q=85",
     prepTime: 6,
     calories: 45,
     portion: "800 ml",
     rating: 5.0,
     ordersCount: 460,
-    tags: ["chef", "popular", "vegetarian"],
+    tags: ["chef", "popular", "vegetarian", "halal"],
     isAvailable: true,
     ingredients: {
       uz: ["Zafaron gullari", "Tog' kiyiko'ti", "Dolchin", "Asal", "Limon"],
@@ -447,13 +447,13 @@ export const initialMenu = [
       en: "100% pure cold-pressed pomegranate juice without added sugar or water."
     },
     price: 28000,
-    image: "https://images.unsplash.com/photo-1621263764928-df1444c5e859?auto=format&fit=crop&w=800&q=80",
+    image: "https://images.unsplash.com/photo-1621263764928-df1444c5e859?auto=format&fit=crop&w=1200&q=85",
     prepTime: 5,
     calories: 110,
     portion: "300 ml",
     rating: 4.9,
     ordersCount: 310,
-    tags: ["vegetarian", "popular"],
+    tags: ["vegetarian", "popular", "halal"],
     isAvailable: true,
     ingredients: {
       uz: ["Yangi anor sharbati", "Muz bo'laklari"],

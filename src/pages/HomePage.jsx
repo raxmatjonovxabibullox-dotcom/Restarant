@@ -115,7 +115,7 @@ export const HomePage = ({ setActivePage, onOpenConcierge }) => {
               className="w-full sm:w-auto px-6 py-4 rounded-2xl bg-amber-500/15 border border-gold-500/40 text-gold-500 hover:bg-gold-500 hover:text-dark-950 text-base font-bold flex items-center justify-center gap-2 transition-all shadow-md active:scale-95"
             >
               <Sparkles className="w-5 h-5" />
-              <span>{lang === 'ru' ? 'Умный Сомелье' : lang === 'en' ? 'Smart Sommelier' : 'Aqlli Sommelier'}</span>
+              <span>{lang === 'ru' ? 'Халяль AI Помощник' : lang === 'en' ? 'Halal Culinary AI' : 'Halol AI Maslahatchi'}</span>
             </button>
           </div>
 
@@ -215,25 +215,31 @@ export const HomePage = ({ setActivePage, onOpenConcierge }) => {
                 onClick={() => handleDishModalOpen(dish)}
                 className="glass-card rounded-3xl overflow-hidden glass-card-hover cursor-pointer group flex flex-col justify-between"
               >
-                <div className="relative aspect-[4/3] overflow-hidden">
+                <div className="relative aspect-[4/3] overflow-hidden rounded-t-3xl">
                   <img
                     src={dish.image}
                     alt={getLocalized(dish.name)}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out will-change-transform"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-dark-950/80 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-dark-950/85 via-dark-950/20 to-transparent opacity-60 group-hover:opacity-35 transition-opacity duration-500" />
 
                   {/* Favorite Button */}
                   <button
                     onClick={(e) => handleToggleFavorite(e, dish)}
-                    className="absolute top-3 right-3 p-2 rounded-full bg-dark-950/70 backdrop-blur-md border border-white/20 text-white hover:scale-110 transition-transform shadow-md"
+                    className="absolute top-3 right-3 p-2 rounded-full bg-dark-950/70 backdrop-blur-md border border-white/20 text-white hover:scale-110 transition-transform shadow-md z-10"
                   >
                     <Heart className={`w-4 h-4 ${isFav ? 'fill-red-500 text-red-500' : 'text-white'}`} />
                   </button>
 
-                  {/* Badges */}
-                  <div className="absolute top-3 left-3 flex flex-wrap gap-1">
-                    {dish.tags?.slice(0, 2).map((tag) => (
+                  {/* Badges: Guaranteed Halal Badge */}
+                  <div className="absolute top-3 left-3 flex flex-wrap gap-1 z-10">
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-600/95 text-white border border-emerald-400/40 backdrop-blur-md uppercase tracking-wider flex items-center gap-1 shadow-md">
+                      <span>✨</span>
+                      <span>{lang === 'ru' ? '100% Халяль' : lang === 'en' ? '100% Halal' : '100% Halol'}</span>
+                    </span>
+                    {dish.tags?.filter(t => t !== 'halal').slice(0, 1).map((tag) => (
                       <span
                         key={tag}
                         className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-dark-950/85 text-gold-400 border border-gold-500/30 backdrop-blur-md uppercase tracking-wider"
@@ -243,7 +249,7 @@ export const HomePage = ({ setActivePage, onOpenConcierge }) => {
                     ))}
                   </div>
 
-                  <div className="absolute bottom-3 left-3 flex items-center gap-1 bg-dark-950/80 backdrop-blur-md px-2 py-1 rounded-lg text-xs font-bold text-amber-400 border border-white/10">
+                  <div className="absolute bottom-3 left-3 flex items-center gap-1 bg-dark-950/80 backdrop-blur-md px-2 py-1 rounded-lg text-xs font-bold text-amber-400 border border-white/10 z-10">
                     <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
                     <span>{dish.rating || '5.0'}</span>
                   </div>
