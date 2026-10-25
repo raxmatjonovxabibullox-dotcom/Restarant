@@ -74,10 +74,11 @@ export const ReservationPage = ({ setActivePage }) => {
 
   const handleTableSelectFromMap = (table) => {
     setSelectedTable(table);
+    const resolvedZone = typeof table.zone === 'object' ? (table.zone[lang] || table.zone.uz || table.zone.en) : table.zone;
     setFormData((prev) => ({
       ...prev,
       tableNumber: table.number,
-      zone: table.zone,
+      zone: resolvedZone,
       guests: String(table.seats)
     }));
   };
@@ -169,7 +170,10 @@ export const ReservationPage = ({ setActivePage }) => {
             <div className="flex justify-between">
               <span className="text-gray-500">{lang === 'ru' ? 'Зона / Стол:' : lang === 'en' ? 'Zone / Table:' : 'Hudud / Stol:'}</span>
               <span className="font-bold text-gray-900 dark:text-white">
-                {submittedReservation.zone} {submittedReservation.tableNumber && `(${lang === 'ru' ? 'Стол #' : lang === 'en' ? 'Table #' : 'Stol #'}${submittedReservation.tableNumber})`}
+                {typeof submittedReservation.zone === 'object'
+                  ? (submittedReservation.zone[lang] || submittedReservation.zone.uz || submittedReservation.zone.en)
+                  : submittedReservation.zone}{' '}
+                {submittedReservation.tableNumber && `(${lang === 'ru' ? 'Стол #' : lang === 'en' ? 'Table #' : 'Stol #'}${submittedReservation.tableNumber})`}
               </span>
             </div>
             <div className="flex justify-between">

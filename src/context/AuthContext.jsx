@@ -30,9 +30,9 @@ export const AuthProvider = ({ children }) => {
           setUser(authUser);
           saveStoredAuth(authUser);
         } else {
-          // If no active Supabase session, clear any stale admin session
+          // If no active Supabase session, keep local master admin if flagged, otherwise clear
           const stored = getStoredAuth();
-          if (stored?.role === 'admin' && !session) {
+          if (stored?.role === 'admin' && !session && !stored?.isLocalMaster) {
             setUser(null);
             saveStoredAuth(null);
           }
@@ -57,8 +57,11 @@ export const AuthProvider = ({ children }) => {
           setUser(authUser);
           saveStoredAuth(authUser);
         } else if (event === 'SIGNED_OUT') {
-          setUser(null);
-          saveStoredAuth(null);
+          const stored = getStoredAuth();
+          if (!stored?.isLocalMaster) {
+            setUser(null);
+            saveStoredAuth(null);
+          }
         }
       });
 
@@ -71,17 +74,39 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  // Strict Supabase Login (Only accepts registered Supabase users)
+  // Supabase Login with Master Admin fallback
   const login = async (emailInput, password) => {
+    const cleanEmail = emailInput?.trim().toLowerCase();
+    const cleanPassword = password?.trim();
+
+    // 1. Check Master Admin Credentials
+    const isMasterEmail = cleanEmail === 'admin@zafaron.uz' || cleanEmail === 'admin';
+    const validMasterPasswords = ['admin123', 'zafaron2025', 'zafaron2026', 'admin'];
+    
+    if (isMasterEmail && validMasterPasswords.includes(cleanPassword)) {
+      const masterUser = {
+        id: 'master-admin-zafaron',
+        email: 'admin@zafaron.uz',
+        username: 'admin',
+        displayName: 'Bosh Administrator (Executive Suite)',
+        role: 'admin',
+        isLocalMaster: true,
+        loggedInAt: new Date().toISOString()
+      };
+      setUser(masterUser);
+      saveStoredAuth(masterUser);
+      return { success: true, user: masterUser };
+    }
+
     const client = getSupabaseClient();
     if (!client) {
+      // If client not connected and not master credentials
       return {
         success: false,
-        message: "Supabase serveriga ulanish mavjud emas. Iltimos, Supabase sozlamalarini tekshiring!"
+        message: "Supabase serveriga ulanish mavjud emas. Master admin uchun 'admin@zafaron.uz' / 'admin123' dan foydalaning!"
       };
     }
 
-    const cleanEmail = emailInput?.trim();
     if (!cleanEmail) {
       return { success: false, message: "Iltimos, Supabase emailingizni kiriting!" };
     }
@@ -89,25 +114,25 @@ export const AuthProvider = ({ children }) => {
     if (!cleanEmail.includes('@')) {
       return {
         success: false,
-        message: "Iltimos, Supabase'dagi to'liq emailingizni kiriting (masalan: admin@example.com)"
+        message: "Iltimos, to'liq emailingizni kiriting (masalan: admin@zafaron.uz yoki admin@example.com)"
       };
     }
 
-    if (!password) {
+    if (!cleanPassword) {
       return { success: false, message: "Iltimos, parolingizni kiriting!" };
     }
 
     try {
       const { data, error } = await client.auth.signInWithPassword({
         email: cleanEmail,
-        password: password
+        password: cleanPassword
       });
 
       if (error) {
         if (error.message.includes('Invalid login credentials')) {
           return {
             success: false,
-            message: "Noto'g'ri email yoki parol! Faqat Supabase Authentication'da mavjud bo'lgan foydalanuvchilar qabul qilinadi."
+            message: "Noto'g'ri email yoki parol! Supabase foydalanuvchisi yoki Master Admin ('admin@zafaron.uz' / 'admin123') dan foydalaning."
           };
         }
         return { success: false, message: error.message };

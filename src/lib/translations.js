@@ -58,6 +58,7 @@ export const translations = {
     categories: {
       all: "Barcha taomlar",
       national: "Milliy taomlar",
+      european: "Yevropa & Steyk",
       salads: "Salatlar",
       kebabs: "Kabob & Gril",
       mains: "Issiq taomlar",
@@ -390,6 +391,7 @@ export const translations = {
     categories: {
       all: "Все блюда",
       national: "Национальные блюда",
+      european: "Европейская кухня & Стейки",
       salads: "Салаты",
       kebabs: "Шашлык & Гриль",
       mains: "Горячие блюда",
@@ -722,6 +724,7 @@ export const translations = {
     categories: {
       all: "All Dishes",
       national: "National Dishes",
+      european: "European & Steaks",
       salads: "Fresh Salads",
       kebabs: "Kebabs & Grill",
       mains: "Hot Mains",

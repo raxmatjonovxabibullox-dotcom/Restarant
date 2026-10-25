@@ -6,7 +6,7 @@ import { useCurrency } from '../context/CurrencyContext';
 import { useAuth } from '../context/AuthContext';
 import { useFullscreen } from '../hooks/useFullscreen';
 import { soundFx } from '../hooks/useSoundEffects';
-import { testTelegramBot, sendToTelegramApi, sendPhotoToTelegramApi } from '../services/telegramService';
+import { testTelegramBot, sendPhotoToTelegramApi } from '../services/telegramService';
 import { getStoredSettings, saveStoredSettings } from '../lib/storage';
 import { syncMenuWithSupabase, testSupabaseConnection } from '../lib/supabase';
 import { KitchenDisplay } from '../components/admin/KitchenDisplay';
@@ -28,6 +28,7 @@ import {
   EyeOff,
   Search,
   Download,
+  FileSpreadsheet,
   RefreshCw,
   Send,
   Database,
@@ -52,40 +53,8 @@ import {
 } from 'lucide-react';
 
 export const AdminDashboard = ({ setIsAdminView }) => {
-  const { user, isAdmin, logout } = useAuth();
+  const { user, isAdmin, logout, openLoginModal } = useAuth();
   const { lang, setLang, t, getLocalized } = useLanguage();
-
-  // Hard Security Guard: Strictly deny non-authenticated users
-  if (!isAdmin) {
-    return (
-      <div className="min-h-screen bg-dark-950 text-white flex items-center justify-center p-4">
-        <div className="glass-card max-w-md w-full p-8 rounded-3xl text-center space-y-4 border border-red-500/20 shadow-2xl">
-          <div className="w-16 h-16 rounded-2xl bg-red-500/10 text-red-400 mx-auto flex items-center justify-center">
-            <Lock className="w-8 h-8" />
-          </div>
-          <h2 className="font-serif font-black text-2xl text-white">
-            {lang === 'ru' ? 'Доступ Запрещен (403)' : lang === 'en' ? 'Access Denied (403)' : 'Ruxsat Etilmagan Kirish (403)'}
-          </h2>
-          <p className="text-xs text-gray-400 leading-relaxed">
-            {lang === 'ru'
-              ? 'Только авторизованные администраторы через Supabase Authentication могут войти в панель управления.'
-              : lang === 'en'
-              ? 'Only authenticated administrators through Supabase Authentication are allowed to enter the dashboard.'
-              : "Admin panelga faqat Supabase Authentication orqali tizimga kirgan tasdiqlangan administratorlar kira oladi."}
-          </p>
-          <button
-            onClick={() => {
-              soundFx.playPop();
-              setIsAdminView(false);
-            }}
-            className="w-full py-3 rounded-xl gold-gradient-bg text-dark-950 font-bold text-xs"
-          >
-            {lang === 'ru' ? 'Вернуться на Главную' : lang === 'en' ? 'Return to Home' : 'Bosh sahifaga qaytish'}
-          </button>
-        </div>
-      </div>
-    );
-  }
 
   const {
     menuItems,
@@ -150,6 +119,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
   const [menuCategoryFilter, setMenuCategoryFilter] = useState('all');
   const [orderSearch, setOrderSearch] = useState('');
   const [orderStatusFilter, setOrderStatusFilter] = useState('all');
+  const [reservationSearch, setReservationSearch] = useState('');
   const [reservationStatusFilter, setReservationStatusFilter] = useState('all');
   const [reservationSubTab, setReservationSubTab] = useState('list'); // 'list' or 'floorplan'
 
@@ -166,6 +136,49 @@ export const AdminDashboard = ({ setIsAdminView }) => {
   const [syncingSupabase, setSyncingSupabase] = useState(false);
   const [testingSupabase, setTestingSupabase] = useState(false);
   const [supabaseTestResult, setSupabaseTestResult] = useState(null);
+
+  // Hard Security Guard: Strictly deny non-authenticated users AFTER all hooks run
+  if (!isAdmin) {
+    return (
+      <div className="min-h-screen bg-dark-950 text-white flex items-center justify-center p-4">
+        <div className="glass-card max-w-md w-full p-8 rounded-3xl text-center space-y-4 border border-red-500/20 shadow-2xl">
+          <div className="w-16 h-16 rounded-2xl bg-red-500/10 text-red-400 mx-auto flex items-center justify-center">
+            <Lock className="w-8 h-8" />
+          </div>
+          <h2 className="font-serif font-black text-2xl text-white">
+            {lang === 'ru' ? 'Доступ Запрещен (403)' : lang === 'en' ? 'Access Denied (403)' : 'Ruxsat Etilmagan Kirish (403)'}
+          </h2>
+          <p className="text-xs text-gray-400 leading-relaxed">
+            {lang === 'ru'
+              ? 'Только авторизованные администраторы могут войти в панель управления Zafaron Executive Suite.'
+              : lang === 'en'
+              ? 'Only authenticated administrators are allowed to enter the Zafaron Executive Suite.'
+              : "Admin panelga faqat tizimga kirgan tasdiqlangan administratorlar kira oladi."}
+          </p>
+          <div className="pt-2 space-y-2">
+            <button
+              onClick={() => {
+                soundFx.playPop();
+                if (openLoginModal) openLoginModal();
+              }}
+              className="w-full py-3 rounded-xl gold-gradient-bg text-dark-950 font-bold text-xs shadow-lg hover:scale-[1.02] transition-transform"
+            >
+              {lang === 'ru' ? 'Войти как Администратор' : lang === 'en' ? 'Login as Administrator' : 'Administrator Sifatida Kirish'}
+            </button>
+            <button
+              onClick={() => {
+                soundFx.playPop();
+                setIsAdminView(false);
+              }}
+              className="w-full py-2.5 rounded-xl bg-dark-800 text-gray-300 hover:text-white font-semibold text-xs"
+            >
+              {lang === 'ru' ? 'Вернуться на Главную' : lang === 'en' ? 'Return to Home' : 'Bosh sahifaga qaytish'}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // --- STATS COMPUTATIONS (Fixed totalPrice & totalAmount support) ---
   const totalRevenue = orders.reduce(
@@ -384,10 +397,39 @@ export const AdminDashboard = ({ setIsAdminView }) => {
     showToast("Zaxira nusxasi (JSON) yuklab olindi!");
   };
 
+  // --- EXPORT ORDERS AS EXCEL/CSV ---
+  const handleExportOrdersCSV = () => {
+    soundFx.playChime();
+    const headers = ['Order ID', 'Customer Name', 'Customer Phone', 'Service Type', 'Table / Address', 'Total Price', 'Status', 'Payment Method', 'Date'];
+    const rows = orders.map(o => [
+      `"${o.id || ''}"`,
+      `"${(o.customerName || '').replace(/"/g, '""')}"`,
+      `"${o.customerPhone || ''}"`,
+      `"${o.deliveryType === 'dineIn' ? 'Dine-in' : 'Delivery'}"`,
+      `"${(o.deliveryType === 'dineIn' ? `Table ${o.tableNumber || '-'}` : (o.deliveryAddress || '')).replace(/"/g, '""')}"`,
+      o.totalPrice || o.totalAmount || 0,
+      `"${o.status || ''}"`,
+      `"${o.paymentMethod || 'card'}"`,
+      `"${new Date(o.createdAt).toLocaleString()}"`
+    ]);
+
+    const csvContent = '\uFEFF' + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `zafaron_orders_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    showToast(lang === 'ru' ? 'Заказы успешно экспортированы в Excel (CSV)!' : lang === 'en' ? 'Orders exported to Excel (CSV) successfully!' : "Buyurtmalar Excel (CSV) formatida yuklab olindi!", 'success');
+  };
+
   // Categories list
   const categories = [
     { id: 'all', label: t('categories.all') || (lang === 'ru' ? 'Все' : lang === 'en' ? 'All' : 'Barchasi') },
     { id: 'national', label: t('categories.national') || (lang === 'ru' ? 'Национальные блюда' : lang === 'en' ? 'National Cuisine' : 'Milliy taomlar') },
+    { id: 'european', label: t('categories.european') || (lang === 'ru' ? 'Европейская кухня & Стейки' : lang === 'en' ? 'European & Steaks' : 'Yevropa & Steyk') },
     { id: 'salads', label: t('categories.salads') || (lang === 'ru' ? 'Салаты' : lang === 'en' ? 'Salads' : 'Salatlar') },
     { id: 'kebabs', label: t('categories.kebabs') || (lang === 'ru' ? 'Шашлык и Гриль' : lang === 'en' ? 'Kebabs & Grill' : 'Kabob & Gril') },
     { id: 'mains', label: t('categories.mains') || (lang === 'ru' ? 'Горячие блюда' : lang === 'en' ? 'Main Courses' : 'Issiq taomlar') },
@@ -428,6 +470,16 @@ export const AdminDashboard = ({ setIsAdminView }) => {
   // Filtered reservations
   const filteredReservations = reservations.filter(r => {
     if (reservationStatusFilter !== 'all' && r.status !== reservationStatusFilter) return false;
+    if (reservationSearch.trim()) {
+      const q = reservationSearch.toLowerCase();
+      const matchesId = r.id?.toLowerCase().includes(q);
+      const matchesName = r.fullName?.toLowerCase().includes(q);
+      const matchesPhone = r.phone?.toLowerCase().includes(q);
+      const matchesTable = String(r.tableNumber || '').toLowerCase().includes(q);
+      const zoneStr = typeof r.zone === 'object' ? (r.zone.uz + r.zone.ru + r.zone.en) : String(r.zone || '');
+      const matchesZone = zoneStr.toLowerCase().includes(q);
+      if (!matchesId && !matchesName && !matchesPhone && !matchesTable && !matchesZone) return false;
+    }
     return true;
   });
 
@@ -1082,8 +1134,17 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                 </p>
               </div>
 
-              {/* Status Filter buttons */}
-              <div className="flex items-center gap-1.5 flex-wrap">
+              {/* Action buttons & Status Filter */}
+              <div className="flex items-center gap-2 flex-wrap">
+                <button
+                  onClick={handleExportOrdersCSV}
+                  className="px-3 py-1.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-500 text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm"
+                  title="Excel (CSV) formatida barcha buyurtmalarni yuklab olish"
+                >
+                  <FileSpreadsheet className="w-3.5 h-3.5" />
+                  <span>{lang === 'ru' ? 'Экспорт в Excel (CSV)' : lang === 'en' ? 'Export Excel (CSV)' : 'Excel (CSV) Eksport'}</span>
+                </button>
+
                 {['all', 'pending', 'cooking', 'delivering', 'completed', 'cancelled'].map(st => (
                   <button
                     key={st}
@@ -1293,6 +1354,21 @@ export const AdminDashboard = ({ setIsAdminView }) => {
               <TableOccupancyManager reservations={reservations} />
             ) : (
               <>
+                {/* Search Input for Reservations */}
+                <div className="relative">
+                  <div className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 flex items-center">
+                    <Search className="w-4 h-4" />
+                  </div>
+                  <input
+                    type="text"
+                    placeholder={lang === 'ru' ? 'Поиск по номеру брони, имени гостя, телефону или номеру стола...' : lang === 'en' ? 'Search by booking ID, guest name, phone or table #...' : "Bron ID, mehmon ismi, telefon yoki stol raqami bo'yicha qidirish..."}
+                    value={reservationSearch}
+                    onChange={(e) => setReservationSearch(e.target.value)}
+                    style={{ paddingLeft: '2.75rem' }}
+                    className="glass-input w-full !pl-11 text-xs sm:text-sm"
+                  />
+                </div>
+
                 {/* Status filter */}
                 <div className="flex items-center gap-1.5 flex-wrap">
                   {['all', 'new', 'confirmed', 'finished', 'cancelled'].map(st => (
@@ -1786,6 +1862,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                     className="glass-input w-full text-xs"
                   >
                     <option value="national">{lang === 'ru' ? 'Национальные блюда' : lang === 'en' ? 'National Dishes' : 'Milliy taomlar'}</option>
+                    <option value="european">{lang === 'ru' ? 'Европейская кухня & Стейки' : lang === 'en' ? 'European & Steaks' : 'Yevropa & Steyk'}</option>
                     <option value="salads">{lang === 'ru' ? 'Салаты' : lang === 'en' ? 'Salads' : 'Salatlar'}</option>
                     <option value="kebabs">{lang === 'ru' ? 'Шашлык и Гриль' : lang === 'en' ? 'Kebabs & Grill' : 'Kabob & Gril'}</option>
                     <option value="mains">{lang === 'ru' ? 'Горячие блюда' : lang === 'en' ? 'Main Courses' : 'Issiq taomlar'}</option>

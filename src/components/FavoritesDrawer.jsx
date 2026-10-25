@@ -103,7 +103,7 @@ export const FavoritesDrawer = () => {
                     {formatPrice(dish.price)}
                   </span>
                   <span className="text-[11px] text-gray-500 dark:text-gray-400 block truncate">
-                    {dish.portion} • {dish.calories} {tFav.kcal}
+                    {dish.portion ? `${dish.portion} • ` : ''}{dish.calories || 500} {tFav.kcal}
                   </span>
                 </div>
                 <div className="flex items-center gap-1">
