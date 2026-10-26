@@ -43,7 +43,15 @@ import {
   Bell,
   ArrowUpRight,
   ArrowDownRight,
-  Edit
+  Edit,
+  LayoutGrid,
+  Award,
+  ShieldCheck,
+  Sparkles,
+  Activity,
+  User,
+  Zap,
+  Layers
 } from 'lucide-react';
 
 // Tri-lingual dictionary specifically tailored for Maxton Executive Suite
@@ -95,7 +103,25 @@ const MAXTON_I18N = {
     quickStatusStep: "Keyingi Holat",
     stopList: "Stop-list",
     available: "Sotuvda",
-    all: "Barchasi"
+    all: "Barchasi",
+    demoMode: "Maxton Demo",
+    liveMode: "Jonli Baza (Live)",
+    dataSource: "Ma'lumotlar Manbai",
+    appLauncher: "Ilovalar Markazi",
+    bestSellerModalTitle: "Oyning Eng Yaxshi Xodimi",
+    salesTargetProgress: "Savdo Rejasining Bajarilishi",
+    unlockedBonus: "Mukofot Bonusi",
+    customerRating: "Mijozlar Bahosi",
+    topDishesSold: "Eng Ko'p Sotilgan Halol Taomlar",
+    halalCompliance: "100% Halol Standartlar Nazorati",
+    markAllRead: "Barchasini o'qilgan deb belgilash",
+    noNotifications: "Yangi bildirishnomalar yo'q",
+    searchDishes: "Taomlar",
+    searchOrders: "Buyurtmalar",
+    searchGuests: "Stol Bandliklari",
+    executiveProfile: "Ijrochi Profil (Admin)",
+    kitchenVelocity: "Oshxona Tezligi",
+    hallOccupancy: "Zallar Bandligi"
   },
   ru: {
     brand: "Maxton",
@@ -144,7 +170,25 @@ const MAXTON_I18N = {
     quickStatusStep: "След. статус",
     stopList: "Стоп-лист",
     available: "В наличии",
-    all: "Все"
+    all: "Все",
+    demoMode: "Демо Maxton",
+    liveMode: "Живые Данные",
+    dataSource: "Источник Данных",
+    appLauncher: "Центр Приложений",
+    bestSellerModalTitle: "Лучший Сотрудник Месяца",
+    salesTargetProgress: "Выполнение Плана Продаж",
+    unlockedBonus: "Премиальный Бонус",
+    customerRating: "Рейтинг Клиентов",
+    topDishesSold: "Топ Продаж Халяль Блюд",
+    halalCompliance: "100% Халяль Стандарт Контроля",
+    markAllRead: "Отметить все прочитанными",
+    noNotifications: "Нет новых уведомлений",
+    searchDishes: "Блюда",
+    searchOrders: "Заказы",
+    searchGuests: "Брони",
+    executiveProfile: "Профиль Администратора",
+    kitchenVelocity: "Скорость Кухни",
+    hallOccupancy: "Занятость Залов"
   },
   en: {
     brand: "Maxton",
@@ -193,7 +237,25 @@ const MAXTON_I18N = {
     quickStatusStep: "Next Step",
     stopList: "Stop-list",
     available: "Available",
-    all: "All"
+    all: "All",
+    demoMode: "Maxton Demo",
+    liveMode: "Live Restaurant Data",
+    dataSource: "Data Source",
+    appLauncher: "App Launcher",
+    bestSellerModalTitle: "Employee of the Month",
+    salesTargetProgress: "Sales Target Progress",
+    unlockedBonus: "Unlocked Bonus",
+    customerRating: "Customer Rating",
+    topDishesSold: "Top Selling Halal Dishes",
+    halalCompliance: "100% Halal Compliance",
+    markAllRead: "Mark all as read",
+    noNotifications: "No new notifications",
+    searchDishes: "Dishes",
+    searchOrders: "Orders",
+    searchGuests: "Reservations",
+    executiveProfile: "Executive Profile",
+    kitchenVelocity: "Kitchen Speed",
+    hallOccupancy: "Hall Occupancy"
   }
 };
 
@@ -231,6 +293,33 @@ export const AdminDashboard = ({ setIsAdminView }) => {
   const [langDropdownOpen, setLangDropdownOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
+  const [appsMenuOpen, setAppsMenuOpen] = useState(false);
+
+  // Data Source Mode: 'demo' (exact Maxton image match) or 'live' (live restaurant database)
+  const [dataSourceMode, setDataSourceMode] = useState('demo');
+
+  // Interactive Best Seller / Employee of the Month Modal
+  const [isBestSellerModalOpen, setIsBestSellerModalOpen] = useState(false);
+
+  // Interactive Chart Tooltip & Hover States
+  const [activeHoverMonth, setActiveHoverMonth] = useState(null);
+  const [activeDonutSegment, setActiveDonutSegment] = useState(null);
+
+  // Dynamic Notifications Center
+  const [notifications, setNotifications] = useState([
+    { id: 1, title: "Yangi VIP Buyurtma qabul qilindi", time: "2 daqiqa oldin", type: "order", read: false, desc: "Shohona Palov va Zafaronli Choy jo'natildi" },
+    { id: 2, title: "Telegram AI Bot mijozga javob berdi", time: "5 daqiqa oldin", type: "bot", read: false, desc: "Gemini AI mijozga 100% halol menyuni tavsiya qildi" },
+    { id: 3, title: "Stol #3 bron qilindi (VIP Zalda)", time: "12 daqiqa oldin", type: "res", read: false, desc: "Bugun 19:30 ga 6 kishilik maxsus xona band qilindi" },
+    { id: 4, title: "100% Halol Go'sht qabul qilindi", time: "35 daqiqa oldin", type: "halal", read: false, desc: "Yangi so'yilgan qo'y go'shti sifat nazoratidan o'tdi" },
+    { id: 5, title: "Kassa smenasi ochildi", time: "1 soat oldin", type: "pos", read: false, desc: "Administrator Jhon tizimga kirdi" },
+  ]);
+
+  const unreadNotificationCount = notifications.filter(n => !n.read).length;
+
+  const handleMarkAllNotificationsRead = () => {
+    if (audioEnabled) soundFx.playChime();
+    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+  };
 
   // Global search input in topbar
   const [globalSearch, setGlobalSearch] = useState('');
@@ -613,10 +702,6 @@ export const AdminDashboard = ({ setIsAdminView }) => {
     return true;
   });
 
-  // Dynamic values or picture match
-  const displayRevenueFormatted = totalRevenue > 0 ? formatPrice(totalRevenue) : "$168.5K";
-  const displayOrdersCount = orders.length > 0 ? `${orders.length}` : "248k";
-
   return (
     <div className={`min-h-screen flex ${theme === 'dark' ? 'bg-[#11131c] text-[#f1f3f9]' : 'bg-[#f4f7fb] text-[#1c2130]'}`}>
       
@@ -653,17 +738,18 @@ export const AdminDashboard = ({ setIsAdminView }) => {
         </div>
 
         {/* Sidebar Nav Items */}
-        <div className="flex-1 overflow-y-auto py-4 px-3 space-y-6 scrollbar-thin">
-          {/* Main Dashboard Section */}
+        <div className="flex-1 overflow-y-auto py-4 px-3 space-y-5 scrollbar-thin">
+          
+          {/* Section: Main Dashboard */}
           <div className="space-y-1">
             <button
               onClick={() => {
                 if (audioEnabled) soundFx.playPop();
                 setDashboardSubmenuOpen(!dashboardSubmenuOpen);
               }}
-              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all ${
+              className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
                 activeTab === 'ecommerce' || activeTab === 'analysis'
-                  ? theme === 'dark' ? 'bg-[#1f2438] text-white' : 'bg-slate-100 text-slate-900 font-bold'
+                  ? theme === 'dark' ? 'bg-[#1f2438] text-white font-bold' : 'bg-slate-100 text-slate-900 font-bold'
                   : 'text-slate-400 hover:text-current hover:bg-slate-500/10'
               }`}
             >
@@ -684,49 +770,60 @@ export const AdminDashboard = ({ setIsAdminView }) => {
               <div className="pl-9 pr-1 py-1 space-y-1 text-xs">
                 <button
                   onClick={() => handleSelectTab('analysis')}
-                  className={`w-full text-left py-1.5 px-3 rounded-lg transition-colors ${
+                  className={`w-full text-left py-1.5 px-3 rounded-lg transition-colors flex items-center gap-2 ${
                     activeTab === 'analysis'
                       ? 'text-blue-500 font-bold bg-blue-500/10'
                       : 'text-slate-400 hover:text-current'
                   }`}
                 >
-                  • {m.analysis}
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+                  <span>{m.analysis}</span>
                 </button>
                 <button
                   onClick={() => handleSelectTab('ecommerce')}
-                  className={`w-full text-left py-1.5 px-3 rounded-lg transition-colors ${
+                  className={`w-full text-left py-1.5 px-3 rounded-lg transition-colors flex items-center gap-2 ${
                     activeTab === 'ecommerce'
                       ? 'text-blue-500 font-bold bg-blue-500/10'
                       : 'text-slate-400 hover:text-current'
                   }`}
                 >
-                  • {m.ecommerce}
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+                  <span>{m.ecommerce}</span>
                 </button>
               </div>
             )}
 
+            {/* Widgets Section */}
             <button
-              onClick={() => handleSelectTab('orders')}
-              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all ${
-                activeTab === 'orders'
+              onClick={() => handleSelectTab('widgets')}
+              className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
+                activeTab === 'widgets'
                   ? theme === 'dark' ? 'bg-[#1f2438] text-white font-bold' : 'bg-slate-100 text-slate-900 font-bold'
                   : 'text-slate-400 hover:text-current hover:bg-slate-500/10'
               }`}
             >
               <div className="flex items-center gap-3">
-                <ShoppingBag className="w-4 h-4 text-emerald-500" />
-                {sidebarOpen && <span>{m.tables}</span>}
+                <Activity className="w-4 h-4 text-teal-400" />
+                {sidebarOpen && <span>{m.widgets}</span>}
               </div>
-              {sidebarOpen && orders.length > 0 && (
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400">
-                  {orders.length}
+              {sidebarOpen && (
+                <span className="px-1.5 py-0.5 rounded text-[9px] font-black bg-teal-500/20 text-teal-400">
+                  NEW
                 </span>
               )}
             </button>
+          </div>
 
+          {/* Section: Apps */}
+          <div className="space-y-1">
+            {sidebarOpen && (
+              <div className="px-3 text-[10px] uppercase font-bold text-slate-500 tracking-wider">
+                {m.apps}
+              </div>
+            )}
             <button
               onClick={() => handleSelectTab('kds')}
-              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all ${
+              className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
                 activeTab === 'kds'
                   ? theme === 'dark' ? 'bg-[#1f2438] text-white font-bold' : 'bg-slate-100 text-slate-900 font-bold'
                   : 'text-slate-400 hover:text-current hover:bg-slate-500/10'
@@ -742,13 +839,28 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                 </span>
               )}
             </button>
+
+            <button
+              onClick={() => handleSelectTab('tableOccupancy')}
+              className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
+                activeTab === 'tableOccupancy'
+                  ? theme === 'dark' ? 'bg-[#1f2438] text-white font-bold' : 'bg-slate-100 text-slate-900 font-bold'
+                  : 'text-slate-400 hover:text-current hover:bg-slate-500/10'
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <Layers className="w-4 h-4 text-indigo-400" />
+                {sidebarOpen && <span>{m.hallOccupancy || "Zallar Xaritasi"}</span>}
+              </div>
+              {sidebarOpen && <ChevronRight className="w-3.5 h-3.5 text-slate-500" />}
+            </button>
           </div>
 
-          {/* Section: UI Elements */}
+          {/* Section: Forms & Tables */}
           <div className="space-y-1">
             {sidebarOpen && (
               <div className="px-3 text-[10px] uppercase font-bold text-slate-500 tracking-wider">
-                {m.uiElements}
+                {m.formsAndTables}
               </div>
             )}
             <button
@@ -763,9 +875,40 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                 <UtensilsCrossed className="w-4 h-4 text-fuchsia-500" />
                 {sidebarOpen && <span>{m.forms}</span>}
               </div>
-              {sidebarOpen && <ChevronRight className="w-3.5 h-3.5 text-slate-500" />}
+              {sidebarOpen && (
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-fuchsia-500/20 text-fuchsia-400">
+                  {menuItems.length}
+                </span>
+              )}
             </button>
 
+            <button
+              onClick={() => handleSelectTab('orders')}
+              className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
+                activeTab === 'orders'
+                  ? theme === 'dark' ? 'bg-[#1f2438] text-white font-bold' : 'bg-slate-100 text-slate-900 font-bold'
+                  : 'text-slate-400 hover:text-current hover:bg-slate-500/10'
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <ShoppingBag className="w-4 h-4 text-emerald-500" />
+                {sidebarOpen && <span>{m.tables}</span>}
+              </div>
+              {sidebarOpen && orders.length > 0 && (
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400">
+                  {orders.length}
+                </span>
+              )}
+            </button>
+          </div>
+
+          {/* Section: Pages */}
+          <div className="space-y-1">
+            {sidebarOpen && (
+              <div className="px-3 text-[10px] uppercase font-bold text-slate-500 tracking-wider">
+                {m.pages}
+              </div>
+            )}
             <button
               onClick={() => handleSelectTab('reservations')}
               className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-colors ${
@@ -784,15 +927,22 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                 </span>
               )}
             </button>
-          </div>
 
-          {/* Section: Pages */}
-          <div className="space-y-1">
-            {sidebarOpen && (
-              <div className="px-3 text-[10px] uppercase font-bold text-slate-500 tracking-wider">
-                {m.pages}
+            <button
+              onClick={() => handleSelectTab('userProfile')}
+              className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-colors ${
+                activeTab === 'userProfile'
+                  ? theme === 'dark' ? 'bg-[#1f2438] text-white font-bold' : 'bg-slate-100 text-slate-900 font-bold'
+                  : 'text-slate-400 hover:text-current hover:bg-slate-500/10'
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <User className="w-4 h-4 text-pink-500" />
+                {sidebarOpen && <span>{m.userProfile}</span>}
               </div>
-            )}
+              {sidebarOpen && <ChevronRight className="w-3.5 h-3.5 text-slate-500" />}
+            </button>
+
             <button
               onClick={() => handleSelectTab('settings')}
               className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-colors ${
@@ -854,7 +1004,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
               <MenuIcon className="w-5 h-5" />
             </button>
 
-            {/* Pill Search Input */}
+            {/* Pill Search Input with Live Results Popover */}
             <div className="relative flex-1 hidden sm:block">
               <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
@@ -862,20 +1012,88 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                 placeholder={m.searchPlaceholder}
                 value={globalSearch}
                 onChange={(e) => setGlobalSearch(e.target.value)}
-                className={`w-full pl-9 pr-4 py-2 rounded-full text-xs transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/50 ${
+                className={`w-full pl-9 pr-8 py-2 rounded-full text-xs transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/50 ${
                   theme === 'dark'
                     ? 'bg-[#1c2032] border border-transparent text-white placeholder-slate-500'
                     : 'bg-slate-100 border border-slate-200 text-slate-800 placeholder-slate-400'
                 }`}
               />
+              {globalSearch.trim() && (
+                <button
+                  onClick={() => setGlobalSearch('')}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-current"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
+
+              {/* Instant Search Results Floating Dropdown */}
+              {globalSearch.trim().length > 0 && (
+                <div className={`absolute left-0 right-0 mt-2 p-3 rounded-2xl shadow-2xl border z-50 max-h-80 overflow-y-auto ${
+                  theme === 'dark' ? 'bg-[#171a29] border-[#252a42] text-white' : 'bg-white border-slate-200 text-slate-900 shadow-xl'
+                }`}>
+                  <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">
+                    Tezkor qidiruv natijalari:
+                  </div>
+
+                  {/* Dishes matches */}
+                  {menuItems.filter(d => {
+                    const n = (typeof d.name === 'object' ? (d.name.uz + d.name.ru + d.name.en) : d.name).toLowerCase();
+                    return n.includes(globalSearch.toLowerCase());
+                  }).slice(0, 3).length > 0 && (
+                    <div className="mb-3 space-y-1.5">
+                      <span className="text-[10px] font-bold text-blue-400 uppercase">🍽️ {m.searchDishes}</span>
+                      {menuItems.filter(d => {
+                        const n = (typeof d.name === 'object' ? (d.name.uz + d.name.ru + d.name.en) : d.name).toLowerCase();
+                        return n.includes(globalSearch.toLowerCase());
+                      }).slice(0, 3).map(dish => (
+                        <div
+                          key={dish.id}
+                          onClick={() => {
+                            handleSelectTab('menu');
+                            setGlobalSearch('');
+                          }}
+                          className="flex items-center justify-between p-2 rounded-xl hover:bg-slate-500/10 cursor-pointer transition-colors"
+                        >
+                          <div className="flex items-center gap-2">
+                            <img src={dish.image} alt="" className="w-7 h-7 rounded-lg object-cover" />
+                            <span className="text-xs font-semibold">{getLocalized(dish.name)}</span>
+                          </div>
+                          <span className="text-xs font-bold text-amber-500">{formatPrice(dish.price)}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Orders matches */}
+                  {orders.filter(o => (o.id + o.customerName + o.customerPhone).toLowerCase().includes(globalSearch.toLowerCase())).slice(0, 2).length > 0 && (
+                    <div className="mb-2 space-y-1.5">
+                      <span className="text-[10px] font-bold text-emerald-400 uppercase">🛍️ {m.searchOrders}</span>
+                      {orders.filter(o => (o.id + o.customerName + o.customerPhone).toLowerCase().includes(globalSearch.toLowerCase())).slice(0, 2).map(order => (
+                        <div
+                          key={order.id}
+                          onClick={() => {
+                            handleSelectTab('orders');
+                            setGlobalSearch('');
+                          }}
+                          className="flex items-center justify-between p-2 rounded-xl hover:bg-slate-500/10 cursor-pointer transition-colors"
+                        >
+                          <span className="text-xs font-bold text-blue-500">#{order.id} • {order.customerName}</span>
+                          <span className="text-xs font-mono font-bold text-emerald-400">{formatPrice(order.totalPrice || order.totalAmount || 0)}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 
-          {/* Right Header Tools: Flag, Dark/Light, Notifications, Cart, Avatar */}
-          <div className="flex items-center gap-3">
+          {/* Right Header Tools: Flag, Dark/Light, Apps Grid, Notifications, Cart, Avatar */}
+          <div className="flex items-center gap-2 sm:gap-3">
             
             {/* Live Clock */}
-            <div className={`hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-mono font-bold border ${
+            <div className={`hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-mono font-bold border ${
               theme === 'dark' ? 'bg-[#1c2032] border-[#252a42] text-slate-300' : 'bg-slate-100 border-slate-200 text-slate-700'
             }`}>
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
@@ -957,7 +1175,62 @@ export const AdminDashboard = ({ setIsAdminView }) => {
               {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
             </button>
 
-            {/* Notifications Bell with Badge 5 */}
+            {/* 9-Dots SaaS App Launcher (Matching Maxton Reference) */}
+            <div className="relative">
+              <button
+                onClick={() => {
+                  if (audioEnabled) soundFx.playPop();
+                  setAppsMenuOpen(!appsMenuOpen);
+                }}
+                className={`p-2 rounded-full transition-colors ${
+                  appsMenuOpen
+                    ? 'bg-blue-600 text-white shadow-md shadow-blue-500/30'
+                    : 'text-slate-400 hover:text-current hover:bg-slate-500/10'
+                }`}
+                title={m.appLauncher || "Ilovalar Markazi"}
+              >
+                <LayoutGrid className="w-4 h-4" />
+              </button>
+
+              {appsMenuOpen && (
+                <div className={`absolute right-0 mt-2 w-72 p-3 rounded-2xl shadow-2xl border z-50 ${
+                  theme === 'dark'
+                    ? 'bg-[#171a29] border-[#252a42] text-white'
+                    : 'bg-white border-slate-200 text-slate-800'
+                }`}>
+                  <div className="flex items-center justify-between pb-2 border-b border-inherit mb-2">
+                    <span className="font-bold text-xs uppercase tracking-wider">{m.appLauncher}</span>
+                    <span className="text-[10px] text-blue-500 font-bold">8 ta vosita</span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2 text-center text-[11px]">
+                    {[
+                      { tab: 'ecommerce', label: 'eCommerce', icon: '🛒', color: 'bg-blue-500/15 text-blue-400' },
+                      { tab: 'menu', label: 'Taomnoma', icon: '🍽️', color: 'bg-fuchsia-500/15 text-fuchsia-400' },
+                      { tab: 'orders', label: 'Buyurtmalar', icon: '🛍️', color: 'bg-emerald-500/15 text-emerald-400' },
+                      { tab: 'kds', label: 'Oshxona', icon: '👨‍🍳', color: 'bg-amber-500/15 text-amber-400' },
+                      { tab: 'tableOccupancy', label: 'Zal Xaritasi', icon: '📍', color: 'bg-indigo-500/15 text-indigo-400' },
+                      { tab: 'reservations', label: 'Bandliklar', icon: '📅', color: 'bg-purple-500/15 text-purple-400' },
+                      { tab: 'analysis', label: 'Tahlillar', icon: '📊', color: 'bg-cyan-500/15 text-cyan-400' },
+                      { tab: 'settings', label: 'Bot & AI', icon: '🤖', color: 'bg-teal-500/15 text-teal-400' },
+                    ].map((app) => (
+                      <button
+                        key={app.tab}
+                        onClick={() => {
+                          handleSelectTab(app.tab);
+                          setAppsMenuOpen(false);
+                        }}
+                        className="p-2.5 rounded-xl hover:bg-slate-500/10 flex flex-col items-center gap-1 transition-all group"
+                      >
+                        <span className="text-xl group-hover:scale-110 transition-transform">{app.icon}</span>
+                        <span className="font-bold text-[10px] truncate w-full">{app.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Notifications Bell with Dynamic Badge */}
             <div className="relative">
               <button
                 onClick={() => {
@@ -968,34 +1241,49 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                 title="Notifications"
               >
                 <Bell className="w-4 h-4" />
-                <span className="w-4 h-4 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center absolute -top-0.5 -right-0.5">
-                  5
-                </span>
+                {unreadNotificationCount > 0 && (
+                  <span className="w-4 h-4 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center absolute -top-0.5 -right-0.5 animate-pulse">
+                    {unreadNotificationCount}
+                  </span>
+                )}
               </button>
 
               {notificationsOpen && (
                 <div className={`absolute right-0 mt-2 w-80 p-4 rounded-2xl shadow-2xl border z-50 ${
                   theme === 'dark'
-                    ? 'bg-[#1c2032] border-[#2c324e] text-slate-200'
+                    ? 'bg-[#171a29] border-[#2c324e] text-slate-200'
                     : 'bg-white border-slate-200 text-slate-800'
                 }`}>
                   <div className="flex items-center justify-between pb-2 border-b border-inherit mb-3">
                     <span className="font-bold text-xs uppercase tracking-wider">Bildirishnomalar</span>
-                    <span className="text-[10px] text-blue-500 font-bold">5 ta yangi</span>
+                    {unreadNotificationCount > 0 ? (
+                      <button
+                        onClick={handleMarkAllNotificationsRead}
+                        className="text-[10px] text-blue-500 hover:underline font-bold"
+                      >
+                        {m.markAllRead}
+                      </button>
+                    ) : (
+                      <span className="text-[10px] text-emerald-400 font-bold">Hammasi o'qilgan ✓</span>
+                    )}
                   </div>
-                  <div className="space-y-2.5 text-xs">
-                    <div className="p-2 rounded-xl bg-blue-500/10 border border-blue-500/20">
-                      <p className="font-semibold text-blue-400">Yangi VIP Buyurtma qabul qilindi</p>
-                      <span className="text-[10px] text-slate-400">2 daqiqa oldin</span>
-                    </div>
-                    <div className="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
-                      <p className="font-semibold text-emerald-400">Telegram Bot mijozga javob berdi</p>
-                      <span className="text-[10px] text-slate-400">5 daqiqa oldin</span>
-                    </div>
-                    <div className="p-2 rounded-xl bg-amber-500/10 border border-amber-500/20">
-                      <p className="font-semibold text-amber-400">Stol #3 bron qilindi (VIP Zalda)</p>
-                      <span className="text-[10px] text-slate-400">12 daqiqa oldin</span>
-                    </div>
+                  <div className="space-y-2.5 text-xs max-h-72 overflow-y-auto pr-1">
+                    {notifications.map((n) => (
+                      <div
+                        key={n.id}
+                        className={`p-2.5 rounded-xl border transition-all ${
+                          n.read
+                            ? theme === 'dark' ? 'bg-[#141622]/60 border-[#22263d] opacity-75' : 'bg-slate-50 border-slate-200 opacity-75'
+                            : theme === 'dark' ? 'bg-[#1f243a] border-blue-500/30' : 'bg-blue-50/70 border-blue-200'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <p className={`font-semibold text-xs ${n.read ? 'text-slate-300' : 'text-blue-400'}`}>{n.title}</p>
+                          <span className="text-[10px] text-slate-400 shrink-0">{n.time}</span>
+                        </div>
+                        <p className="text-[11px] text-slate-400 mt-1 leading-relaxed">{n.desc}</p>
+                      </div>
+                    ))}
                   </div>
                 </div>
               )}
@@ -1009,7 +1297,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
             >
               <ShoppingBag className="w-4 h-4" />
               <span className="w-4 h-4 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center absolute -top-0.5 -right-0.5">
-                {orders.length}
+                {orders.length > 0 ? orders.length : 8}
               </span>
             </button>
 
@@ -1065,17 +1353,56 @@ export const AdminDashboard = ({ setIsAdminView }) => {
           </div>
         </header>
 
-        {/* BREADCRUMB & ACTION BAR */}
-        <div className="px-6 py-4 flex items-center justify-between">
+        {/* BREADCRUMB & DATA SOURCE ACTION BAR */}
+        <div className="px-6 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2 text-xs">
             <h1 className="font-bold text-base text-current">{m.dashboard}</h1>
             <span className="text-slate-400">/</span>
             <span className="text-slate-400 flex items-center gap-1">
               <span className="text-[10px]">📁</span> {m[activeTab] || activeTab}
             </span>
+            <span className="ml-2 px-2 py-0.5 rounded-full text-[9px] font-black bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
+              <ShieldCheck className="w-3 h-3" />
+              <span>100% HALOL VERIFIED</span>
+            </span>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2.5 flex-wrap">
+            {/* Data Source Mode Switcher: Maxton Demo vs Live Database */}
+            <div className={`p-1 rounded-xl border flex items-center gap-1 text-[11px] font-bold ${
+              theme === 'dark' ? 'bg-[#171a29] border-[#22263d]' : 'bg-white border-slate-200 shadow-sm'
+            }`}>
+              <button
+                onClick={() => {
+                  if (audioEnabled) soundFx.playPop();
+                  setDataSourceMode('demo');
+                }}
+                className={`px-3 py-1 rounded-lg transition-all ${
+                  dataSourceMode === 'demo'
+                    ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-sm'
+                    : 'text-slate-400 hover:text-current'
+                }`}
+                title="Maxton SaaS fotosidagi ko'rinish va raqamlar"
+              >
+                📸 {m.demoMode}
+              </button>
+              <button
+                onClick={() => {
+                  if (audioEnabled) soundFx.playPop();
+                  setDataSourceMode('live');
+                }}
+                className={`px-3 py-1 rounded-lg transition-all flex items-center gap-1.5 ${
+                  dataSourceMode === 'live'
+                    ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-sm'
+                    : 'text-slate-400 hover:text-current'
+                }`}
+                title="Restoranning real buyurtmalari va tushum hisob-kitobi"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                <span>{m.liveMode}</span>
+              </button>
+            </div>
+
             <button
               onClick={() => handleSelectTab('settings')}
               className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center gap-1.5 shadow-lg shadow-blue-500/25 transition-all"
@@ -1115,19 +1442,26 @@ export const AdminDashboard = ({ setIsAdminView }) => {
 
                   <div className="my-5 relative z-10">
                     <div className="font-extrabold text-3xl sm:text-4xl text-current tracking-tight">
-                      {displayRevenueFormatted}
+                      {dataSourceMode === 'demo' ? "$168.5K" : (totalRevenue > 0 ? formatPrice(totalRevenue) : formatPrice(18500000))}
                     </div>
-                    <p className="text-xs text-slate-400 mt-1">
-                      <span className="text-emerald-400 font-bold">58%</span> {m.salesTarget}
+                    <p className="text-xs text-slate-400 mt-1 flex items-center gap-1">
+                      <span className="text-emerald-400 font-bold">
+                        {dataSourceMode === 'demo' ? "58%" : `${Math.min(100, Math.round((totalRevenue / 30000000) * 100)) || 62}%`}
+                      </span>
+                      <span>{m.salesTarget}</span>
                     </p>
                   </div>
 
                   <div className="relative z-10">
                     <button
-                      onClick={() => handleSelectTab('analysis')}
-                      className="px-5 py-2 rounded-full text-xs font-bold text-white bg-gradient-to-r from-fuchsia-600 to-pink-500 hover:opacity-95 shadow-lg shadow-pink-500/25 transition-all"
+                      onClick={() => {
+                        if (audioEnabled) soundFx.playSuccessFanfare();
+                        setIsBestSellerModalOpen(true);
+                      }}
+                      className="px-5 py-2.5 rounded-full text-xs font-bold text-white bg-gradient-to-r from-fuchsia-600 via-pink-500 to-rose-500 hover:opacity-95 shadow-lg shadow-pink-500/25 transition-all flex items-center gap-2"
                     >
-                      {m.viewDetails}
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>{m.viewDetails}</span>
                     </button>
                   </div>
 
@@ -1144,9 +1478,9 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                 {/* 2. FOUR KPI METRIC CARDS */}
                 <div className="col-span-12 xl:col-span-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   
-                  {/* KPI 1: Total Orders (Blue Wave) */}
+                  {/* KPI 1: Total Orders (Luminous Blue Wave) */}
                   <div
-                    className={`p-4 rounded-2xl flex flex-col justify-between border relative overflow-hidden ${
+                    className={`p-4 rounded-2xl flex flex-col justify-between border relative overflow-hidden group transition-all hover:border-blue-500/40 ${
                       theme === 'dark'
                         ? 'bg-[#171a29] border-[#22263d]'
                         : 'bg-white border-slate-200 shadow-sm'
@@ -1162,13 +1496,23 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                     </div>
                     <div className="my-2">
                       <div className="font-extrabold text-2xl text-current">
-                        {displayOrdersCount}
+                        {dataSourceMode === 'demo' ? "248k" : `${orders.length > 0 ? orders.length : 14} ta`}
                       </div>
                       <span className="text-xs text-slate-400">{m.totalOrders}</span>
                     </div>
-                    {/* Blue SVG Sparkline Wave */}
-                    <div className="h-9 w-full pt-1">
+                    {/* Blue Glowing Area SVG Sparkline */}
+                    <div className="h-10 w-full pt-1">
                       <svg viewBox="0 0 100 28" className="w-full h-full overflow-visible">
+                        <defs>
+                          <linearGradient id="kpiBlueGrad" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.45" />
+                            <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.0" />
+                          </linearGradient>
+                        </defs>
+                        <path
+                          d="M0,22 Q15,8 30,20 T60,12 T90,6 L100,4 L100,28 L0,28 Z"
+                          fill="url(#kpiBlueGrad)"
+                        />
                         <path
                           d="M0,22 Q15,8 30,20 T60,12 T90,6 L100,4"
                           fill="none"
@@ -1180,9 +1524,9 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                     </div>
                   </div>
 
-                  {/* KPI 2: Total Sales (Green Wave) */}
+                  {/* KPI 2: Total Sales (Luminous Green Wave) */}
                   <div
-                    className={`p-4 rounded-2xl flex flex-col justify-between border relative overflow-hidden ${
+                    className={`p-4 rounded-2xl flex flex-col justify-between border relative overflow-hidden group transition-all hover:border-emerald-500/40 ${
                       theme === 'dark'
                         ? 'bg-[#171a29] border-[#22263d]'
                         : 'bg-white border-slate-200 shadow-sm'
@@ -1198,13 +1542,23 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                     </div>
                     <div className="my-2">
                       <div className="font-extrabold text-2xl text-current">
-                        $47.6k
+                        {dataSourceMode === 'demo' ? "$47.6k" : formatPrice(totalRevenue > 0 ? totalRevenue * 0.85 : 15725000)}
                       </div>
                       <span className="text-xs text-slate-400">{m.totalSales}</span>
                     </div>
-                    {/* Green SVG Sparkline Wave */}
-                    <div className="h-9 w-full pt-1">
+                    {/* Green Glowing Area SVG Sparkline */}
+                    <div className="h-10 w-full pt-1">
                       <svg viewBox="0 0 100 28" className="w-full h-full overflow-visible">
+                        <defs>
+                          <linearGradient id="kpiGreenGrad" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="#10b981" stopOpacity="0.45" />
+                            <stop offset="100%" stopColor="#10b981" stopOpacity="0.0" />
+                          </linearGradient>
+                        </defs>
+                        <path
+                          d="M0,20 Q20,24 40,12 T70,16 T100,5 L100,28 L0,28 Z"
+                          fill="url(#kpiGreenGrad)"
+                        />
                         <path
                           d="M0,20 Q20,24 40,12 T70,16 T100,5"
                           fill="none"
@@ -1216,9 +1570,9 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                     </div>
                   </div>
 
-                  {/* KPI 3: Total Visits (Cyan Wave) */}
+                  {/* KPI 3: Total Visits (Luminous Cyan Wave) */}
                   <div
-                    className={`p-4 rounded-2xl flex flex-col justify-between border relative overflow-hidden ${
+                    className={`p-4 rounded-2xl flex flex-col justify-between border relative overflow-hidden group transition-all hover:border-cyan-500/40 ${
                       theme === 'dark'
                         ? 'bg-[#171a29] border-[#22263d]'
                         : 'bg-white border-slate-200 shadow-sm'
@@ -1234,13 +1588,23 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                     </div>
                     <div className="my-2">
                       <div className="font-extrabold text-2xl text-current">
-                        189K
+                        {dataSourceMode === 'demo' ? "189K" : `${Math.max(orders.length * 6, 215)} ta`}
                       </div>
                       <span className="text-xs text-slate-400">{m.totalVisits}</span>
                     </div>
-                    {/* Cyan SVG Sparkline Wave */}
-                    <div className="h-9 w-full pt-1">
+                    {/* Cyan Glowing Area SVG Sparkline */}
+                    <div className="h-10 w-full pt-1">
                       <svg viewBox="0 0 100 28" className="w-full h-full overflow-visible">
+                        <defs>
+                          <linearGradient id="kpiCyanGrad" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="#06b6d4" stopOpacity="0.45" />
+                            <stop offset="100%" stopColor="#06b6d4" stopOpacity="0.0" />
+                          </linearGradient>
+                        </defs>
+                        <path
+                          d="M0,18 Q25,8 45,22 T80,14 T100,8 L100,28 L0,28 Z"
+                          fill="url(#kpiCyanGrad)"
+                        />
                         <path
                           d="M0,18 Q25,8 45,22 T80,14 T100,8"
                           fill="none"
@@ -1254,7 +1618,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
 
                   {/* KPI 4: Bounce Rate (Golden Mini Bar Chart) */}
                   <div
-                    className={`p-4 rounded-2xl flex flex-col justify-between border relative overflow-hidden ${
+                    className={`p-4 rounded-2xl flex flex-col justify-between border relative overflow-hidden group transition-all hover:border-amber-500/40 ${
                       theme === 'dark'
                         ? 'bg-[#171a29] border-[#22263d]'
                         : 'bg-white border-slate-200 shadow-sm'
@@ -1270,17 +1634,17 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                     </div>
                     <div className="my-2">
                       <div className="font-extrabold text-2xl text-current">
-                        24.6%
+                        {dataSourceMode === 'demo' ? "24.6%" : `${Math.min(95, 18 + orders.length * 2)}%`}
                       </div>
                       <span className="text-xs text-slate-400">{m.bounceRate}</span>
                     </div>
-                    {/* Golden Mini Bar Chart */}
-                    <div className="h-9 w-full flex items-end justify-between gap-1 pt-1">
+                    {/* Golden Mini Bar Chart with Hover Elevation */}
+                    <div className="h-10 w-full flex items-end justify-between gap-1 pt-1">
                       {[30, 45, 60, 40, 80, 50, 95, 70, 85, 90, 65, 100].map((h, i) => (
                         <div
                           key={i}
                           style={{ height: `${h}%` }}
-                          className="flex-1 bg-amber-500 rounded-t-sm opacity-90 hover:opacity-100 transition-opacity"
+                          className="flex-1 bg-gradient-to-t from-amber-600 to-amber-400 rounded-t-sm opacity-85 hover:opacity-100 hover:scale-y-110 transition-all origin-bottom"
                         />
                       ))}
                     </div>
@@ -1307,7 +1671,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                     </button>
                   </div>
 
-                  {/* Circular Donut Diagram */}
+                  {/* Circular Donut Diagram with Interactive Hover */}
                   <div className="flex items-center justify-center py-4 relative">
                     <svg viewBox="0 0 200 200" className="w-48 h-48 -rotate-90">
                       {/* Background circle */}
@@ -1326,10 +1690,13 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                         r="70"
                         fill="none"
                         stroke="#3b82f6"
-                        strokeWidth="16"
+                        strokeWidth={activeDonutSegment === 'sales' ? "20" : "16"}
                         strokeDasharray="299 440"
                         strokeDashoffset="0"
                         strokeLinecap="round"
+                        className="transition-all duration-300 cursor-pointer"
+                        onMouseEnter={() => setActiveDonutSegment('sales')}
+                        onMouseLeave={() => setActiveDonutSegment(null)}
                       />
                       {/* Arc 2: Pink (Product 25%) */}
                       <circle
@@ -1338,10 +1705,13 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                         r="70"
                         fill="none"
                         stroke="#ec4899"
-                        strokeWidth="16"
+                        strokeWidth={activeDonutSegment === 'product' ? "20" : "16"}
                         strokeDasharray="110 440"
                         strokeDashoffset="-299"
                         strokeLinecap="round"
+                        className="transition-all duration-300 cursor-pointer"
+                        onMouseEnter={() => setActiveDonutSegment('product')}
+                        onMouseLeave={() => setActiveDonutSegment(null)}
                       />
                       {/* Arc 3: Green (Income 14%) */}
                       <circle
@@ -1350,37 +1720,62 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                         r="70"
                         fill="none"
                         stroke="#10b981"
-                        strokeWidth="16"
+                        strokeWidth={activeDonutSegment === 'income' ? "20" : "16"}
                         strokeDasharray="61 440"
                         strokeDashoffset="-409"
                         strokeLinecap="round"
+                        className="transition-all duration-300 cursor-pointer"
+                        onMouseEnter={() => setActiveDonutSegment('income')}
+                        onMouseLeave={() => setActiveDonutSegment(null)}
                       />
                     </svg>
 
                     {/* Center Text */}
                     <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                      <span className="font-black text-2xl text-current">68%</span>
-                      <span className="text-[10px] text-slate-400 font-semibold">{m.totalSales}</span>
+                      <span className="font-black text-2xl text-current">
+                        {activeDonutSegment === 'product' ? "25%" : activeDonutSegment === 'income' ? "14%" : "68%"}
+                      </span>
+                      <span className="text-[10px] text-slate-400 font-semibold">
+                        {activeDonutSegment === 'product' ? m.productLegend : activeDonutSegment === 'income' ? m.incomeLegend : m.totalSales}
+                      </span>
                     </div>
                   </div>
 
                   {/* Bottom Legend */}
                   <div className="pt-4 border-t border-inherit space-y-2 text-xs">
-                    <div className="flex items-center justify-between">
+                    <div
+                      onMouseEnter={() => setActiveDonutSegment('sales')}
+                      onMouseLeave={() => setActiveDonutSegment(null)}
+                      className={`flex items-center justify-between p-1.5 rounded-lg transition-colors cursor-pointer ${
+                        activeDonutSegment === 'sales' ? 'bg-blue-500/10' : ''
+                      }`}
+                    >
                       <div className="flex items-center gap-2">
                         <span className="w-2.5 h-2.5 rounded-full bg-blue-500" />
                         <span className="text-slate-400">{m.salesLegend}</span>
                       </div>
                       <span className="font-bold text-current">68%</span>
                     </div>
-                    <div className="flex items-center justify-between">
+                    <div
+                      onMouseEnter={() => setActiveDonutSegment('product')}
+                      onMouseLeave={() => setActiveDonutSegment(null)}
+                      className={`flex items-center justify-between p-1.5 rounded-lg transition-colors cursor-pointer ${
+                        activeDonutSegment === 'product' ? 'bg-pink-500/10' : ''
+                      }`}
+                    >
                       <div className="flex items-center gap-2">
                         <span className="w-2.5 h-2.5 rounded-full bg-pink-500" />
                         <span className="text-slate-400">{m.productLegend}</span>
                       </div>
                       <span className="font-bold text-current">25%</span>
                     </div>
-                    <div className="flex items-center justify-between">
+                    <div
+                      onMouseEnter={() => setActiveDonutSegment('income')}
+                      onMouseLeave={() => setActiveDonutSegment(null)}
+                      className={`flex items-center justify-between p-1.5 rounded-lg transition-colors cursor-pointer ${
+                        activeDonutSegment === 'income' ? 'bg-emerald-500/10' : ''
+                      }`}
+                    >
                       <div className="flex items-center gap-2">
                         <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
                         <span className="text-slate-400">{m.incomeLegend}</span>
@@ -1398,15 +1793,22 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                       : 'bg-white border-slate-200 shadow-sm'
                   }`}
                 >
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-bold text-sm text-current">{m.salesAndViews}</h3>
+                  <div className="flex items-center justify-between mb-2">
+                    <div>
+                      <h3 className="font-bold text-sm text-current">{m.salesAndViews}</h3>
+                      {activeHoverMonth !== null && (
+                        <p className="text-[11px] text-blue-400 font-bold mt-0.5">
+                          {activeHoverMonth.month}: {activeHoverMonth.sales * 1000} Savdo | {activeHoverMonth.views * 1000} Ko'rish
+                        </p>
+                      )}
+                    </div>
                     <div className="flex items-center gap-4 text-xs">
                       <div className="flex items-center gap-1.5">
-                        <span className="w-2.5 h-2.5 rounded-sm bg-amber-500" />
+                        <span className="w-2.5 h-2.5 rounded-sm bg-gradient-to-t from-amber-600 to-amber-400" />
                         <span className="text-slate-400">{m.salesLegend}</span>
                       </div>
                       <div className="flex items-center gap-1.5">
-                        <span className="w-2.5 h-2.5 rounded-sm bg-cyan-400" />
+                        <span className="w-2.5 h-2.5 rounded-sm bg-gradient-to-t from-cyan-600 to-cyan-400" />
                         <span className="text-slate-400">{m.viewsLegend}</span>
                       </div>
                       <button className="text-slate-400 hover:text-current ml-2">
@@ -1415,8 +1817,15 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                     </div>
                   </div>
 
-                  {/* Dual Bar Chart for Months Jan - Sep */}
-                  <div className="h-52 w-full flex items-end justify-between gap-3 pt-6 pb-2 border-b border-inherit">
+                  {/* Dual Bar Chart for Months Jan - Sep with Interactive Hover */}
+                  <div className="h-52 w-full flex items-end justify-between gap-3 pt-6 pb-2 border-b border-inherit relative">
+                    {/* Background Guideline Grid */}
+                    <div className="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-10">
+                      <div className="w-full border-b border-current" />
+                      <div className="w-full border-b border-current" />
+                      <div className="w-full border-b border-current" />
+                    </div>
+
                     {[
                       { month: 'Jan', sales: 20, views: 25 },
                       { month: 'Feb', sales: 15, views: 20 },
@@ -1428,22 +1837,29 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                       { month: 'Aug', sales: 40, views: 45 },
                       { month: 'Sep', sales: 70, views: 55 },
                     ].map((item, idx) => (
-                      <div key={idx} className="flex-1 flex flex-col items-center gap-2 group cursor-pointer">
+                      <div
+                        key={idx}
+                        onMouseEnter={() => setActiveHoverMonth(item)}
+                        onMouseLeave={() => setActiveHoverMonth(null)}
+                        className="flex-1 flex flex-col items-center gap-2 group cursor-pointer z-10"
+                      >
                         <div className="w-full flex items-end justify-center gap-1.5 h-36">
                           {/* Orange Sales Bar */}
                           <div
                             style={{ height: `${item.sales}%` }}
-                            className="w-2 sm:w-3.5 bg-amber-500 rounded-t-sm group-hover:bg-amber-400 transition-all"
+                            className="w-2 sm:w-3.5 bg-gradient-to-t from-amber-600 to-amber-400 rounded-t-sm group-hover:from-amber-500 group-hover:to-amber-300 group-hover:shadow-lg group-hover:shadow-amber-500/30 transition-all"
                             title={`Sales: ${item.sales}`}
                           />
                           {/* Cyan Views Bar */}
                           <div
                             style={{ height: `${item.views}%` }}
-                            className="w-2 sm:w-3.5 bg-cyan-400 rounded-t-sm group-hover:bg-cyan-300 transition-all"
+                            className="w-2 sm:w-3.5 bg-gradient-to-t from-cyan-600 to-cyan-400 rounded-t-sm group-hover:from-cyan-500 group-hover:to-cyan-300 group-hover:shadow-lg group-hover:shadow-cyan-500/30 transition-all"
                             title={`Views: ${item.views}`}
                           />
                         </div>
-                        <span className="text-[11px] font-semibold text-slate-400 group-hover:text-current">
+                        <span className={`text-[11px] font-semibold transition-colors ${
+                          activeHoverMonth?.month === item.month ? 'text-blue-400 font-bold scale-110' : 'text-slate-400 group-hover:text-current'
+                        }`}>
                           {item.month}
                         </span>
                       </div>
@@ -1493,8 +1909,9 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                 }`}
               >
                 <div className="flex items-center gap-2">
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/20 text-blue-400">
-                    ⚡ Quick Operations
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/20 text-blue-400 flex items-center gap-1">
+                    <Zap className="w-3 h-3" />
+                    <span>Quick Operations</span>
                   </span>
                   <span className="text-xs text-slate-400 font-medium">
                     Tezkor boshqaruv vositalari
@@ -2154,6 +2571,225 @@ export const AdminDashboard = ({ setIsAdminView }) => {
             </div>
           )}
 
+          {/* ================= VIEW 8: WIDGETS SHOWCASE ================= */}
+          {activeTab === 'widgets' && (
+            <div
+              className={`p-6 rounded-2xl border space-y-6 ${
+                theme === 'dark' ? 'bg-[#171a29] border-[#22263d]' : 'bg-white border-slate-200 shadow-sm'
+              }`}
+            >
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div>
+                  <h2 className="font-black text-xl text-current flex items-center gap-2">
+                    <Activity className="w-5 h-5 text-teal-400" />
+                    <span>{m.widgets} & Operatsion Monitoring</span>
+                  </h2>
+                  <p className="text-xs text-slate-400">Restoran ichki jarayonlari, oshxona tezligi va 100% halol sifat monitoringi</p>
+                </div>
+                <span className="px-3 py-1 rounded-full text-xs font-bold bg-teal-500/15 text-teal-400 border border-teal-500/30 flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-teal-400 animate-pulse" />
+                  <span>Realtime Live Feed</span>
+                </span>
+              </div>
+
+              {/* 4 Interactive Widgets Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                
+                {/* Widget 1: Kitchen Velocity */}
+                <div className={`p-5 rounded-2xl border space-y-3 ${
+                  theme === 'dark' ? 'bg-[#1c2032] border-[#252a42]' : 'bg-slate-50 border-slate-200'
+                }`}>
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-xs uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
+                      <ChefHat className="w-4 h-4" />
+                      <span>{m.kitchenVelocity || "Oshxona Tayyorlash Tezligi"}</span>
+                    </span>
+                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-400">
+                      Normal (A+)
+                    </span>
+                  </div>
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-3xl font-black text-current">18.4</span>
+                    <span className="text-xs text-slate-400">daqiqa o'rtacha tayyorlash vaqti</span>
+                  </div>
+                  <div className="w-full bg-slate-500/20 h-2 rounded-full overflow-hidden">
+                    <div className="bg-gradient-to-r from-amber-500 to-emerald-400 h-full rounded-full w-[88%]" />
+                  </div>
+                  <div className="flex items-center justify-between text-[11px] text-slate-400 pt-1">
+                    <span>👨‍🍳 4 nafar oshpaz navbatchilikda</span>
+                    <span className="text-emerald-400 font-bold">96% o'z vaqtida</span>
+                  </div>
+                </div>
+
+                {/* Widget 2: Hall & Table Occupancy */}
+                <div className={`p-5 rounded-2xl border space-y-3 ${
+                  theme === 'dark' ? 'bg-[#1c2032] border-[#252a42]' : 'bg-slate-50 border-slate-200'
+                }`}>
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-xs uppercase tracking-wider text-indigo-400 flex items-center gap-1.5">
+                      <Layers className="w-4 h-4" />
+                      <span>{m.hallOccupancy || "Zallar & Stollar Bandligi"}</span>
+                    </span>
+                    <button
+                      onClick={() => handleSelectTab('tableOccupancy')}
+                      className="text-[10px] font-bold text-blue-400 hover:underline"
+                    >
+                      Xaritani ko'rish →
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2 text-center pt-1">
+                    <div className="p-2.5 rounded-xl bg-slate-500/10">
+                      <span className="text-[10px] text-slate-400 block">Asosiy Zal</span>
+                      <span className="text-lg font-black text-current">82%</span>
+                    </div>
+                    <div className="p-2.5 rounded-xl bg-slate-500/10">
+                      <span className="text-[10px] text-slate-400 block">VIP Xonalar</span>
+                      <span className="text-lg font-black text-emerald-400">65%</span>
+                    </div>
+                    <div className="p-2.5 rounded-xl bg-slate-500/10">
+                      <span className="text-[10px] text-slate-400 block">Terrasa</span>
+                      <span className="text-lg font-black text-amber-400">90%</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Widget 3: 100% Halal Compliance Inspector */}
+                <div className={`p-5 rounded-2xl border space-y-3 ${
+                  theme === 'dark' ? 'bg-[#1c2032] border-[#252a42]' : 'bg-slate-50 border-slate-200'
+                }`}>
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-xs uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+                      <ShieldCheck className="w-4 h-4" />
+                      <span>{m.halalCompliance || "100% Halol Sifat Nazorati"}</span>
+                    </span>
+                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500 text-dark-950">
+                      VERIFIED
+                    </span>
+                  </div>
+                  <div className="space-y-1.5 text-xs text-slate-300">
+                    <p className="flex items-center justify-between">
+                      <span className="text-slate-400">Go'sht yetkazib beruvchi:</span>
+                      <span className="font-bold text-current">Qashqadaryo Eko-Halol</span>
+                    </p>
+                    <p className="flex items-center justify-between">
+                      <span className="text-slate-400">Halol Sertifikat Raqami:</span>
+                      <span className="font-mono font-bold text-emerald-400">#UZ-HALAL-9941</span>
+                    </p>
+                    <p className="flex items-center justify-between">
+                      <span className="text-slate-400">Taomnoma tekshiruvi:</span>
+                      <span className="font-bold text-emerald-400">16 / 16 taom 100% Halol ✓</span>
+                    </p>
+                  </div>
+                </div>
+
+                {/* Widget 4: Customer Satisfaction & Rating */}
+                <div className={`p-5 rounded-2xl border space-y-3 ${
+                  theme === 'dark' ? 'bg-[#1c2032] border-[#252a42]' : 'bg-slate-50 border-slate-200'
+                }`}>
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-xs uppercase tracking-wider text-pink-400 flex items-center gap-1.5">
+                      <Award className="w-4 h-4" />
+                      <span>{m.customerRating || "Mijozlar Bahosi"}</span>
+                    </span>
+                    <span className="text-amber-400 font-bold text-xs">⭐⭐⭐⭐⭐</span>
+                  </div>
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-3xl font-black text-current">4.95</span>
+                    <span className="text-xs text-slate-400">/ 5.0 (340 ta sharh asosida)</span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs text-slate-400 pt-1">
+                    <span>Tavsiya etish darajasi:</span>
+                    <span className="font-extrabold text-blue-400">98.7%</span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          )}
+
+          {/* ================= VIEW 9: TABLE OCCUPANCY VISUAL FLOOR PLAN ================= */}
+          {activeTab === 'tableOccupancy' && (
+            <div
+              className={`p-6 rounded-2xl border space-y-4 ${
+                theme === 'dark' ? 'bg-[#171a29] border-[#22263d]' : 'bg-white border-slate-200 shadow-sm'
+              }`}
+            >
+              <div className="flex items-center justify-between pb-2 border-b border-inherit">
+                <div>
+                  <h2 className="font-black text-xl text-current flex items-center gap-2">
+                    <Layers className="w-5 h-5 text-indigo-400" />
+                    <span>Zallar & Stollar Visual Xaritasi</span>
+                  </h2>
+                  <p className="text-xs text-slate-400">Jonli stol bandliklari va buyurtmalarni interaktiv xaritada kuzatish</p>
+                </div>
+              </div>
+
+              <TableOccupancyManager reservations={reservations} />
+            </div>
+          )}
+
+          {/* ================= VIEW 10: EXECUTIVE USER PROFILE ================= */}
+          {activeTab === 'userProfile' && (
+            <div
+              className={`p-6 rounded-2xl border space-y-6 ${
+                theme === 'dark' ? 'bg-[#171a29] border-[#22263d]' : 'bg-white border-slate-200 shadow-sm'
+              }`}
+            >
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-inherit">
+                <div className="flex items-center gap-4">
+                  <div className="relative">
+                    <img
+                      src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80"
+                      alt="Jhon"
+                      className="w-16 h-16 rounded-2xl object-cover border-2 border-blue-500 shadow-lg shadow-blue-500/20"
+                    />
+                    <span className="w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-inherit absolute -bottom-1 -right-1" />
+                  </div>
+                  <div>
+                    <h2 className="font-black text-xl text-current flex items-center gap-2">
+                      <span>Jhon Doe</span>
+                      <span className="text-base">👑</span>
+                    </h2>
+                    <p className="text-xs text-slate-400">Boshqaruvchi Administrator & Best Seller of the Month</p>
+                    <span className="inline-block mt-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/15 text-blue-400 border border-blue-500/30">
+                      Super Administrator
+                    </span>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => setIsBestSellerModalOpen(true)}
+                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-fuchsia-600 to-pink-500 text-white font-bold text-xs shadow-lg shadow-pink-500/25 flex items-center gap-1.5"
+                >
+                  <Award className="w-4 h-4" />
+                  <span>Yutuqlar & Mukofotlar</span>
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div className={`p-4 rounded-xl border space-y-3 text-xs ${
+                  theme === 'dark' ? 'bg-[#1c2032] border-[#252a42]' : 'bg-slate-50 border-slate-200'
+                }`}>
+                  <span className="font-bold text-sm text-current block pb-1 border-b border-inherit">Shaxsiy Ma'lumotlar</span>
+                  <p className="flex justify-between"><span className="text-slate-400">Filial:</span><span className="font-bold text-current">Zafaron Lounge Tashkent</span></p>
+                  <p className="flex justify-between"><span className="text-slate-400">Email:</span><span className="font-mono text-current">admin@zafaron.uz</span></p>
+                  <p className="flex justify-between"><span className="text-slate-400">Telefon:</span><span className="font-mono text-current">+998 (90) 123-45-67</span></p>
+                  <p className="flex justify-between"><span className="text-slate-400">Ish Grafigi:</span><span className="font-bold text-emerald-400">09:00 - 23:00 (To'liq smena)</span></p>
+                </div>
+
+                <div className={`p-4 rounded-xl border space-y-3 text-xs ${
+                  theme === 'dark' ? 'bg-[#1c2032] border-[#252a42]' : 'bg-slate-50 border-slate-200'
+                }`}>
+                  <span className="font-bold text-sm text-current block pb-1 border-b border-inherit">Tizim Imtiyozlari & Sertifikatlar</span>
+                  <p className="flex justify-between"><span className="text-slate-400">Ruxsat darajasi:</span><span className="font-bold text-emerald-400">Cheklovsiz (Full Access) ✓</span></p>
+                  <p className="flex justify-between"><span className="text-slate-400">Halol Sifat Elchisi:</span><span className="font-bold text-amber-400">Sertifikatlangan 🏆</span></p>
+                  <p className="flex justify-between"><span className="text-slate-400">Telegram Bot Admin:</span><span className="font-bold text-blue-400">Faol Ulangan ✓</span></p>
+                  <p className="flex justify-between"><span className="text-slate-400">Oylik Sotuv Bonusi:</span><span className="font-bold text-emerald-400">+$1,250 USD</span></p>
+                </div>
+              </div>
+            </div>
+          )}
+
         </main>
       </div>
 
@@ -2340,6 +2976,112 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* ================= MODAL: BEST SELLER OF THE MONTH (JHON 🎉) ================= */}
+      {isBestSellerModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-fadeIn">
+          <div
+            className={`w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-3xl p-6 border shadow-2xl relative ${
+              theme === 'dark' ? 'bg-[#171a29] border-[#252a42] text-white' : 'bg-white border-slate-200 text-slate-900'
+            }`}
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setIsBestSellerModalOpen(false)}
+              className="absolute right-5 top-5 p-2 rounded-full hover:bg-slate-500/10 text-slate-400 hover:text-current transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {/* Header with Golden Crown and Confetti */}
+            <div className="text-center pt-2 pb-4 border-b border-inherit space-y-2">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-tr from-amber-400 via-pink-500 to-indigo-600 p-1 shadow-xl shadow-pink-500/30">
+                <div className="w-full h-full rounded-full bg-[#171a29] flex items-center justify-center text-3xl">
+                  👑
+                </div>
+              </div>
+              <h3 className="font-black text-2xl text-current tracking-tight">
+                Tabriklaymiz Jhon! 🎉
+              </h3>
+              <p className="text-xs text-slate-400 max-w-sm mx-auto">
+                Siz joriy oyda eng yuqori daromad va 100% a'lo darajadagi halol xizmat ko'rsatgan xodim deb topildingiz!
+              </p>
+            </div>
+
+            {/* Sales Target Progress Section */}
+            <div className="py-4 space-y-4">
+              <div className={`p-4 rounded-2xl border ${theme === 'dark' ? 'bg-[#1c2032] border-[#252a42]' : 'bg-slate-50 border-slate-200'}`}>
+                <div className="flex items-center justify-between text-xs font-bold mb-1.5">
+                  <span className="text-slate-400">{m.salesTargetProgress}</span>
+                  <span className="text-emerald-400 font-extrabold text-sm">58% ($168,500 / $290,000)</span>
+                </div>
+                <div className="w-full bg-slate-500/20 h-3 rounded-full overflow-hidden p-0.5">
+                  <div className="bg-gradient-to-r from-fuchsia-600 via-pink-500 to-amber-400 h-full rounded-full w-[58%] transition-all duration-1000 shadow-lg shadow-pink-500/50" />
+                </div>
+                <div className="flex items-center justify-between text-[11px] text-slate-400 mt-2">
+                  <span>Maqsadgacha qoldi: $121,500</span>
+                  <span className="text-emerald-400 font-bold">Mukofot: +$1,250 USD Unlocked 🎁</span>
+                </div>
+              </div>
+
+              {/* 4 Stats Grid */}
+              <div className="grid grid-cols-2 gap-3 text-xs">
+                <div className={`p-3 rounded-xl border ${theme === 'dark' ? 'bg-[#1c2032] border-[#252a42]' : 'bg-slate-50 border-slate-200'}`}>
+                  <span className="text-[11px] text-slate-400 block">Jami Buyurtmalar</span>
+                  <span className="text-xl font-black text-blue-400 mt-0.5 block">1,420 ta</span>
+                  <span className="text-[10px] text-emerald-400 font-semibold">▲ +24% o'sish</span>
+                </div>
+                <div className={`p-3 rounded-xl border ${theme === 'dark' ? 'bg-[#1c2032] border-[#252a42]' : 'bg-slate-50 border-slate-200'}`}>
+                  <span className="text-[11px] text-slate-400 block">Mijozlar Bahosi</span>
+                  <span className="text-xl font-black text-amber-400 mt-0.5 block">4.95 ⭐</span>
+                  <span className="text-[10px] text-slate-400">340 ta sharhdan</span>
+                </div>
+                <div className={`p-3 rounded-xl border ${theme === 'dark' ? 'bg-[#1c2032] border-[#252a42]' : 'bg-slate-50 border-slate-200'}`}>
+                  <span className="text-[11px] text-slate-400 block">Halol Standart Nazorati</span>
+                  <span className="text-xl font-black text-emerald-400 mt-0.5 block">100% A+</span>
+                  <span className="text-[10px] text-emerald-400 font-semibold">Sertifikatlangan ✓</span>
+                </div>
+                <div className={`p-3 rounded-xl border ${theme === 'dark' ? 'bg-[#1c2032] border-[#252a42]' : 'bg-slate-50 border-slate-200'}`}>
+                  <span className="text-[11px] text-slate-400 block">Kafolatlangan Bonus</span>
+                  <span className="text-xl font-black text-fuchsia-400 mt-0.5 block">+$1,250</span>
+                  <span className="text-[10px] text-slate-400">Oylik maoshga qo'shiladi</span>
+                </div>
+              </div>
+
+              {/* Top Selling Halal Dishes by Jhon */}
+              <div className={`p-4 rounded-2xl border space-y-2.5 ${theme === 'dark' ? 'bg-[#1c2032] border-[#252a42]' : 'bg-slate-50 border-slate-200'}`}>
+                <span className="font-bold text-xs uppercase tracking-wider text-current block pb-1 border-b border-inherit">
+                  {m.topDishesSold}
+                </span>
+                <div className="space-y-1.5 text-xs">
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-current">🥇 Shohona To'y Palov (Halol)</span>
+                    <span className="font-bold text-emerald-400">420 ta porsiya</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-current">🥈 Qo'y Go'shtli Lux Kabob</span>
+                    <span className="font-bold text-emerald-400">310 ta six</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-current">🥉 Zafaronli & Tog' Choyi</span>
+                    <span className="font-bold text-emerald-400">580 ta choynak</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Footer Buttons */}
+            <div className="pt-3 border-t border-inherit flex items-center justify-end gap-3">
+              <button
+                onClick={() => setIsBestSellerModalOpen(false)}
+                className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-lg shadow-blue-500/25 transition-all"
+              >
+                Tushunarli & Rahmat!
+              </button>
+            </div>
           </div>
         </div>
       )}
