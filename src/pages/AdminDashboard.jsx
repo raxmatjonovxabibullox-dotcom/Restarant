@@ -273,6 +273,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
     updateDish,
     deleteDish,
     toggleDishAvailability,
+    resetToDefaultMenu,
     updateOrderStatus,
     updateReservationStatus,
     showToast
@@ -294,6 +295,32 @@ export const AdminDashboard = ({ setIsAdminView }) => {
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [appsMenuOpen, setAppsMenuOpen] = useState(false);
+
+  // Close dropdowns on outside click or Escape
+  useEffect(() => {
+    const handleDocumentClick = (e) => {
+      if (!e.target.closest?.('[data-dropdown]')) {
+        setLangDropdownOpen(false);
+        setNotificationsOpen(false);
+        setProfileDropdownOpen(false);
+        setAppsMenuOpen(false);
+      }
+    };
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setLangDropdownOpen(false);
+        setNotificationsOpen(false);
+        setProfileDropdownOpen(false);
+        setAppsMenuOpen(false);
+      }
+    };
+    document.addEventListener('click', handleDocumentClick);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('click', handleDocumentClick);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
 
   // Data Source Mode: 'demo' (exact Maxton image match) or 'live' (live restaurant database)
   const [dataSourceMode, setDataSourceMode] = useState('demo');
@@ -485,17 +512,17 @@ export const AdminDashboard = ({ setIsAdminView }) => {
         en: dishFormData.nameEn || dishFormData.nameUz,
       },
       description: {
-        uz: dishFormData.descUz,
-        ru: dishFormData.descRu || dishFormData.descUz,
-        en: dishFormData.descEn || dishFormData.descUz,
+        uz: dishFormData.descUz || dishFormData.nameUz,
+        ru: dishFormData.descRu || dishFormData.descUz || dishFormData.nameUz,
+        en: dishFormData.descEn || dishFormData.descUz || dishFormData.nameUz,
       },
       category: dishFormData.category,
-      price: Number(dishFormData.price),
+      price: Number(dishFormData.price) || 0,
       image: dishFormData.image || presetImages[0].url,
-      prepTime: Number(dishFormData.prepTime),
-      calories: Number(dishFormData.calories),
-      tags: dishFormData.tags,
-      isAvailable: dishFormData.isAvailable
+      prepTime: Number(dishFormData.prepTime) || 20,
+      calories: Number(dishFormData.calories) || 500,
+      tags: dishFormData.tags || [],
+      isAvailable: dishFormData.isAvailable !== undefined ? dishFormData.isAvailable : true
     };
 
     if (editingDishId) {
@@ -520,9 +547,10 @@ export const AdminDashboard = ({ setIsAdminView }) => {
 
   // Quick 1-click order step
   const handleQuickOrderStatusStep = (order) => {
+    const isDineIn = order.deliveryType === 'dineIn';
     const nextMap = {
       pending: 'cooking',
-      cooking: 'delivering',
+      cooking: isDineIn ? 'completed' : 'delivering',
       delivering: 'completed'
     };
     const nextStatus = nextMap[order.status];
@@ -556,11 +584,11 @@ export const AdminDashboard = ({ setIsAdminView }) => {
     const headers = ['Order ID', 'Customer', 'Phone', 'Type', 'Table #', 'Address', 'Status', 'Total', 'Payment', 'Date'];
     const rows = orders.map(o => [
       `"${o.id || ''}"`,
-      `"${(o.customerName || '').replace(/"/g, '""')}"`,
+      `"${String(o.customerName || '').replace(/"/g, '""')}"`,
       `"${o.customerPhone || ''}"`,
       `"${o.deliveryType || ''}"`,
       `"${o.tableNumber || '-'}"`,
-      `"${(o.deliveryAddress || '').replace(/"/g, '""')}"`,
+      `"${String(o.deliveryAddress || '').replace(/"/g, '""')}"`,
       `"${o.status || 'pending'}"`,
       Number(o.totalPrice || o.totalAmount || 0),
       `"${o.paymentMethod || 'cash'}"`,
@@ -673,8 +701,10 @@ export const AdminDashboard = ({ setIsAdminView }) => {
     if (menuAvailabilityFilter === 'out_of_stock' && dish.isAvailable !== false) return false;
     if (menuCategoryFilter !== 'all' && dish.category !== menuCategoryFilter) return false;
     if (menuSearch.trim()) {
-      const q = menuSearch.toLowerCase();
-      const n = (typeof dish.name === 'object' ? (dish.name.uz + dish.name.ru + dish.name.en) : dish.name).toLowerCase();
+      const q = menuSearch.toLowerCase().trim();
+      const n = (typeof dish.name === 'object' && dish.name
+        ? `${dish.name.uz || ''} ${dish.name.ru || ''} ${dish.name.en || ''}`
+        : String(dish.name || '')).toLowerCase();
       if (!n.includes(q)) return false;
     }
     return true;
@@ -684,8 +714,8 @@ export const AdminDashboard = ({ setIsAdminView }) => {
   const filteredOrders = orders.filter(o => {
     if (orderStatusFilter !== 'all' && o.status !== orderStatusFilter) return false;
     if (orderSearch.trim()) {
-      const q = orderSearch.toLowerCase();
-      const match = (o.id + o.customerName + o.customerPhone).toLowerCase();
+      const q = orderSearch.toLowerCase().trim();
+      const match = `${o.id || ''} ${o.customerName || ''} ${o.customerPhone || ''}`.toLowerCase();
       if (!match.includes(q)) return false;
     }
     return true;
@@ -695,8 +725,8 @@ export const AdminDashboard = ({ setIsAdminView }) => {
   const filteredReservations = reservations.filter(r => {
     if (reservationStatusFilter !== 'all' && r.status !== reservationStatusFilter) return false;
     if (reservationSearch.trim()) {
-      const q = reservationSearch.toLowerCase();
-      const match = (r.id + r.fullName + r.phone).toLowerCase();
+      const q = reservationSearch.toLowerCase().trim();
+      const match = `${r.id || ''} ${r.fullName || ''} ${r.phone || ''}`.toLowerCase();
       if (!match.includes(q)) return false;
     }
     return true;
@@ -1038,14 +1068,20 @@ export const AdminDashboard = ({ setIsAdminView }) => {
 
                   {/* Dishes matches */}
                   {menuItems.filter(d => {
-                    const n = (typeof d.name === 'object' ? (d.name.uz + d.name.ru + d.name.en) : d.name).toLowerCase();
-                    return n.includes(globalSearch.toLowerCase());
+                    const q = globalSearch.toLowerCase().trim();
+                    const n = (typeof d.name === 'object' && d.name
+                      ? `${d.name.uz || ''} ${d.name.ru || ''} ${d.name.en || ''}`
+                      : String(d.name || '')).toLowerCase();
+                    return n.includes(q);
                   }).slice(0, 3).length > 0 && (
                     <div className="mb-3 space-y-1.5">
                       <span className="text-[10px] font-bold text-blue-400 uppercase">🍽️ {m.searchDishes}</span>
                       {menuItems.filter(d => {
-                        const n = (typeof d.name === 'object' ? (d.name.uz + d.name.ru + d.name.en) : d.name).toLowerCase();
-                        return n.includes(globalSearch.toLowerCase());
+                        const q = globalSearch.toLowerCase().trim();
+                        const n = (typeof d.name === 'object' && d.name
+                          ? `${d.name.uz || ''} ${d.name.ru || ''} ${d.name.en || ''}`
+                          : String(d.name || '')).toLowerCase();
+                        return n.includes(q);
                       }).slice(0, 3).map(dish => (
                         <div
                           key={dish.id}
@@ -1066,10 +1102,18 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                   )}
 
                   {/* Orders matches */}
-                  {orders.filter(o => (o.id + o.customerName + o.customerPhone).toLowerCase().includes(globalSearch.toLowerCase())).slice(0, 2).length > 0 && (
+                  {orders.filter(o => {
+                    const q = globalSearch.toLowerCase().trim();
+                    const match = `${o.id || ''} ${o.customerName || ''} ${o.customerPhone || ''}`.toLowerCase();
+                    return match.includes(q);
+                  }).slice(0, 2).length > 0 && (
                     <div className="mb-2 space-y-1.5">
                       <span className="text-[10px] font-bold text-emerald-400 uppercase">🛍️ {m.searchOrders}</span>
-                      {orders.filter(o => (o.id + o.customerName + o.customerPhone).toLowerCase().includes(globalSearch.toLowerCase())).slice(0, 2).map(order => (
+                      {orders.filter(o => {
+                        const q = globalSearch.toLowerCase().trim();
+                        const match = `${o.id || ''} ${o.customerName || ''} ${o.customerPhone || ''}`.toLowerCase();
+                        return match.includes(q);
+                      }).slice(0, 2).map(order => (
                         <div
                           key={order.id}
                           onClick={() => {
@@ -1114,11 +1158,14 @@ export const AdminDashboard = ({ setIsAdminView }) => {
             </button>
 
             {/* Language Selector with Dropdown */}
-            <div className="relative">
+            <div className="relative" data-dropdown>
               <button
                 onClick={() => {
                   if (audioEnabled) soundFx.playPop();
                   setLangDropdownOpen(!langDropdownOpen);
+                  setAppsMenuOpen(false);
+                  setNotificationsOpen(false);
+                  setProfileDropdownOpen(false);
                 }}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors ${
                   theme === 'dark'
@@ -1176,11 +1223,14 @@ export const AdminDashboard = ({ setIsAdminView }) => {
             </button>
 
             {/* 9-Dots SaaS App Launcher (Matching Maxton Reference) */}
-            <div className="relative">
+            <div className="relative" data-dropdown>
               <button
                 onClick={() => {
                   if (audioEnabled) soundFx.playPop();
                   setAppsMenuOpen(!appsMenuOpen);
+                  setLangDropdownOpen(false);
+                  setNotificationsOpen(false);
+                  setProfileDropdownOpen(false);
                 }}
                 className={`p-2 rounded-full transition-colors ${
                   appsMenuOpen
@@ -1231,11 +1281,14 @@ export const AdminDashboard = ({ setIsAdminView }) => {
             </div>
 
             {/* Notifications Bell with Dynamic Badge */}
-            <div className="relative">
+            <div className="relative" data-dropdown>
               <button
                 onClick={() => {
                   if (audioEnabled) soundFx.playPop();
                   setNotificationsOpen(!notificationsOpen);
+                  setLangDropdownOpen(false);
+                  setAppsMenuOpen(false);
+                  setProfileDropdownOpen(false);
                 }}
                 className="p-2 rounded-full text-slate-400 hover:text-current hover:bg-slate-500/10 relative transition-colors"
                 title="Notifications"
@@ -1302,9 +1355,14 @@ export const AdminDashboard = ({ setIsAdminView }) => {
             </button>
 
             {/* User Profile Avatar (Jhon / Admin) with status dot */}
-            <div className="relative">
+            <div className="relative" data-dropdown>
               <button
-                onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
+                onClick={() => {
+                  setProfileDropdownOpen(!profileDropdownOpen);
+                  setLangDropdownOpen(false);
+                  setAppsMenuOpen(false);
+                  setNotificationsOpen(false);
+                }}
                 className="flex items-center gap-2 p-1 rounded-full hover:ring-2 hover:ring-blue-500/50 transition-all"
               >
                 <div className="relative">
@@ -2104,6 +2162,19 @@ export const AdminDashboard = ({ setIsAdminView }) => {
 
                 <div className="flex items-center gap-2">
                   <button
+                    onClick={() => {
+                      if (confirm("Menyuni standart holatga qaytarmoqchimisiz? Barcha o'zgarishlar asl holatiga keladi.")) {
+                        resetToDefaultMenu();
+                      }
+                    }}
+                    className={`px-3.5 py-2 rounded-xl text-xs font-bold border transition-all ${
+                      theme === 'dark' ? 'bg-[#1c2032] border-[#252a42] text-slate-300 hover:bg-[#252a42]' : 'bg-slate-100 border-slate-200 text-slate-700 hover:bg-slate-200'
+                    }`}
+                    title="Standart taomnomani tiklash"
+                  >
+                    ↺ Standart Menyu
+                  </button>
+                  <button
                     onClick={handleOpenAddDish}
                     className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center gap-1.5 shadow-md transition-all"
                   >
@@ -2399,7 +2470,12 @@ export const AdminDashboard = ({ setIsAdminView }) => {
 
           {/* ================= VIEW 5: KITCHEN KDS DISPLAY ================= */}
           {activeTab === 'kds' && (
-            <KitchenDisplay orders={orders} onUpdateStatus={updateOrderStatus} />
+            <KitchenDisplay
+              orders={orders}
+              updateOrderStatus={updateOrderStatus}
+              onUpdateStatus={updateOrderStatus}
+              getLocalized={getLocalized}
+            />
           )}
 
           {/* ================= VIEW 6: ANALYSIS ================= */}
@@ -2857,6 +2933,51 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                 </div>
               </div>
 
+              {/* Descriptions in 3 languages */}
+              <div className="space-y-2">
+                <span className="font-bold text-blue-400 uppercase tracking-wider block">
+                  Taom tavsifi (3 tilda)
+                </span>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div>
+                    <label className="block text-[11px] text-slate-400 mb-1">Tavsif (O'zbekcha)</label>
+                    <textarea
+                      rows="2"
+                      value={dishFormData.descUz}
+                      onChange={(e) => setDishFormData({ ...dishFormData, descUz: e.target.value })}
+                      placeholder="Taom tarkibi va mazasi..."
+                      className={`w-full px-3 py-2 rounded-xl border resize-none ${
+                        theme === 'dark' ? 'bg-[#1c2032] border-[#252a42] text-white' : 'bg-slate-50 border-slate-200'
+                      }`}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] text-slate-400 mb-1">Tavsif (Русский)</label>
+                    <textarea
+                      rows="2"
+                      value={dishFormData.descRu}
+                      onChange={(e) => setDishFormData({ ...dishFormData, descRu: e.target.value })}
+                      placeholder="Описание блюда..."
+                      className={`w-full px-3 py-2 rounded-xl border resize-none ${
+                        theme === 'dark' ? 'bg-[#1c2032] border-[#252a42] text-white' : 'bg-slate-50 border-slate-200'
+                      }`}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] text-slate-400 mb-1">Tavsif (English)</label>
+                    <textarea
+                      rows="2"
+                      value={dishFormData.descEn}
+                      onChange={(e) => setDishFormData({ ...dishFormData, descEn: e.target.value })}
+                      placeholder="Dish description..."
+                      className={`w-full px-3 py-2 rounded-xl border resize-none ${
+                        theme === 'dark' ? 'bg-[#1c2032] border-[#252a42] text-white' : 'bg-slate-50 border-slate-200'
+                      }`}
+                    />
+                  </div>
+                </div>
+              </div>
+
               {/* Price & Category */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
@@ -2890,6 +3011,34 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                     <option value="desserts">Desertlar</option>
                     <option value="drinks">Ichimliklar</option>
                   </select>
+                </div>
+              </div>
+
+              {/* Prep Time & Calories */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-semibold text-slate-400 mb-1">Tayyorlash vaqti (daqiqa)</label>
+                  <input
+                    type="number"
+                    min="1"
+                    value={dishFormData.prepTime}
+                    onChange={(e) => setDishFormData({ ...dishFormData, prepTime: e.target.value })}
+                    className={`w-full px-3 py-2 rounded-xl border ${
+                      theme === 'dark' ? 'bg-[#1c2032] border-[#252a42] text-white' : 'bg-slate-50 border-slate-200'
+                    }`}
+                  />
+                </div>
+                <div>
+                  <label className="block font-semibold text-slate-400 mb-1">Kaloriya (kkal)</label>
+                  <input
+                    type="number"
+                    min="1"
+                    value={dishFormData.calories}
+                    onChange={(e) => setDishFormData({ ...dishFormData, calories: e.target.value })}
+                    className={`w-full px-3 py-2 rounded-xl border ${
+                      theme === 'dark' ? 'bg-[#1c2032] border-[#252a42] text-white' : 'bg-slate-50 border-slate-200'
+                    }`}
+                  />
                 </div>
               </div>
 

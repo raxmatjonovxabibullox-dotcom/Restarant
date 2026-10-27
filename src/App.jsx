@@ -26,6 +26,8 @@ import { ReservationPage } from './pages/ReservationPage';
 import { ContactPage } from './pages/ContactPage';
 import { AdminDashboard } from './pages/AdminDashboard';
 
+import { getStoredAuth } from './lib/storage';
+
 // Parse current URL path and hash
 const parseCurrentRoute = () => {
   if (typeof window === 'undefined') return { page: 'home', isAdmin: false };
@@ -55,7 +57,9 @@ function MainApp() {
       setActivePage(parsed.page);
 
       if (parsed.isAdmin) {
-        if (isAdmin) {
+        const stored = getStoredAuth();
+        const hasAdminRights = isAdmin || stored?.role === 'admin';
+        if (hasAdminRights) {
           setIsAdminView(true);
         } else {
           setIsAdminView(false);
@@ -81,7 +85,7 @@ function MainApp() {
       window.removeEventListener('popstate', handleUrlChange);
       window.removeEventListener('hashchange', handleUrlChange);
     };
-  }, [isAdmin, isLoadingAuth]);
+  }, [isAdmin, isLoadingAuth, openLoginModal]);
 
   // Handle page change (Home, Menu, About, Reservation, Contact)
   const handlePageChange = (page) => {
@@ -98,7 +102,9 @@ function MainApp() {
   // Handle admin console toggle
   const handleAdminViewChange = (isAdm) => {
     if (isAdm) {
-      if (!isAdmin) {
+      const stored = getStoredAuth();
+      const hasAdminRights = isAdmin || stored?.role === 'admin';
+      if (!hasAdminRights) {
         openLoginModal();
         return;
       }
@@ -118,8 +124,12 @@ function MainApp() {
 
   // If user logs out while in admin view, return to site
   useEffect(() => {
-    if (isAdminView && !isAdmin) {
-      handlePageChange('home');
+    if (isAdminView && !isAdmin && !getStoredAuth()?.role) {
+      setIsAdminView(false);
+      setActivePage('home');
+      if (window.location.pathname === '/admin') {
+        window.history.replaceState({}, '', '/');
+      }
     }
   }, [isAdmin, isAdminView]);
 

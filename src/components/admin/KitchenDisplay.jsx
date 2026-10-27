@@ -3,8 +3,9 @@ import { ChefHat, Clock, CheckCircle2, Flame, Bike, UtensilsCrossed } from 'luci
 import { useLanguage } from '../../context/LanguageContext';
 import { soundFx } from '../../hooks/useSoundEffects';
 
-export const KitchenDisplay = ({ orders, updateOrderStatus, getLocalized }) => {
+export const KitchenDisplay = ({ orders = [], updateOrderStatus, onUpdateStatus, getLocalized }) => {
   const { lang } = useLanguage();
+  const handleStatusUpdate = updateOrderStatus || onUpdateStatus;
 
   const tKds = {
     uz: {
@@ -84,13 +85,17 @@ export const KitchenDisplay = ({ orders, updateOrderStatus, getLocalized }) => {
 
   const handleStartCooking = (orderId) => {
     soundFx.playChime();
-    updateOrderStatus(orderId, 'cooking');
+    if (handleStatusUpdate) {
+      handleStatusUpdate(orderId, 'cooking');
+    }
   };
 
   const handleMarkReady = (orderId, deliveryType) => {
     soundFx.playSuccessFanfare();
     const nextStatus = deliveryType === 'delivery' ? 'delivering' : 'completed';
-    updateOrderStatus(orderId, nextStatus);
+    if (handleStatusUpdate) {
+      handleStatusUpdate(orderId, nextStatus);
+    }
   };
 
   return (

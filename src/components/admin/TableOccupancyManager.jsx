@@ -16,7 +16,7 @@ const INITIAL_TABLES = [
   { id: 'VIP-2', number: 'VIP 2', zoneKey: 'vip', seats: 14, status: 'free', currentGuest: null },
 ];
 
-export const TableOccupancyManager = () => {
+export const TableOccupancyManager = ({ reservations = [] } = {}) => {
   const { lang } = useLanguage();
 
   const tTables = {

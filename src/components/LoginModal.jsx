@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
-import { X, Lock, Mail, ShieldCheck, ArrowRight, Loader2, Database, KeyRound, Sparkles } from 'lucide-react';
+import { X, Lock, Mail, ShieldCheck, ArrowRight, Loader2, Database, Sparkles } from 'lucide-react';
 import { soundFx } from '../hooks/useSoundEffects';
 
 export const LoginModal = ({ setIsAdminView }) => {
