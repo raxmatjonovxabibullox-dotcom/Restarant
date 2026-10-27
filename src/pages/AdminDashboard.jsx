@@ -147,22 +147,22 @@ const MAXTON_I18N = {
     reservations: "Брони Столов",
     backToSite: "Вернуться на сайт",
     searchPlaceholder: "Поиск (Заказ, блюдо, клиент)...",
-    congratulations: "Congratulations Jhon 🎉",
-    bestSellerSubtitle: "You are the best seller of this month",
+    congratulations: "Поздравляем, Jhon 🎉",
+    bestSellerSubtitle: "Вы лучший продавец этого месяца",
     salesTarget: "от плана продаж",
-    viewDetails: "View Details",
-    totalOrders: "Total Orders",
-    totalSales: "Total Sales",
-    totalVisits: "Total Visits",
-    bounceRate: "Bounce Rate",
-    orderStatus: "Order Status",
-    salesAndViews: "Sales & Views",
+    viewDetails: "Подробнее",
+    totalOrders: "Всего Заказов",
+    totalSales: "Общая Выручка",
+    totalVisits: "Всего Посещений",
+    bounceRate: "Доставка",
+    orderStatus: "Статус Заказов",
+    salesAndViews: "Продажи и Просмотры",
     salesLegend: "Продажи",
     viewsLegend: "Просмотры",
     productLegend: "Блюда",
     incomeLegend: "Чистый Доход",
-    monthly: "Monthly",
-    yearly: "Yearly",
+    monthly: "По месяцам",
+    yearly: "По годам",
     addNewDish: "Добавить Блюдо",
     printReport: "Отчет Смены",
     exportCsv: "Экспорт в Excel",
@@ -332,14 +332,40 @@ export const AdminDashboard = ({ setIsAdminView }) => {
   const [activeHoverMonth, setActiveHoverMonth] = useState(null);
   const [activeDonutSegment, setActiveDonutSegment] = useState(null);
 
-  // Dynamic Notifications Center
-  const [notifications, setNotifications] = useState([
-    { id: 1, title: "Yangi VIP Buyurtma qabul qilindi", time: "2 daqiqa oldin", type: "order", read: false, desc: "Shohona Palov va Zafaronli Choy jo'natildi" },
-    { id: 2, title: "Telegram AI Bot mijozga javob berdi", time: "5 daqiqa oldin", type: "bot", read: false, desc: "Gemini AI mijozga 100% halol menyuni tavsiya qildi" },
-    { id: 3, title: "Stol #3 bron qilindi (VIP Zalda)", time: "12 daqiqa oldin", type: "res", read: false, desc: "Bugun 19:30 ga 6 kishilik maxsus xona band qilindi" },
-    { id: 4, title: "100% Halol Go'sht qabul qilindi", time: "35 daqiqa oldin", type: "halal", read: false, desc: "Yangi so'yilgan qo'y go'shti sifat nazoratidan o'tdi" },
-    { id: 5, title: "Kassa smenasi ochildi", time: "1 soat oldin", type: "pos", read: false, desc: "Administrator Jhon tizimga kirdi" },
-  ]);
+  // Dynamic Multilingual Notifications Center
+  const getInitialNotifications = (l) => {
+    if (l === 'ru') {
+      return [
+        { id: 1, title: "Принят новый VIP заказ", time: "2 мин. назад", type: "order", read: false, desc: "Отправлен Шахский плов и чай с шафраном" },
+        { id: 2, title: "Telegram AI Бот ответил клиенту", time: "5 мин. назад", type: "bot", read: false, desc: "Gemini AI порекомендовал 100% халяль меню" },
+        { id: 3, title: "Стол #3 забронирован (VIP Зал)", time: "12 мин. назад", type: "res", read: false, desc: "Сегодня на 19:30 забронирована комната на 6 гостей" },
+        { id: 4, title: "Принята партия 100% Халяль мяса", time: "35 мин. назад", type: "halal", read: false, desc: "Партия свежей баранины прошла контроль качества" },
+        { id: 5, title: "Открыта кассовая смена", time: "1 час назад", type: "pos", read: false, desc: "Администратор Jhon вошел в систему" },
+      ];
+    }
+    if (l === 'en') {
+      return [
+        { id: 1, title: "New VIP order received", time: "2 min ago", type: "order", read: false, desc: "Royal Plov and Saffron Tea dispatched" },
+        { id: 2, title: "Telegram AI Bot answered customer", time: "5 min ago", type: "bot", read: false, desc: "Gemini AI recommended 100% halal menu" },
+        { id: 3, title: "Table #3 reserved (VIP Hall)", time: "12 min ago", type: "res", read: false, desc: "Tonight 19:30 private room booked for 6 guests" },
+        { id: 4, title: "100% Halal meat shipment received", time: "35 min ago", type: "halal", read: false, desc: "Fresh lamb certified and passed quality audit" },
+        { id: 5, title: "Cash shift opened", time: "1 hour ago", type: "pos", read: false, desc: "Administrator Jhon signed into console" },
+      ];
+    }
+    return [
+      { id: 1, title: "Yangi VIP Buyurtma qabul qilindi", time: "2 daqiqa oldin", type: "order", read: false, desc: "Shohona Palov va Zafaronli Choy jo'natildi" },
+      { id: 2, title: "Telegram AI Bot mijozga javob berdi", time: "5 daqiqa oldin", type: "bot", read: false, desc: "Gemini AI mijozga 100% halol menyuni tavsiya qildi" },
+      { id: 3, title: "Stol #3 bron qilindi (VIP Zalda)", time: "12 daqiqa oldin", type: "res", read: false, desc: "Bugun 19:30 ga 6 kishilik maxsus xona band qilindi" },
+      { id: 4, title: "100% Halol Go'sht qabul qilindi", time: "35 daqiqa oldin", type: "halal", read: false, desc: "Yangi so'yilgan qo'y go'shti sifat nazoratidan o'tdi" },
+      { id: 5, title: "Kassa smenasi ochildi", time: "1 soat oldin", type: "pos", read: false, desc: "Administrator Jhon tizimga kirdi" },
+    ];
+  };
+
+  const [notifications, setNotifications] = useState(() => getInitialNotifications(lang));
+
+  useEffect(() => {
+    setNotifications(getInitialNotifications(lang));
+  }, [lang]);
 
   const unreadNotificationCount = notifications.filter(n => !n.read).length;
 

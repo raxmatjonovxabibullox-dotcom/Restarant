@@ -172,7 +172,11 @@ export const Navbar = ({ activePage, setActivePage, setIsAdminView, onOpenConcie
                 toggleFullscreen();
               }}
               aria-label="Toggle fullscreen"
-              title={isFullscreen ? "To'liq ekrandan chiqish (Esc)" : "To'liq ekran rejimi (Fullscreen)"}
+              title={
+                isFullscreen
+                  ? (lang === 'ru' ? "Выйти из полноэкранного режима (Esc)" : lang === 'en' ? "Exit Fullscreen (Esc)" : "To'liq ekrandan chiqish (Esc)")
+                  : (lang === 'ru' ? "Полноэкранный режим (Fullscreen)" : lang === 'en' ? "Fullscreen Mode" : "To'liq ekran rejimi (Fullscreen)")
+              }
               className={`p-1.5 rounded-lg border transition-all ${
                 isFullscreen
                   ? 'bg-gold-500/15 border-gold-500/50 text-gold-500 shadow-sm'
@@ -236,7 +240,7 @@ export const Navbar = ({ activePage, setActivePage, setIsAdminView, onOpenConcie
                 soundFx.playChime();
                 if (onOpenConcierge) onOpenConcierge();
               }}
-              title="Aqlli Sommelier & Taom Tanlovchisi"
+              title={lang === 'ru' ? "Умный Сомелье & Меню-Гид" : lang === 'en' ? "Smart Sommelier & Recommender" : "Aqlli Sommelier & Taom Tanlovchisi"}
               className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-amber-500/10 border border-amber-500/30 text-gold-500 hover:bg-gold-500 hover:text-dark-950 transition-all shadow-sm"
             >
               <Sparkles className="w-3.5 h-3.5 text-amber-400" />
@@ -366,7 +370,7 @@ export const Navbar = ({ activePage, setActivePage, setIsAdminView, onOpenConcie
               className="w-full py-3 px-4 rounded-xl text-left text-xs font-bold text-gold-500 bg-amber-500/10 flex items-center gap-2"
             >
               <Sparkles className="w-4 h-4" />
-              <span>Zafaron Aqlli Sommelier & Recommender</span>
+              <span>{lang === 'ru' ? "Zafaron Умный Сомелье & Меню-Гид" : lang === 'en' ? "Zafaron Smart Sommelier & Recommender" : "Zafaron Aqlli Sommelier & Recommender"}</span>
             </button>
           </div>
         )}

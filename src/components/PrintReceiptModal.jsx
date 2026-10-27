@@ -82,7 +82,7 @@ export const PrintReceiptModal = ({ order, isOpen, onClose }) => {
               className={`p-1.5 rounded-xl border transition-colors ${
                 isDark ? 'bg-dark-800 border-white/10 text-amber-400 hover:text-amber-300' : 'bg-gray-100 border-gray-200 text-gray-600 hover:text-gray-900'
               }`}
-              title="Mavzuni o'zgartirish (Dark / Light)"
+              title={lang === 'ru' ? "Сменить тему (Темная / Светлая)" : lang === 'en' ? "Toggle Theme (Dark / Light)" : "Mavzuni o'zgartirish (Dark / Light)"}
             >
               {isDark ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
             </button>
