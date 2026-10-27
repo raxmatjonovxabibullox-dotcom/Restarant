@@ -17,7 +17,7 @@ function telegramBotPlugin() {
         const botScript = path.resolve(__dirname, 'scripts', 'telegramAiBot.js');
         botProcess = spawn(process.execPath, [botScript], {
           stdio: 'inherit',
-          shell: true
+          shell: false
         });
 
         botProcess.on('error', (err) => {

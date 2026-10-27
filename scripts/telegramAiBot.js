@@ -123,33 +123,36 @@ function generateSmartRestaurantAnswer(userText) {
     if (isRussian || q.includes('привет') || q.includes('здравствуй')) {
       return (
         `👋 <b>Здравствуйте! Добро пожаловать в Zafaron Restaurant & Lounge!</b>\n\n` +
-        `Я ваш персональный AI-помощник ресторана Zafaron. Чем я могу вам помочь?\n\n` +
-        `🍽 <b>Меню и Цены:</b> "Меню", "Сколько стоит плов?", "Стейки"\n` +
-        `📍 <b>Адрес и Время:</b> "Где вы находитесь?", "Режим работы"\n` +
-        `📅 <b>Бронирование:</b> "Забронировать стол", "VIP залы"\n` +
-        `🛵 <b>Доставка:</b> "Есть доставка?"\n\n` +
-        `<i>Задайте любой вопрос, с радостью отвечу! 😊</i>`
+        `Я ваш персональный AI-консьерж ресторана Zafaron. Выберите один из разделов ниже или задайте любой вопрос:\n\n` +
+        `📍 <b>Bizning manzilimiz</b> — Наш адрес и локация\n` +
+        `🍽 <b>Taomnoma</b> — Меню блюд и цены\n` +
+        `🥂 <b>Stol band qilish</b> — Бронирование столов и VIP залов\n` +
+        `🕒 <b>Ish vaqti</b> — Режим работы и живая музыка\n` +
+        `📞 <b>Bog'lanish</b> — Контакты и администратор\n\n` +
+        `<i>Нажмите на любую кнопку в меню внизу или напишите вопрос! 😊</i>`
       );
     }
     if (isEnglish) {
       return (
         `👋 <b>Hello! Welcome to Zafaron Restaurant & Lounge!</b>\n\n` +
-        `I am your personal smart culinary concierge. How may I assist you today?\n\n` +
-        `🍽 <b>Menu & Prices:</b> "Menu", "Royal plov price", "Steaks"\n` +
-        `📍 <b>Location & Hours:</b> "Where are you located?", "Opening hours"\n` +
-        `📅 <b>Table Booking:</b> "Book a table", "VIP room"\n` +
-        `🛵 <b>Delivery:</b> "Home delivery"\n\n` +
-        `<i>Feel free to ask any question! 😊</i>`
+        `I am your personal smart culinary concierge. Please choose an option from the menu below or ask any question:\n\n` +
+        `📍 <b>Bizning manzilimiz</b> — Location & Maps\n` +
+        `🍽 <b>Taomnoma</b> — Dishes & prices\n` +
+        `🥂 <b>Stol band qilish</b> — Table reservation\n` +
+        `🕒 <b>Ish vaqti</b> — Opening hours & live music\n` +
+        `📞 <b>Bog'lanish</b> — Contact & administration\n\n` +
+        `<i>Tap any menu button below or send a message! 😊</i>`
       );
     }
     return (
       `👋 <b>Assalomu alaykum! Zafaron Restaurant & Lounge'ga xush kelibsiz!</b>\n\n` +
-      `Men sizning shaxsiy sun'iy intellekt yordamchingizman. Sizga quyidagilar bo'yicha yordam bera olaman:\n\n` +
-      `🍽 <b>Taomnoma & Narxlar:</b> "Menyu", "Osh qancha?", "Steyklar"\n` +
-      `📍 <b>Manzil & Vaqt:</b> "Manzilingiz qayerda?", "Ish vaqti"\n` +
-      `📅 <b>Stol band qilish:</b> "Stol bron qilish"\n` +
-      `🛵 <b>Dostavka:</b> "Yetkazib berish bormi?"\n\n` +
-      `<i>Qanday ma'lumot kerak bo'lsa, bemalol so'rang! 😊</i>`
+      `Men sizning shaxsiy sun'iy intellekt konsyerjingizman. Quyidagi 5 ta bo'limdan birini tanlang yoki o'zingizni qiziqtirgan savolni yozing:\n\n` +
+      `📍 <b>Bizning manzilimiz</b> — Restoran joylashuvi va xarita\n` +
+      `🍽 <b>Taomnoma</b> — Shohona taomlar va narxlar\n` +
+      `🥂 <b>Stol band qilish</b> — Hashamatli zallarni bron qilish\n` +
+      `🕒 <b>Ish vaqti</b> — Ish tartibi va jonli musiqa oqshomlari\n` +
+      `📞 <b>Bog'lanish</b> — Aloqa ma'lumotlari va administrator\n\n` +
+      `<i>Quyidagi tugmalardan birini bosing yoki bemalol savolingizni yozing! 😊</i>`
     );
   }
 
@@ -197,107 +200,119 @@ function generateSmartRestaurantAnswer(userText) {
     );
   }
 
-  // Menyu umumiy
-  if (q.includes('menyu') || q.includes('menu') || q.includes('меню') || q.includes('ovqat') || q.includes('taom')) {
+  // 2. Taomnoma / Menyu
+  if (q === '/menu' || q === '/menyu' || q.includes('taomnoma') || q.includes('menyu') || q.includes('menu') || q.includes('меню') || q.includes('ovqat') || q.includes('taom')) {
     if (isRussian || q.includes('меню')) {
       return (
-        `📜 <b>МЕНЮ РЕСТОРАНА ZAFARON:</b>\n\n` +
+        `🍽 <b>МЕНЮ РЕСТОРАНА ZAFARON:</b>\n\n` +
         `🍲 <b>Национальные блюда:</b>\n` +
-        `• Шахский Плов — 58,000 сум\n` +
-        `• Казан Кабоб — 72,000 сум\n` +
-        `• Манты (5 шт.) — 48,000 сум\n\n` +
+        `• Шахский Плов с шафраном — <code>58,000 сум</code>\n` +
+        `• Казан Кабоб из баранины — <code>72,000 сум</code>\n` +
+        `• Сочные Манты (5 шт.) — <code>48,000 сум</code>\n\n` +
         `🥩 <b>Стейки и Гриль:</b>\n` +
-        `• Томагавк Стейк — 320,000 сум\n` +
-        `• Рибай Стейк — 260,000 сум\n` +
-        `• Шашлык из баранины — 42,000 сум\n\n` +
+        `• Томагавк Стейк (1.2 кг) — <code>320,000 сум</code>\n` +
+        `• Рибай Стейк — <code>260,000 сум</code>\n` +
+        `• Филе Миньон — <code>240,000 сум</code>\n` +
+        `• Шашлык из баранины — <code>42,000 сум</code>\n` +
+        `• Люля кебаб — <code>38,000 сум</code>\n\n` +
         `🥗 <b>Салаты и Десерты:</b>\n` +
-        `• Буррата с заатаром — 65,000 сум\n` +
-        `• Турецкая Пахлава — 45,000 сум\n` +
-        `• Чай с шафраном — 28,000 сум\n\n` +
+        `• Буррата с заатаром — <code>65,000 сум</code>\n` +
+        `• Турецкая Пахлава — <code>45,000 сум</code>\n` +
+        `• Чай с горным шафраном — <code>28,000 сум</code>\n\n` +
+        `✨ <i>Все блюда 100% Халяль!</i>\n` +
         `📞 Телефон для заказа: <b>+998 (71) 200-88-99</b>`
       );
     }
     return (
-      `📜 <b>ZAFARON RESTAURANT & LOUNGE MENYUSI:</b>\n\n` +
-      `🍲 <b>Milliy taomlar:</b>\n` +
-      `• Zafaron Shohona Oshi — 58,000 so'm\n` +
-      `• Qozon kabob — 72,000 so'm\n` +
-      `• Manti (5 dona) — 48,000 so'm\n\n` +
+      `🍽 <b>ZAFARON RESTAURANT & LOUNGE TAOMNOMASI:</b>\n\n` +
+      `🍲 <b>Shohona Milliy Taomlar:</b>\n` +
+      `• <b>Zafaron Shohona Oshi:</b> <code>58,000 so'm</code>\n` +
+      `• <b>Qozon Kabob:</b> <code>72,000 so'm</code>\n` +
+      `• <b>Shohona Manti (5 dona):</b> <code>48,000 so'm</code>\n\n` +
       `🥩 <b>Gril va Steyklar:</b>\n` +
-      `• Tomahawk Steyk — 320,000 so'm\n` +
-      `• Ribeye Steyk — 260,000 so'm\n` +
-      `• Qo'y go'shti kabob — 42,000 so'm\n\n` +
+      `• <b>Tomahawk Steyk (1.2 kg):</b> <code>320,000 so'm</code>\n` +
+      `• <b>Ribeye Steyk:</b> <code>260,000 so'm</code>\n` +
+      `• <b>Filet Mignon:</b> <code>240,000 so'm</code>\n` +
+      `• <b>Qo'y go'shti kabobi:</b> <code>42,000 so'm</code>\n` +
+      `• <b>Lyulya kabob:</b> <code>38,000 so'm</code>\n\n` +
       `🥗 <b>Salat va Shirinliklar:</b>\n` +
-      `• Burrata Zafaron — 65,000 so'm\n` +
-      `• Turkcha Paxlava — 45,000 so'm\n` +
-      `• Za'faronli Shohona Choy — 28,000 so'm\n\n` +
-      `📞 Buyurtma uchun: <b>+998 (71) 200-88-99</b>`
+      `• <b>Zafaron Burrata:</b> <code>65,000 so'm</code>\n` +
+      `• <b>Turkcha Paxlava:</b> <code>45,000 so'm</code>\n` +
+      `• <b>Za'faronli Shohona Choy:</b> <code>28,000 so'm</code>\n\n` +
+      `✨ <i>Barcha go'shtlarimiz 100% Halol!</i>\n` +
+      `📞 Buyurtma va yetkazib berish: <b>+998 (71) 200-88-99</b>`
     );
   }
 
-  // Manzil / Joylashuv / Lokatsiya
-  if (q.includes('manzil') || q.includes('qayerda') || q.includes('lokatsiya') || q.includes('location') || q.includes('adres') || q.includes('адрес') || q.includes('где')) {
+  // 1. Manzil / Joylashuv / Lokatsiya (Bizning manzilimiz)
+  if (q === '/manzil' || q.includes('bizning manzilimiz') || q.includes('manzil') || q.includes('qayerda') || q.includes('lokatsiya') || q.includes('location') || q.includes('adres') || q.includes('адрес') || q.includes('где')) {
     if (isRussian || q.includes('адрес') || q.includes('где')) {
       return (
         `📍 <b>Наш Адрес:</b>\n\n` +
         `г. Ташкент, <b>проспект Амира Темура, 45</b>.\n` +
         `Ориентир: напротив Центрального сквера.\n` +
         `🚗 Для гостей есть бесплатная охраняемая парковка.\n\n` +
-        `🗺 Google Maps: <a href="https://maps.google.com/?q=Amir+Temur+Avenue+45+Tashkent">Открыть на карте</a>`
+        `🗺 <a href="https://maps.google.com/?q=Amir+Temur+Avenue+45+Tashkent">Google Xaritada ko'rish (Google Maps)</a>\n` +
+        `📞 Телефон: +998 (71) 200-88-99`
       );
     }
     return (
-      `📍 <b>Bizning Manzil:</b>\n\n` +
+      `📍 <b>Bizning Manzilimiz:</b>\n\n` +
       `Toshkent shahar, <b>Amir Temur shoh ko'chasi, 45-uy</b>.\n` +
       `Mo'ljal: Markaziy maydon ro'parasida.\n` +
       `🚗 Mehmonlarimiz uchun bepul va keng avtoturargoh mavjud.\n\n` +
-      `🗺 Google Maps: <a href="https://maps.google.com/?q=Amir+Temur+Avenue+45+Tashkent">Xaritada ochish</a>`
+      `🗺 <a href="https://maps.google.com/?q=Amir+Temur+Avenue+45+Tashkent">Google Xaritada ko'rish (Google Maps)</a>\n` +
+      `📞 Aloqa: <b>+998 (71) 200-88-99</b>`
     );
   }
 
-  // Ish vaqti
-  if (q.includes('vaqt') || q.includes('ishlaysiz') || q.includes('ochiq') || q.includes('время') || q.includes('режим') || q.includes('hours') || q.includes('time')) {
+  // 4. Ish vaqti
+  if (q === '/vaqt' || q.includes('ish vaqti') || q.includes('vaqt') || q.includes('ishlaysiz') || q.includes('ochiq') || q.includes('время') || q.includes('режим') || q.includes('hours') || q.includes('time')) {
     if (isRussian || q.includes('время') || q.includes('режим')) {
       return (
-        `🕒 <b>Режим Работы:</b>\n\n` +
+        `🕒 <b>Режим Работы Ресторана:</b>\n\n` +
         `• Ежедневно без выходных: <b>с 10:00 до 23:00</b>\n` +
         `• Кухня и доставка принимают заказы до 22:30.\n` +
-        `• Живая музыка: каждую пятницу и субботу с 19:30! 🎻`
+        `• 🎻 <b>Живая музыка:</b> каждую пятницу и субботу с 19:30!\n\n` +
+        `<i>Ждем вас в Zafaron Restaurant & Lounge! ✨</i>`
       );
     }
     return (
-      `🕒 <b>Ish Tartibimiz:</b>\n\n` +
+      `🕒 <b>Zafaron Restorani Ish Tartibi:</b>\n\n` +
       `• Har kuni dam olish kunlarisiz: <b>10:00 dan 23:00 gacha</b>\n` +
       `• Oshxonamiz va yetkazib berish xizmati 22:30 gacha buyurtma qabul qiladi.\n` +
-      `• Jonli musiqa: Har juma va shanba 19:30 dan boshlanadi! 🎻`
+      `• 🎻 <b>Jonli Musiqa Oqshomi:</b> Har juma va shanba 19:30 dan boshlanadi!\n\n` +
+      `<i>Oila a'zolaringiz va qadrdonlaringiz bilan tashrif buyuring! ✨</i>`
     );
   }
 
-  // Stol bron qilish
-  if (q.includes('bron') || q.includes('stol') || q.includes('joy') || q.includes('бронь') || q.includes('стол') || q.includes('забронировать') || q.includes('table') || q.includes('book')) {
+  // 3. Stol band qilish
+  if (q === '/bron' || q.includes('stol band qilish') || q.includes('bron') || q.includes('stol') || q.includes('joy') || q.includes('бронь') || q.includes('стол') || q.includes('забронировать') || q.includes('table') || q.includes('book')) {
     if (isRussian || q.includes('бронь') || q.includes('стол')) {
       return (
-        `🥂 <b>Бронирование Стола:</b>\n\n` +
+        `🥂 <b>Бронирование Стола в Zafaron:</b>\n\n` +
         `В ресторане доступны залы:\n` +
-        `1. <b>Главный Роскошный Зал</b> — Живая музыка и фонтан\n` +
-        `2. <b>Панорамная Терраса</b> — Вечерний вид на город\n` +
-        `3. <b>VIP Золотые Залы</b> — Приватные залы на 6-14 гостей\n\n` +
+        `1. <b>Главный Роскошный Зал</b> — Живая музыка, фонтан и праздничная атмосфера\n` +
+        `2. <b>Панорамная Терраса</b> — Вечерний вид на Ташкент и свежий воздух\n` +
+        `3. <b>VIP Золотые Залы</b> — Приватные залы на 6-14 гостей со своим официантом\n` +
+        `4. <b>Банкетный Зал</b> — До 150 персон для торжеств\n\n` +
         `Для бронирования позвоните нашему администратору:\n` +
-        `📞 <b>+998 (71) 200-88-99</b>`
+        `📞 <b>+998 (71) 200-88-99</b> или <b>+998 (90) 123-45-67</b>`
       );
     }
     return (
       `🥂 <b>Stol Band Qilish (Bron):</b>\n\n` +
-      `Bizda quyidagi hududlar mavjud:\n` +
-      `1. <b>Asosiy Hashamatli Zal</b> — Jonli musiqa va bayramona muhit\n` +
-      `2. <b>Ochiq Havo Terrasasi</b> — Shahar manzarasi va salqin shabboda\n` +
-      `3. <b>VIP Oltin Xona</b> — 10-14 kishilik shaxsiy xona\n\n` +
-      `Stol band qilish uchun administrator bilan bog'laning:\n` +
-      `📞 <b>+998 (71) 200-88-99</b>`
+      `Zafaron restoranida unutilmas shohona oqshomni o'tkazing!\n\n` +
+      `🏛 <b>Mavjud Zallarimiz:</b>\n` +
+      `1. <b>Asosiy Hashamatli Zal</b> — Jonli musiqa, shohona favvora va bayramona muhit\n` +
+      `2. <b>Ochiq Havo Terrasasi</b> — Shahar panoramasi va salqin shabboda\n` +
+      `3. <b>VIP Oltin Xona</b> — 10-14 kishilik shaxsiy xona va alohida ofitsiant\n` +
+      `4. <b>Banket Zali</b> — 150 kishigacha bo'lgan to'y va tantanalar uchun\n\n` +
+      `📞 <b>Band qilish uchun:</b> <b>+998 (71) 200-88-99</b> yoki <b>+998 (90) 123-45-67</b>`
     );
   }
 
-  // Dostavka / Yetkazish
+  // Yetkazish / Dostavka
   if (q.includes('dostavka') || q.includes('yetkaz') || q.includes('доставка') || q.includes('delivery')) {
     if (isRussian || q.includes('доставка')) {
       return (
@@ -317,13 +332,25 @@ function generateSmartRestaurantAnswer(userText) {
     );
   }
 
-  // Telefon / Bog'lanish
-  if (q.includes('telefon') || q.includes('nomer') || q.includes('kontakt') || q.includes('phone') || q.includes('телефон') || q.includes('номер')) {
+  // 5. Telefon / Bog'lanish / Aloqa
+  if (q === '/aloqa' || q.includes("bog'lanish") || q.includes('boglanish') || q.includes('aloqa') || q.includes('telefon') || q.includes('nomer') || q.includes('kontakt') || q.includes('phone') || q.includes('телефон') || q.includes('номер') || q.includes('связь')) {
+    if (isRussian || q.includes('телефон') || q.includes('связь')) {
+      return (
+        `📞 <b>Контакты Zafaron Restaurant & Lounge:</b>\n\n` +
+        `• Главный администратор: <b>+998 (71) 200-88-99</b>\n` +
+        `• Дополнительный / Бронь: <b>+998 (90) 123-45-67</b>\n` +
+        `• Telegram: @zafaron_admin\n` +
+        `• Адрес: г. Ташкент, проспект Амира Темура, 45\n\n` +
+        `<i>Мы всегда рады вашему визиту! 😊</i>`
+      );
+    }
     return (
       `📞 <b>Zafaron Restaurant Aloqa Ma'lumotlari:</b>\n\n` +
       `• Bosh administrator: <b>+998 (71) 200-88-99</b>\n` +
-      `• Qo'shimcha aloqa: <b>+998 (90) 123-45-67</b>\n` +
-      `• Manzil: Toshkent sh., Amir Temur shoh ko'chasi, 45-uy`
+      `• Qo'shimcha aloqa / Bron: <b>+998 (90) 123-45-67</b>\n` +
+      `• Telegram administrator: @zafaron_admin\n` +
+      `• Manzil: Toshkent sh., Amir Temur shoh ko'chasi, 45-uy\n\n` +
+      `<i>Har qanday savolingiz bo'lsa, xursandchilik bilan javob beramiz! 😊</i>`
     );
   }
 
@@ -404,28 +431,67 @@ async function callGeminiAi(userPrompt) {
   return null;
 }
 
-// 5. Send message via Telegram Bot API with quick interactive buttons
+// 5. Persistent 5-Item Reply Keyboard & Official Bot Menu
+const MAIN_REPLY_KEYBOARD = {
+  keyboard: [
+    [
+      { text: "📍 Bizning manzilimiz" },
+      { text: "🍽 Taomnoma" }
+    ],
+    [
+      { text: "🥂 Stol band qilish" },
+      { text: "🕒 Ish vaqti" }
+    ],
+    [
+      { text: "📞 Bog'lanish" }
+    ]
+  ],
+  resize_keyboard: true,
+  is_persistent: true
+};
+
+const BOT_COMMANDS = [
+  { command: 'manzil', description: "📍 Bizning manzilimiz va lokatsiya" },
+  { command: 'menu', description: "🍽 Taomnoma va narxlar" },
+  { command: 'bron', description: "🥂 Stol band qilish (rezervatsiya)" },
+  { command: 'vaqt', description: "🕒 Ish vaqti va jonli musiqa" },
+  { command: 'aloqa', description: "📞 Bog'lanish va telefonlar" }
+];
+
+async function registerBotMenu() {
+  try {
+    const cmdUrl = `https://api.telegram.org/bot${BOT_TOKEN}/setMyCommands`;
+    const cmdRes = await fetch(cmdUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ commands: BOT_COMMANDS })
+    });
+    const cmdData = await cmdRes.json();
+    if (cmdData.ok) {
+      console.log('✅ Telegram bot komandalar menyusi (setMyCommands) o\'rnatildi (5 ta band):');
+      BOT_COMMANDS.forEach(c => console.log(`   /${c.command} - ${c.description}`));
+    }
+
+    // Set Menu button
+    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/setChatMenuButton`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ menu_button: { type: 'commands' } })
+    });
+  } catch (err) {
+    console.warn('⚠️ Menyu o\'rnatishda xatolik:', err.message);
+  }
+}
+
 async function sendTelegramMessage(chatId, text, replyToMessageId = null, replyMarkup = null) {
   try {
     const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
-    const defaultButtons = {
-      inline_keyboard: [
-        [
-          { text: "🍽 Taomnoma (Menyu)", url: "https://github.com/raxmatjonovxabibullox-dotcom/Restarant" },
-          { text: "🥂 Stol Band Qilish", url: "https://github.com/raxmatjonovxabibullox-dotcom/Restarant" }
-        ],
-        [
-          { text: "📍 Google Xarita", url: "https://maps.google.com/?q=Amir+Temur+Avenue+45+Tashkent" },
-          { text: "📞 +998 (71) 200-88-99", url: "https://t.me/zafaron_admin" }
-        ]
-      ]
-    };
     const body = {
       chat_id: chatId,
       text: text,
       parse_mode: 'HTML',
       disable_web_page_preview: true,
-      reply_markup: replyMarkup || defaultButtons
+      reply_markup: replyMarkup || MAIN_REPLY_KEYBOARD
     };
     if (replyToMessageId) {
       body.reply_to_message_id = replyToMessageId;
@@ -458,6 +524,9 @@ async function sendTypingAction(chatId) {
 let lastUpdateId = 0;
 
 async function pollUpdates() {
+  // Register 5-item command menu with Telegram API on startup
+  await registerBotMenu();
+
   while (true) {
     try {
       const url = `https://api.telegram.org/bot${BOT_TOKEN}/getUpdates?offset=${lastUpdateId + 1}&timeout=25`;
@@ -484,6 +553,7 @@ async function pollUpdates() {
 
           const chatId = msg.chat.id;
           const userText = msg.text.trim();
+          const qLower = userText.toLowerCase().trim();
           const senderName = msg.from?.first_name || 'Hurmatli Mehmon';
 
           console.log(`📩 [${new Date().toLocaleTimeString()}] Xabar keldi (${senderName}): "${userText}"`);
@@ -491,13 +561,27 @@ async function pollUpdates() {
           // Show typing status in Telegram
           await sendTypingAction(chatId);
 
-          // Get AI Response (Gemini or Smart Restaurant Brain)
-          let aiResponse = await callGeminiAi(userText);
-          if (!aiResponse) {
+          // Fast direct handling for 5 menu buttons & commands
+          const isDirectMenuItem = [
+            '/start', '/menu', '/menyu', '/manzil', '/bron', '/vaqt', '/aloqa',
+            '📍 bizning manzilimiz', 'bizning manzilimiz',
+            '🍽 taomnoma', 'taomnoma',
+            '🥂 stol band qilish', 'stol band qilish',
+            '🕒 ish vaqti', 'ish vaqti',
+            '📞 bog\'lanish', "bog'lanish", 'boglanish'
+          ].some(item => qLower === item || qLower.includes(item));
+
+          let aiResponse = null;
+          if (isDirectMenuItem) {
             aiResponse = generateSmartRestaurantAnswer(userText);
+          } else {
+            aiResponse = await callGeminiAi(userText);
+            if (!aiResponse) {
+              aiResponse = generateSmartRestaurantAnswer(userText);
+            }
           }
 
-          // Send response back to user
+          // Send response back to user with persistent 5-item menu
           await sendTelegramMessage(chatId, aiResponse, msg.message_id);
           console.log(`✅ [${new Date().toLocaleTimeString()}] AI javob qaytardi (${senderName})`);
         }
