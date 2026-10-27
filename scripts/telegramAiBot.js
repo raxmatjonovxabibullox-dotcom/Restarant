@@ -86,6 +86,60 @@ Xizmatlar:
 function generateSmartRestaurantAnswer(userText) {
   const q = (userText || '').toLowerCase().trim();
 
+  // 0. Direct Hall Choice (1, 2, 3, 4) - MUST BE FIRST so typing "1" always returns Hall 1!
+  if (
+    q === '1' || q === '1.' || q === '1-zal' || q === '1 zal' || q === 'zal 1' ||
+    q === 'bir' || q.includes('asosiy zal') || q.startsWith('1 ') || q === 'zal_1'
+  ) {
+    return (
+      `🏛 <b>1. Asosiy Hashamatli Zal tanlandi!</b>\n\n` +
+      `• Jonli musiqa (Har Juma va Shanba 19:30 dan)\n` +
+      `• Shohona romantik favvora\n` +
+      `• Bayramona va shinam stol joylashuvi\n\n` +
+      `Ushbu zalda stolni band qilish uchun telefon qiling:\n` +
+      `📞 <b>+998 (71) 200-88-99</b> yoki <b>+998 (90) 123-45-67</b>\n\n` +
+      `<i>Administratorimiz siz uchun eng yaxshi joyni bron qilib beradi! ✨</i>`
+    );
+  }
+  if (
+    q === '2' || q === '2.' || q === '2-zal' || q === '2 zal' || q === 'zal 2' ||
+    q === 'ikki' || q.includes('terrasa') || q.startsWith('2 ') || q === 'zal_2'
+  ) {
+    return (
+      `🌆 <b>2. Ochiq Havo Terrasasi tanlandi!</b>\n\n` +
+      `• Toshkent shahrining keng panoramasi\n` +
+      `• Yozgi salqin shabboda va toza havo\n` +
+      `• Romantik oqshomlar uchun ajoyib muhit\n\n` +
+      `Terrasada joy band qilish uchun:\n` +
+      `📞 <b>+998 (71) 200-88-99</b> yoki <b>+998 (90) 123-45-67</b>`
+    );
+  }
+  if (
+    q === '3' || q === '3.' || q === '3-zal' || q === '3 zal' || q === 'zal 3' ||
+    q === 'uch' || q.includes('vip') || q.startsWith('3 ') || q === 'zal_3'
+  ) {
+    return (
+      `👑 <b>3. VIP Oltin Xona tanlandi!</b>\n\n` +
+      `• 10-14 kishilik to'liq alohida qulay xona\n` +
+      `• Shaxsiy ofitsiant xizmati\n` +
+      `• Muzokaralar, oilaviy tadbirlar va maxfiy uchrashuvlar uchun\n\n` +
+      `VIP xonani band qilish uchun:\n` +
+      `📞 <b>+998 (71) 200-88-99</b> yoki <b>+998 (90) 123-45-67</b>`
+    );
+  }
+  if (
+    q === '4' || q === '4.' || q === '4-zal' || q === '4 zal' || q === 'zal 4' ||
+    q === 'to\'rt' || q === 'tort' || q.includes('banket') || q.startsWith('4 ') || q === 'zal_4'
+  ) {
+    return (
+      `🎉 <b>4. Banket Zali tanlandi!</b>\n\n` +
+      `• 150 kishigacha bo'lgan to'y, yubiley va korporativ tantanalar\n` +
+      `• Maxsus shohona taomnoma va tantanali bezatish\n\n` +
+      `Banket tashkil qilish uchun:\n` +
+      `📞 <b>+998 (71) 200-88-99</b> yoki <b>+998 (90) 123-45-67</b>`
+    );
+  }
+
   // Detect Russian
   const isRussian = /[а-яё]/i.test(q) && (
     q.includes('привет') || q.includes('здравствуй') || q.includes('меню') ||
@@ -313,48 +367,6 @@ function generateSmartRestaurantAnswer(userText) {
     );
   }
 
-  // Zallarni raqam bilan tanlash (1, 2, 3, 4)
-  if (q === '1' || q === '1-zal' || q.includes('asosiy zal')) {
-    return (
-      `🏛 <b>1. Asosiy Hashamatli Zal tanlandi!</b>\n\n` +
-      `• Jonli musiqa (Har Juma va Shanba 19:30 dan)\n` +
-      `• Shohona romantik favvora\n` +
-      `• Bayramona va shinam stol joylashuvi\n\n` +
-      `Ushbu zalda stolni band qilish uchun telefon qiling:\n` +
-      `📞 <b>+998 (71) 200-88-99</b> yoki <b>+998 (90) 123-45-67</b>\n\n` +
-      `<i>Administratorimiz siz uchun eng yaxshi joyni bron qilib beradi! ✨</i>`
-    );
-  }
-  if (q === '2' || q === '2-zal' || q.includes('terrasa')) {
-    return (
-      `🌆 <b>2. Ochiq Havo Terrasasi tanlandi!</b>\n\n` +
-      `• Toshkent shahrining keng panoramasi\n` +
-      `• Yozgi salqin shabboda va toza havo\n` +
-      `• Romantik oqshomlar uchun ajoyib muhit\n\n` +
-      `Terrasada stol band qilish uchun:\n` +
-      `📞 <b>+998 (71) 200-88-99</b>`
-    );
-  }
-  if (q === '3' || q === '3-zal' || q.includes('vip')) {
-    return (
-      `👑 <b>3. VIP Oltin Xona tanlandi!</b>\n\n` +
-      `• 10-14 kishilik to'liq alohida qulay xona\n` +
-      `• Shaxsiy ofitsiant xizmati\n` +
-      `• Muzokaralar, oilaviy tadbirlar va maxfiy uchrashuvlar uchun\n\n` +
-      `VIP xonani band qilish uchun:\n` +
-      `📞 <b>+998 (71) 200-88-99</b>`
-    );
-  }
-  if (q === '4' || q === '4-zal' || q.includes('banket')) {
-    return (
-      `🎉 <b>4. Banket Zali tanlandi!</b>\n\n` +
-      `• 150 kishigacha bo'lgan to'y, yubiley va tantanalar\n` +
-      `• Maxsus shohona taomnoma va tantanali bezatish\n\n` +
-      `Banket tashkil qilish uchun:\n` +
-      `📞 <b>+998 (71) 200-88-99</b>`
-    );
-  }
-
   // Yetkazish / Dostavka
   if (q.includes('dostavka') || q.includes('yetkaz') || q.includes('доставка') || q.includes('delivery')) {
     if (isRussian || q.includes('доставка')) {
@@ -501,6 +513,22 @@ const BOT_COMMANDS = [
   { command: 'aloqa', description: "📞 Bog'lanish va telefonlar" }
 ];
 
+const BOOKING_INLINE_KEYBOARD = {
+  inline_keyboard: [
+    [
+      { text: "🏛 1. Asosiy Zal", callback_data: "zal_1" },
+      { text: "🌆 2. Terrasa", callback_data: "zal_2" }
+    ],
+    [
+      { text: "👑 3. VIP Oltin Xona", callback_data: "zal_3" },
+      { text: "🎉 4. Banket Zali", callback_data: "zal_4" }
+    ],
+    [
+      { text: "📞 Administrator bilan bog'lanish", url: "https://t.me/zafaron_admin" }
+    ]
+  ]
+};
+
 async function registerBotMenu() {
   try {
     const cmdUrl = `https://api.telegram.org/bot${BOT_TOKEN}/setMyCommands`;
@@ -588,6 +616,28 @@ async function pollUpdates() {
         for (const update of data.result) {
           lastUpdateId = Math.max(lastUpdateId, update.update_id);
 
+          // Handle callback query (inline button clicks)
+          if (update.callback_query) {
+            const cb = update.callback_query;
+            const cbData = cb.data;
+            const cbChatId = cb.message?.chat?.id;
+            const cbMsgId = cb.message?.message_id;
+
+            try {
+              await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/answerCallbackQuery`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ callback_query_id: cb.id })
+              });
+            } catch {}
+
+            const responseText = generateSmartRestaurantAnswer(cbData);
+            if (responseText && cbChatId) {
+              await sendTelegramMessage(cbChatId, responseText, cbMsgId);
+            }
+            continue;
+          }
+
           const msg = update.message;
           if (!msg || !msg.text) continue;
 
@@ -604,15 +654,18 @@ async function pollUpdates() {
           // Show typing status in Telegram
           await sendTypingAction(chatId);
 
-          // Fast direct handling for 5 menu buttons & commands
+          // Fast direct handling for 5 menu buttons, numbers & commands
           const isDirectMenuItem = [
             '/start', '/menu', '/menyu', '/manzil', '/bron', '/vaqt', '/aloqa',
             '📍 bizning manzilimiz', 'bizning manzilimiz',
             '🍽 taomnoma', 'taomnoma',
             '🥂 stol band qilish', 'stol band qilish',
             '🕒 ish vaqti', 'ish vaqti',
-            '📞 bog\'lanish', "bog'lanish", 'boglanish'
-          ].some(item => qLower === item || qLower.includes(item));
+            '📞 bog\'lanish', "bog'lanish", 'boglanish',
+            '1', '2', '3', '4', '1.', '2.', '3.', '4.', '1-zal', '2-zal', '3-zal', '4-zal',
+            'bir', 'ikki', 'uch', 'to\'rt', 'tort', 'zal 1', 'zal 2', 'zal 3', 'zal 4',
+            'asosiy zal', 'terrasa', 'vip xona', 'banket zali'
+          ].some(item => qLower === item || qLower.startsWith(item + ' ') || qLower.endsWith(' ' + item) || qLower.includes(item));
 
           let aiResponse = null;
           if (isDirectMenuItem) {
@@ -624,8 +677,12 @@ async function pollUpdates() {
             }
           }
 
-          // Send response back to user with persistent 5-item menu
-          await sendTelegramMessage(chatId, aiResponse, msg.message_id);
+          // If booking was requested, also provide interactive hall selection inline buttons
+          const isBookingAction = qLower === '/bron' || qLower.includes('stol band qilish') || qLower.includes('bron');
+          const replyMarkup = isBookingAction ? BOOKING_INLINE_KEYBOARD : MAIN_REPLY_KEYBOARD;
+
+          // Send response back to user
+          await sendTelegramMessage(chatId, aiResponse, msg.message_id, replyMarkup);
           console.log(`✅ [${new Date().toLocaleTimeString()}] AI javob qaytardi (${senderName})`);
         }
       }
