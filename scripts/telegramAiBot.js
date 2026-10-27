@@ -308,7 +308,50 @@ function generateSmartRestaurantAnswer(userText) {
       `2. <b>Ochiq Havo Terrasasi</b> — Shahar panoramasi va salqin shabboda\n` +
       `3. <b>VIP Oltin Xona</b> — 10-14 kishilik shaxsiy xona va alohida ofitsiant\n` +
       `4. <b>Banket Zali</b> — 150 kishigacha bo'lgan to'y va tantanalar uchun\n\n` +
-      `📞 <b>Band qilish uchun:</b> <b>+998 (71) 200-88-99</b> yoki <b>+998 (90) 123-45-67</b>`
+      `<i>Zal raqamini (1, 2, 3 yoki 4) yuboring yoki to'g'ridan-to'g'ri administrator bilan bog'laning:</i>\n` +
+      `📞 <b>+998 (71) 200-88-99</b>`
+    );
+  }
+
+  // Zallarni raqam bilan tanlash (1, 2, 3, 4)
+  if (q === '1' || q === '1-zal' || q.includes('asosiy zal')) {
+    return (
+      `🏛 <b>1. Asosiy Hashamatli Zal tanlandi!</b>\n\n` +
+      `• Jonli musiqa (Har Juma va Shanba 19:30 dan)\n` +
+      `• Shohona romantik favvora\n` +
+      `• Bayramona va shinam stol joylashuvi\n\n` +
+      `Ushbu zalda stolni band qilish uchun telefon qiling:\n` +
+      `📞 <b>+998 (71) 200-88-99</b> yoki <b>+998 (90) 123-45-67</b>\n\n` +
+      `<i>Administratorimiz siz uchun eng yaxshi joyni bron qilib beradi! ✨</i>`
+    );
+  }
+  if (q === '2' || q === '2-zal' || q.includes('terrasa')) {
+    return (
+      `🌆 <b>2. Ochiq Havo Terrasasi tanlandi!</b>\n\n` +
+      `• Toshkent shahrining keng panoramasi\n` +
+      `• Yozgi salqin shabboda va toza havo\n` +
+      `• Romantik oqshomlar uchun ajoyib muhit\n\n` +
+      `Terrasada stol band qilish uchun:\n` +
+      `📞 <b>+998 (71) 200-88-99</b>`
+    );
+  }
+  if (q === '3' || q === '3-zal' || q.includes('vip')) {
+    return (
+      `👑 <b>3. VIP Oltin Xona tanlandi!</b>\n\n` +
+      `• 10-14 kishilik to'liq alohida qulay xona\n` +
+      `• Shaxsiy ofitsiant xizmati\n` +
+      `• Muzokaralar, oilaviy tadbirlar va maxfiy uchrashuvlar uchun\n\n` +
+      `VIP xonani band qilish uchun:\n` +
+      `📞 <b>+998 (71) 200-88-99</b>`
+    );
+  }
+  if (q === '4' || q === '4-zal' || q.includes('banket')) {
+    return (
+      `🎉 <b>4. Banket Zali tanlandi!</b>\n\n` +
+      `• 150 kishigacha bo'lgan to'y, yubiley va tantanalar\n` +
+      `• Maxsus shohona taomnoma va tantanali bezatish\n\n` +
+      `Banket tashkil qilish uchun:\n` +
+      `📞 <b>+998 (71) 200-88-99</b>`
     );
   }
 
