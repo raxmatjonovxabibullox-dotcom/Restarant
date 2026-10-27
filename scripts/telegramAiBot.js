@@ -44,6 +44,29 @@ console.log(`🔑 Bot Token: ${BOT_TOKEN ? BOT_TOKEN.slice(0, 15) + '...' : 'YO\
 console.log(`✨ Gemini AI: ${GEMINI_API_KEY ? 'Faol (API Key mavjud)' : 'Smart Restaurant Engine (O\'rnatilgan sun\'iy intellekt)'}`);
 console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
 
+// 1.1 User Language Storage (Persists chosen language per user: 'uz' | 'ru' | 'en')
+const LANG_STORAGE_FILE = path.join(rootDir, 'data', 'user_languages.json');
+
+function loadUserLanguages() {
+  try {
+    if (fs.existsSync(LANG_STORAGE_FILE)) {
+      return JSON.parse(fs.readFileSync(LANG_STORAGE_FILE, 'utf-8'));
+    }
+  } catch { }
+  return {};
+}
+
+const userLanguages = loadUserLanguages();
+
+function saveUserLanguage(chatId, lang) {
+  try {
+    userLanguages[chatId] = lang;
+    const dir = path.dirname(LANG_STORAGE_FILE);
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(LANG_STORAGE_FILE, JSON.stringify(userLanguages, null, 2), 'utf-8');
+  } catch { }
+}
+
 // 2. Knowledge Base for Zafaron Restaurant
 const RESTAURANT_KNOWLEDGE = `
 Restoran: "Zafaron Restaurant & Lounge" (Toshkent)
@@ -83,14 +106,66 @@ Xizmatlar:
 `;
 
 // 3. Built-in Smart Fallback Engine (Answers instantly in Uzbek, Russian, or English)
-function generateSmartRestaurantAnswer(userText) {
+function generateSmartRestaurantAnswer(userText, userLang = 'uz') {
   const q = (userText || '').toLowerCase().trim();
+
+  // Language selection request
+  if (
+    q === '/start' ||
+    q === '/til' || q === '/lang' || q === '/language' ||
+    q === 'til' || q === 'tillar' || q === 'til tanlash' || q === 'til tanla' ||
+    q === 'tilni tanlash' || q === '🌐 tilni tanlash' || q === '🌐 выбор языка' || q === '🌐 language' ||
+    q === 'язык' || q === 'выбор языка' || q === 'сменить язык' ||
+    q === 'language' || q === 'choose language'
+  ) {
+    return '__LANGUAGE_PROMPT__';
+  }
+
+  // Detect Russian
+  const isRussian = userLang === 'ru' || (/[а-яё]/i.test(q) && (
+    q.includes('привет') || q.includes('здравствуй') || q.includes('меню') ||
+    q.includes('цена') || q.includes('плов') || q.includes('шашлык') ||
+    q.includes('где') || q.includes('адрес') || q.includes('время') ||
+    q.includes('стол') || q.includes('бронь') || q.includes('доставка') ||
+    q.includes('телефон') || q.includes('халяль') || q.includes('как дела') ||
+    q.includes('общение')
+  ));
+
+  // Detect English
+  const isEnglish = userLang === 'en' || (
+    q.includes('hello') || q.includes('hi ') || q === 'hi' || q.includes('hey') ||
+    q.includes('menu') || q.includes('price') || q.includes('steak') ||
+    q.includes('kebab') || q.includes('where') || q.includes('address') ||
+    q.includes('hours') || q.includes('book') || q.includes('table') ||
+    q.includes('delivery') || q.includes('halal') || q.includes('chat')
+  );
 
   // 0. Direct Hall Choice (1, 2, 3, 4) - MUST BE FIRST so typing "1" always returns Hall 1!
   if (
     q === '1' || q === '1.' || q === '1-zal' || q === '1 zal' || q === 'zal 1' ||
-    q === 'bir' || q.includes('asosiy zal') || q.startsWith('1 ') || q === 'zal_1'
+    q === 'bir' || q.includes('asosiy zal') || q.startsWith('1 ') || q === 'zal_1' || q.includes('главный')
   ) {
+    if (isRussian) {
+      return (
+        `🏛 <b>1. Выбран Главный Роскошный Зал!</b>\n\n` +
+        `• Живая музыка (каждую пятницу и субботу с 19:30)\n` +
+        `• Роскошный романтический фонтан\n` +
+        `• Праздничная и уютная атмосфера\n\n` +
+        `Для бронирования стола позвоните:\n` +
+        `📞 <b>+998 (71) 200-88-99</b> или <b>+998 (90) 123-45-67</b>\n\n` +
+        `<i>Мы подберем для вас лучший стол! ✨</i>`
+      );
+    }
+    if (isEnglish) {
+      return (
+        `🏛 <b>1. Main Luxury Hall selected!</b>\n\n` +
+        `• Live music (Every Friday & Saturday from 19:30)\n` +
+        `• Romantic fountain & festive atmosphere\n\n` +
+        `To reserve a table, call our manager:\n` +
+        `📞 <b>+998 (71) 200-88-99</b> or <b>+998 (90) 123-45-67</b>\n\n` +
+        `<i>We will prepare the best table for you! ✨</i>`
+      );
+    }
     return (
       `🏛 <b>1. Asosiy Hashamatli Zal tanlandi!</b>\n\n` +
       `• Jonli musiqa (Har Juma va Shanba 19:30 dan)\n` +
@@ -103,8 +178,27 @@ function generateSmartRestaurantAnswer(userText) {
   }
   if (
     q === '2' || q === '2.' || q === '2-zal' || q === '2 zal' || q === 'zal 2' ||
-    q === 'ikki' || q.includes('terrasa') || q.startsWith('2 ') || q === 'zal_2'
+    q === 'ikki' || q.includes('terrasa') || q.startsWith('2 ') || q === 'zal_2' || q.includes('терраса')
   ) {
+    if (isRussian) {
+      return (
+        `🌆 <b>2. Выбрана Панорамная Терраса!</b>\n\n` +
+        `• Панорамный вид на город\n` +
+        `• Летняя прохлада и свежий воздух\n` +
+        `• Атмосфера для романтического ужина\n\n` +
+        `Для бронирования стола:\n` +
+        `📞 <b>+998 (71) 200-88-99</b> или <b>+998 (90) 123-45-67</b>`
+      );
+    }
+    if (isEnglish) {
+      return (
+        `🌆 <b>2. Open Air Terrace selected!</b>\n\n` +
+        `• Panoramic city view of Tashkent\n` +
+        `• Fresh breeze and open atmosphere\n\n` +
+        `To book a table:\n` +
+        `📞 <b>+998 (71) 200-88-99</b> or <b>+998 (90) 123-45-67</b>`
+      );
+    }
     return (
       `🌆 <b>2. Ochiq Havo Terrasasi tanlandi!</b>\n\n` +
       `• Toshkent shahrining keng panoramasi\n` +
@@ -118,6 +212,25 @@ function generateSmartRestaurantAnswer(userText) {
     q === '3' || q === '3.' || q === '3-zal' || q === '3 zal' || q === 'zal 3' ||
     q === 'uch' || q.includes('vip') || q.startsWith('3 ') || q === 'zal_3'
   ) {
+    if (isRussian) {
+      return (
+        `👑 <b>3. Выбран VIP Золотой Зал!</b>\n\n` +
+        `• Отдельный роскошный зал на 10-14 персон\n` +
+        `• Персональный официант\n` +
+        `• Для переговоров и семейных торжеств\n\n` +
+        `Для бронирования VIP зала:\n` +
+        `📞 <b>+998 (71) 200-88-99</b> или <b>+998 (90) 123-45-67</b>`
+      );
+    }
+    if (isEnglish) {
+      return (
+        `👑 <b>3. VIP Gold Room selected!</b>\n\n` +
+        `• Private luxury room for 10-14 guests\n` +
+        `• Personal waiter service\n\n` +
+        `To reserve VIP room:\n` +
+        `📞 <b>+998 (71) 200-88-99</b> or <b>+998 (90) 123-45-67</b>`
+      );
+    }
     return (
       `👑 <b>3. VIP Oltin Xona tanlandi!</b>\n\n` +
       `• 10-14 kishilik to'liq alohida qulay xona\n` +
@@ -129,8 +242,25 @@ function generateSmartRestaurantAnswer(userText) {
   }
   if (
     q === '4' || q === '4.' || q === '4-zal' || q === '4 zal' || q === 'zal 4' ||
-    q === 'to\'rt' || q === 'tort' || q.includes('banket') || q.startsWith('4 ') || q === 'zal_4'
+    q === 'to\'rt' || q === 'tort' || q.includes('banket') || q.startsWith('4 ') || q === 'zal_4' || q.includes('банкет')
   ) {
+    if (isRussian) {
+      return (
+        `🎉 <b>4. Выбран Банкетный Зал!</b>\n\n` +
+        `• Торжества, свадьбы и юбилеи до 150 персон\n` +
+        `• Праздничное оформление и банкетное меню\n\n` +
+        `Для организации банкета:\n` +
+        `📞 <b>+998 (71) 200-88-99</b> или <b>+998 (90) 123-45-67</b>`
+      );
+    }
+    if (isEnglish) {
+      return (
+        `🎉 <b>4. Banquet Hall selected!</b>\n\n` +
+        `• Weddings and celebrations up to 150 guests\n\n` +
+        `To organize a banquet:\n` +
+        `📞 <b>+998 (71) 200-88-99</b> or <b>+998 (90) 123-45-67</b>`
+      );
+    }
     return (
       `🎉 <b>4. Banket Zali tanlandi!</b>\n\n` +
       `• 150 kishigacha bo'lgan to'y, yubiley va korporativ tantanalar\n` +
@@ -139,24 +269,6 @@ function generateSmartRestaurantAnswer(userText) {
       `📞 <b>+998 (71) 200-88-99</b> yoki <b>+998 (90) 123-45-67</b>`
     );
   }
-
-  // Detect Russian
-  const isRussian = /[а-яё]/i.test(q) && (
-    q.includes('привет') || q.includes('здравствуй') || q.includes('меню') ||
-    q.includes('цена') || q.includes('плов') || q.includes('шашлык') ||
-    q.includes('где') || q.includes('адрес') || q.includes('время') ||
-    q.includes('стол') || q.includes('бронь') || q.includes('доставка') ||
-    q.includes('телефон') || q.includes('халяль')
-  );
-
-  // Detect English
-  const isEnglish = (
-    q.includes('hello') || q.includes('hi ') || q === 'hi' || q.includes('hey') ||
-    q.includes('menu') || q.includes('price') || q.includes('steak') ||
-    q.includes('kebab') || q.includes('where') || q.includes('address') ||
-    q.includes('hours') || q.includes('book') || q.includes('table') ||
-    q.includes('delivery') || q.includes('halal')
-  );
 
   // Greetings & casual chat (including typos like 'salo', 'salon', 'salomm', 'qalesan', 'qalay', etc.)
   if (
@@ -204,7 +316,7 @@ function generateSmartRestaurantAnswer(userText) {
       );
     }
     const isFriendlyCasual = q.includes('qale') || q.includes('qalay') || q.includes('yaxshimi');
-    const greetingHeader = isFriendlyCasual 
+    const greetingHeader = isFriendlyCasual
       ? `😊 <b>Rahmat, juda yaxshi! O'zingiz qandaysiz?</b>\n\n<b>Zafaron Restaurant & Lounge'ga xush kelibsiz!</b>`
       : `👋 <b>Assalomu alaykum! Zafaron Restaurant & Lounge'ga xush kelibsiz!</b>`;
 
@@ -516,47 +628,136 @@ async function callGeminiAi(userPrompt) {
   return null;
 }
 
-// 5. Persistent 5-Item Reply Keyboard & Official Bot Menu
-const MAIN_REPLY_KEYBOARD = {
-  keyboard: [
+// 5. Language selector & Interactive Keyboards (Til tanlash + flaglari bilan)
+const LANGUAGE_INLINE_KEYBOARD = {
+  inline_keyboard: [
     [
-      { text: "📍 Bizning manzilimiz" },
-      { text: "🍽 Taomnoma" }
-    ],
-    [
-      { text: "🥂 Stol band qilish" },
-      { text: "🕒 Ish vaqti" }
-    ],
-    [
-      { text: "💬 Muloqot" }
+      { text: "🇺🇿 O'zbekcha", callback_data: "set_lang_uz" },
+      { text: "🇷🇺 Русский", callback_data: "set_lang_ru" },
+      { text: "🇬🇧 English", callback_data: "set_lang_en" }
     ]
-  ],
-  resize_keyboard: true,
-  is_persistent: true
+  ]
+};
+
+const LANGUAGE_PROMPT_TEXT =
+  `🌐 <b>Tilni tanlang / Выберите язык / Choose language:</b>\n\n` +
+  `🇺🇿 Iltimos, o'zingizga qulay tilni tanlang:\n` +
+  `🇷🇺 Пожалуйста, выберите удобный для вас язык:\n` +
+  `🇬🇧 Please choose your preferred language:`;
+
+const KEYBOARDS = {
+  uz: {
+    keyboard: [
+      [
+        { text: "📍 Bizning manzilimiz" },
+        { text: "🍽 Taomnoma" }
+      ],
+      [
+        { text: "🥂 Stol band qilish" },
+        { text: "🕒 Ish vaqti" }
+      ],
+      [
+        { text: "💬 Muloqot" },
+        { text: "🌐 Tilni tanlash" }
+      ]
+    ],
+    resize_keyboard: true,
+    is_persistent: true
+  },
+  ru: {
+    keyboard: [
+      [
+        { text: "📍 Наш адрес" },
+        { text: "🍽 Меню" }
+      ],
+      [
+        { text: "🥂 Бронь стола" },
+        { text: "🕒 Режим работы" }
+      ],
+      [
+        { text: "💬 Общение" },
+        { text: "🌐 Выбор языка" }
+      ]
+    ],
+    resize_keyboard: true,
+    is_persistent: true
+  },
+  en: {
+    keyboard: [
+      [
+        { text: "📍 Our Location" },
+        { text: "🍽 Menu" }
+      ],
+      [
+        { text: "🥂 Book a Table" },
+        { text: "🕒 Opening Hours" }
+      ],
+      [
+        { text: "💬 Chat" },
+        { text: "🌐 Language" }
+      ]
+    ],
+    resize_keyboard: true,
+    is_persistent: true
+  }
 };
 
 const BOT_COMMANDS = [
-  { command: 'manzil', description: "📍 Bizning manzilimiz va lokatsiya" },
-  { command: 'menu', description: "🍽 Taomnoma va narxlar" },
-  { command: 'bron', description: "🥂 Stol band qilish (rezervatsiya)" },
-  { command: 'vaqt', description: "🕒 Ish vaqti va jonli musiqa" },
-  { command: 'muloqot', description: "💬 AI va Admin bilan muloqot" }
+  { command: 'start', description: "🔄 Qayta ishga tushirish / Перезапуск" },
+  { command: 'til', description: "🌐 Tilni tanlash (🇺🇿/🇷🇺/🇬🇧)" },
+  { command: 'manzil', description: "📍 Bizning manzilimiz / Наш адрес" },
+  { command: 'menu', description: "🍽 Taomnoma / Меню" },
+  { command: 'bron', description: "🥂 Stol band qilish / Бронь стола" },
+  { command: 'vaqt', description: "🕒 Ish vaqti / Режим работы" },
+  { command: 'muloqot', description: "💬 Muloqot / Общение / Chat" }
 ];
 
-const BOOKING_INLINE_KEYBOARD = {
-  inline_keyboard: [
-    [
-      { text: "🏛 1. Asosiy Zal", callback_data: "zal_1" },
-      { text: "🌆 2. Terrasa", callback_data: "zal_2" }
-    ],
-    [
-      { text: "👑 3. VIP Oltin Xona", callback_data: "zal_3" },
-      { text: "🎉 4. Banket Zali", callback_data: "zal_4" }
-    ],
-    [
-      { text: "📞 Administrator bilan bog'lanish", url: "https://t.me/zafaron_admin" }
+const BOOKING_KEYBOARDS = {
+  uz: {
+    inline_keyboard: [
+      [
+        { text: "🏛 1. Asosiy Zal", callback_data: "zal_1" },
+        { text: "🌆 2. Terrasa", callback_data: "zal_2" }
+      ],
+      [
+        { text: "👑 3. VIP Oltin Xona", callback_data: "zal_3" },
+        { text: "🎉 4. Banket Zali", callback_data: "zal_4" }
+      ],
+      [
+        { text: "📞 Administrator bilan bog'lanish", url: "https://t.me/zafaron_admin" }
+      ]
     ]
-  ]
+  },
+  ru: {
+    inline_keyboard: [
+      [
+        { text: "🏛 1. Главный Зал", callback_data: "zal_1" },
+        { text: "🌆 2. Терраса", callback_data: "zal_2" }
+      ],
+      [
+        { text: "👑 3. VIP Золотой Зал", callback_data: "zal_3" },
+        { text: "🎉 4. Банкетный Зал", callback_data: "zal_4" }
+      ],
+      [
+        { text: "📞 Связаться с администратором", url: "https://t.me/zafaron_admin" }
+      ]
+    ]
+  },
+  en: {
+    inline_keyboard: [
+      [
+        { text: "🏛 1. Main Luxury Hall", callback_data: "zal_1" },
+        { text: "🌆 2. Terrace", callback_data: "zal_2" }
+      ],
+      [
+        { text: "👑 3. VIP Gold Room", callback_data: "zal_3" },
+        { text: "🎉 4. Banquet Hall", callback_data: "zal_4" }
+      ],
+      [
+        { text: "📞 Contact Administrator", url: "https://t.me/zafaron_admin" }
+      ]
+    ]
+  }
 };
 
 async function registerBotMenu() {
@@ -571,7 +772,7 @@ async function registerBotMenu() {
       });
       const cmdData = await cmdRes.json();
       if (cmdData.ok) {
-        console.log('✅ Telegram bot komandalar menyusi (setMyCommands) o\'rnatildi (5 ta band):');
+        console.log('✅ Telegram bot komandalar menyusi (setMyCommands) o\'rnatildi (7 ta band):');
         BOT_COMMANDS.forEach(c => console.log(`   /${c.command} - ${c.description}`));
       }
 
@@ -596,12 +797,13 @@ async function registerBotMenu() {
 async function sendTelegramMessage(chatId, text, replyToMessageId = null, replyMarkup = null) {
   try {
     const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+    const userLang = userLanguages[chatId] || 'uz';
     const body = {
       chat_id: chatId,
       text: text,
       parse_mode: 'HTML',
       disable_web_page_preview: true,
-      reply_markup: replyMarkup || MAIN_REPLY_KEYBOARD
+      reply_markup: replyMarkup || (KEYBOARDS[userLang] || KEYBOARDS.uz)
     };
     if (replyToMessageId) {
       body.reply_to_message_id = replyToMessageId;
@@ -634,7 +836,7 @@ async function sendTypingAction(chatId) {
 let lastUpdateId = 0;
 
 async function pollUpdates() {
-  // Register 5-item command menu in background
+  // Register bot commands in background
   registerBotMenu().catch(() => {});
 
   while (true) {
@@ -662,17 +864,74 @@ async function pollUpdates() {
             const cbChatId = cb.message?.chat?.id;
             const cbMsgId = cb.message?.message_id;
 
+            // Stop button loading animation with optional alert toast
             try {
+              let alertText = null;
+              if (cbData === 'set_lang_uz') alertText = "🇺🇿 O'zbek tili tanlandi!";
+              else if (cbData === 'set_lang_ru') alertText = "🇷🇺 Выбран русский язык!";
+              else if (cbData === 'set_lang_en') alertText = "🇬🇧 English selected!";
+
+              const answerPayload = { callback_query_id: cb.id };
+              if (alertText) answerPayload.text = alertText;
+
               await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/answerCallbackQuery`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ callback_query_id: cb.id })
+                body: JSON.stringify(answerPayload)
               });
             } catch {}
 
-            const responseText = generateSmartRestaurantAnswer(cbData);
+            // Handle language change buttons (with flags)
+            if (cbData.startsWith('set_lang_')) {
+              const newLang = cbData.replace('set_lang_', '');
+              saveUserLanguage(cbChatId, newLang);
+
+              let welcomeMsg = '';
+              if (newLang === 'ru') {
+                welcomeMsg =
+                  `🇷🇺 <b>Выбран русский язык!</b>\n\n` +
+                  `👋 <b>Здравствуйте! Добро пожаловать в Zafaron Restaurant & Lounge!</b>\n\n` +
+                  `Я ваш персональный AI-консьерж ресторана Zafaron. Выберите нужный раздел в меню или задайте любой вопрос:\n\n` +
+                  `📍 <b>Наш адрес</b> — Локация и карта\n` +
+                  `🍽 <b>Меню</b> — Блюда и цены\n` +
+                  `🥂 <b>Бронь стола</b> — Бронирование залов\n` +
+                  `🕒 <b>Режим работы</b> — График и живая музыка\n` +
+                  `💬 <b>Общение</b> — Чат и связь с администратором\n\n` +
+                  `<i>Нажмите на любую кнопку в меню внизу или напишите вопрос! 😊</i>`;
+              } else if (newLang === 'en') {
+                welcomeMsg =
+                  `🇬🇧 <b>English language selected!</b>\n\n` +
+                  `👋 <b>Welcome to Zafaron Restaurant & Lounge!</b>\n\n` +
+                  `I am your personal smart AI concierge. Please choose a section from the menu below or ask any question:\n\n` +
+                  `📍 <b>Our Location</b> — Address & map\n` +
+                  `🍽 <b>Menu</b> — Dishes & prices\n` +
+                  `🥂 <b>Book a Table</b> — Hall reservation\n` +
+                  `🕒 <b>Opening Hours</b> — Schedule & live music\n` +
+                  `💬 <b>Chat</b> — Live chat & administration\n\n` +
+                  `<i>Tap any menu button below or send a message! 😊</i>`;
+              } else {
+                welcomeMsg =
+                  `🇺🇿 <b>O'zbek tili tanlandi!</b>\n\n` +
+                  `👋 <b>Assalomu alaykum! Zafaron Restaurant & Lounge'ga xush kelibsiz!</b>\n\n` +
+                  `Men sizning shaxsiy sun'iy intellekt konsyerjingizman. Quyidagi menyudan kerakli bo'limni tanlang yoki savolingizni yozing:\n\n` +
+                  `📍 <b>Bizning manzilimiz</b> — Restoran joylashuvi va xarita\n` +
+                  `🍽 <b>Taomnoma</b> — Shohona taomlar va narxlar\n` +
+                  `🥂 <b>Stol band qilish</b> — Hashamatli zallarni bron qilish\n` +
+                  `🕒 <b>Ish vaqti</b> — Ish tartibi va jonli musiqa\n` +
+                  `💬 <b>Muloqot</b> — Jonli muloqot va administrator\n\n` +
+                  `<i>Quyidagi tugmalardan birini bosing yoki xohlagan savolingizni yozing! 😊</i>`;
+              }
+
+              if (cbChatId) {
+                await sendTelegramMessage(cbChatId, welcomeMsg, null, KEYBOARDS[newLang] || KEYBOARDS.uz);
+              }
+              continue;
+            }
+
+            const currentLang = userLanguages[cbChatId] || 'uz';
+            const responseText = generateSmartRestaurantAnswer(cbData, currentLang);
             if (responseText && cbChatId) {
-              await sendTelegramMessage(cbChatId, responseText, cbMsgId);
+              await sendTelegramMessage(cbChatId, responseText, cbMsgId, KEYBOARDS[currentLang] || KEYBOARDS.uz);
             }
             continue;
           }
@@ -687,20 +946,35 @@ async function pollUpdates() {
           const userText = msg.text.trim();
           const qLower = userText.toLowerCase().trim();
           const senderName = msg.from?.first_name || 'Hurmatli Mehmon';
+          const userLang = userLanguages[chatId] || 'uz';
 
-          console.log(`📩 [${new Date().toLocaleTimeString()}] Xabar keldi (${senderName}): "${userText}"`);
+          console.log(`📩 [${new Date().toLocaleTimeString()}] Xabar keldi (${senderName}, lang=${userLang}): "${userText}"`);
 
           // Show typing status in Telegram
           await sendTypingAction(chatId);
 
+          // Language selection prompt
+          const isLanguageRequest = [
+            '/start', '/til', '/lang', '/language',
+            'til', 'tillar', 'til tanlash', 'til tanla', 'tilni tanlash',
+            '🌐 tilni tanlash', '🌐 выбор языка', '🌐 language',
+            'язык', 'выбор языка', 'сменить язык',
+            'language', 'choose language'
+          ].some(item => qLower === item);
+
+          if (isLanguageRequest) {
+            await sendTelegramMessage(chatId, LANGUAGE_PROMPT_TEXT, msg.message_id, LANGUAGE_INLINE_KEYBOARD);
+            continue;
+          }
+
           // Fast direct handling for 5 menu buttons, numbers & commands
           const isDirectMenuItem = [
-            '/start', '/menu', '/menyu', '/manzil', '/bron', '/vaqt', '/aloqa', '/muloqot',
-            '📍 bizning manzilimiz', 'bizning manzilimiz',
-            '🍽 taomnoma', 'taomnoma',
-            '🥂 stol band qilish', 'stol band qilish',
-            '🕒 ish vaqti', 'ish vaqti',
-            '💬 muloqot', 'muloqot',
+            '/menu', '/menyu', '/manzil', '/bron', '/vaqt', '/aloqa', '/muloqot',
+            '📍 bizning manzilimiz', 'bizning manzilimiz', 'наш адрес', 'our location',
+            '🍽 taomnoma', 'taomnoma', 'меню', 'menu',
+            '🥂 stol band qilish', 'stol band qilish', 'бронь стола', 'book a table',
+            '🕒 ish vaqti', 'ish vaqti', 'режим работы', 'opening hours',
+            '💬 muloqot', 'muloqot', 'общение', 'chat',
             '📞 bog\'lanish', "bog'lanish", 'boglanish',
             '1', '2', '3', '4', '1.', '2.', '3.', '4.', '1-zal', '2-zal', '3-zal', '4-zal',
             'bir', 'ikki', 'uch', 'to\'rt', 'tort', 'zal 1', 'zal 2', 'zal 3', 'zal 4',
@@ -709,17 +983,22 @@ async function pollUpdates() {
 
           let aiResponse = null;
           if (isDirectMenuItem) {
-            aiResponse = generateSmartRestaurantAnswer(userText);
+            aiResponse = generateSmartRestaurantAnswer(userText, userLang);
           } else {
             aiResponse = await callGeminiAi(userText);
             if (!aiResponse) {
-              aiResponse = generateSmartRestaurantAnswer(userText);
+              aiResponse = generateSmartRestaurantAnswer(userText, userLang);
             }
           }
 
+          if (aiResponse === '__LANGUAGE_PROMPT__') {
+            await sendTelegramMessage(chatId, LANGUAGE_PROMPT_TEXT, msg.message_id, LANGUAGE_INLINE_KEYBOARD);
+            continue;
+          }
+
           // If booking was requested, also provide interactive hall selection inline buttons
-          const isBookingAction = qLower === '/bron' || qLower.includes('stol band qilish') || qLower.includes('bron');
-          const replyMarkup = isBookingAction ? BOOKING_INLINE_KEYBOARD : MAIN_REPLY_KEYBOARD;
+          const isBookingAction = qLower === '/bron' || qLower.includes('stol band qilish') || qLower.includes('bron') || qLower.includes('бронь') || qLower.includes('book');
+          const replyMarkup = isBookingAction ? (BOOKING_KEYBOARDS[userLang] || BOOKING_KEYBOARDS.uz) : (KEYBOARDS[userLang] || KEYBOARDS.uz);
 
           // Send response back to user
           await sendTelegramMessage(chatId, aiResponse, msg.message_id, replyMarkup);
