@@ -33,10 +33,10 @@ export const Footer = ({ setActivePage, setIsAdminView }) => {
             </p>
             <div className="pt-2 flex items-center gap-3">
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-gold-500/10 text-gold-500 border border-gold-500/20">
-                100% Halal Certified
+                {t('footer.halal')}
               </span>
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
-                Fresh & Organic
+                {t('footer.organic')}
               </span>
             </div>
           </div>
@@ -45,7 +45,7 @@ export const Footer = ({ setActivePage, setIsAdminView }) => {
           <div>
             <h3 className="font-serif font-bold text-base text-gray-900 dark:text-white mb-4 flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-gold-500"></span>
-              {t('common.details')}
+              {t('footer.quickLinks')}
             </h3>
             <ul className="space-y-2.5 text-sm text-gray-600 dark:text-gray-400">
               <li>
@@ -101,8 +101,8 @@ export const Footer = ({ setActivePage, setIsAdminView }) => {
               {t('contactPage.hoursDesc')}
             </p>
             <div className="mt-4 p-3 rounded-xl bg-gray-100 dark:bg-dark-800/80 border border-gray-200 dark:border-gray-800 text-xs text-gray-500 dark:text-gray-400">
-              <span className="font-semibold text-gold-500 block mb-0.5">Live Music:</span>
-              Har payshanba, juma va shanba 19:30 dan
+              <span className="font-semibold text-gold-500 block mb-0.5">{t('footer.liveMusic')}</span>
+              {t('footer.musicSchedule')}
             </div>
           </div>
 
@@ -125,7 +125,7 @@ export const Footer = ({ setActivePage, setIsAdminView }) => {
               </a>
               <div className="flex items-center gap-2 text-xs text-emerald-500">
                 <Send className="w-3.5 h-3.5" />
-                Telegram Bot bilan to'liq integratsiya
+                {t('footer.telegramIntegration')}
               </div>
             </div>
           </div>
@@ -133,7 +133,7 @@ export const Footer = ({ setActivePage, setIsAdminView }) => {
 
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-gray-200 dark:border-gray-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-500 dark:text-gray-400">
-          <p>© {CURRENT_YEAR} ZAFARON Restaurant & Lounge. Barcha huquqlar himoyalangan.</p>
+          <p>© {CURRENT_YEAR} ZAFARON Restaurant & Lounge. {t('footer.allRightsReserved')}</p>
           <div className="flex items-center gap-4">
             <button
               onClick={() => { setIsAdminView(true); window.scrollTo(0, 0); }}
@@ -143,7 +143,8 @@ export const Footer = ({ setActivePage, setIsAdminView }) => {
             </button>
             <span>•</span>
             <span className="flex items-center gap-1">
-              Crafted with <Heart className="w-3 h-3 text-red-500 inline fill-red-500" /> for gastronomy lovers
+              <Heart className="w-3 h-3 text-red-500 inline fill-red-500" />
+              {t('footer.craftedWith')}
             </span>
           </div>
         </div>

@@ -10,7 +10,8 @@ import {
   SkipBack,
   SkipForward,
   Radio,
-  Loader2
+  Loader2,
+  X
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { soundFx } from '../hooks/useSoundEffects';
@@ -60,7 +61,8 @@ export const AudioPlayer = () => {
       pause: "Musiqani to'xtatish",
       play: "Zafaron Lounge musiqasini yoqish",
       connecting: "Ulanmoqda...",
-      clickToPlay: "Yoqish uchun bosing"
+      clickToPlay: "Yoqish uchun bosing",
+      close: "Yopish"
     },
     ru: {
       live: "Прямой Эфир",
@@ -71,7 +73,8 @@ export const AudioPlayer = () => {
       pause: "Приостановить музыку",
       play: "Включить музыку Zafaron Lounge",
       connecting: "Подключение...",
-      clickToPlay: "Нажмите для воспроизведения"
+      clickToPlay: "Нажмите для воспроизведения",
+      close: "Закрыть"
     },
     en: {
       live: "Live Stream",
@@ -82,7 +85,8 @@ export const AudioPlayer = () => {
       pause: "Pause music",
       play: "Play Zafaron Lounge music",
       connecting: "Connecting...",
-      clickToPlay: "Click to play"
+      clickToPlay: "Click to play",
+      close: "Close"
     }
   };
 
@@ -94,6 +98,7 @@ export const AudioPlayer = () => {
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [streamError, setStreamError] = useState(false);
+  const [isDismissed, setIsDismissed] = useState(false);
 
   const audioRef = useRef(null);
   const currentTrack = LOUNGE_STREAMS[currentTrackIndex];
@@ -196,6 +201,22 @@ export const AudioPlayer = () => {
     soundFx.setAmbientVolume(nextMuted ? 0 : volume);
   };
 
+  const handleDismiss = (e) => {
+    e.stopPropagation();
+    soundFx.playPop();
+    if (isPlaying) {
+      if (audioRef.current) audioRef.current.pause();
+      soundFx.stopAmbientLounge();
+      setIsPlaying(false);
+    }
+    setIsExpanded(false);
+    setIsDismissed(true);
+  };
+
+  if (isDismissed) {
+    return null;
+  }
+
   return (
     <div className="fixed bottom-6 left-6 z-40 select-none">
       <audio
@@ -235,9 +256,10 @@ export const AudioPlayer = () => {
             </div>
             <button
               onClick={() => setIsExpanded(false)}
-              className="text-xs text-gray-400 hover:text-white px-2 py-0.5 rounded-lg hover:bg-white/10 transition-colors"
+              className="text-gray-400 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors"
+              title={cur.close}
             >
-              ✕
+              <X className="w-4 h-4" />
             </button>
           </div>
 
@@ -395,6 +417,16 @@ export const AudioPlayer = () => {
           <span className="block text-[11px] text-gray-300 font-light truncate max-w-[110px]">
             {isLoading ? cur.connecting : isPlaying ? currentTrack.title : cur.clickToPlay}
           </span>
+        </button>
+
+        {/* Tip Dismiss "X" Button */}
+        <button
+          onClick={handleDismiss}
+          className="w-7 h-7 rounded-full flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/15 active:scale-90 transition-all ml-0.5 mr-1"
+          title={cur.close}
+          aria-label={cur.close}
+        >
+          <X className="w-3.5 h-3.5" />
         </button>
       </div>
     </div>

@@ -332,6 +332,18 @@ export const translations = {
       exportData: "JSON Eksport Qilish",
       resetDefaultMenu: "Boshlang'ich Menyuni Qaytarish",
       resetConfirm: "Haqiqatan ham menyuni standart holatga qaytarmoqchimisiz?",
+    },
+
+    // Footer
+    footer: {
+      halal: "100% Halol Sertifikatlangan",
+      organic: "Yangi & Organik",
+      quickLinks: "Tezkor havolalar",
+      liveMusic: "Jonli musiqa:",
+      musicSchedule: "Har payshanba, juma va shanba 19:30 dan",
+      telegramIntegration: "Telegram Bot bilan to'liq integratsiya",
+      allRightsReserved: "Barcha huquqlar himoyalangan.",
+      craftedWith: "Gastronomiya ixlosmandlari uchun mehr bilan yaratilgan",
     }
   },
 
@@ -665,6 +677,18 @@ export const translations = {
       exportData: "Экспорт в JSON",
       resetDefaultMenu: "Сбросить Меню к Начальному",
       resetConfirm: "Вы уверены, что хотите вернуть стандартное меню?",
+    },
+
+    // Footer
+    footer: {
+      halal: "100% Халяль Сертификат",
+      organic: "Свежие & Эко-продукты",
+      quickLinks: "Быстрые ссылки",
+      liveMusic: "Живая музыка:",
+      musicSchedule: "Каждый четверг, пятницу и субботу с 19:30",
+      telegramIntegration: "Полная интеграция с Telegram-ботом",
+      allRightsReserved: "Все права защищены.",
+      craftedWith: "Создано с любовью для ценителей гастрономии",
     }
   },
 
@@ -998,6 +1022,18 @@ export const translations = {
       exportData: "Export JSON",
       resetDefaultMenu: "Reset to Default Menu",
       resetConfirm: "Are you sure you want to reset to the default menu?",
+    },
+
+    // Footer
+    footer: {
+      halal: "100% Halal Certified",
+      organic: "Fresh & Organic",
+      quickLinks: "Quick Links",
+      liveMusic: "Live Music:",
+      musicSchedule: "Every Thursday, Friday and Saturday from 19:30",
+      telegramIntegration: "Full Telegram Bot integration",
+      allRightsReserved: "All rights reserved.",
+      craftedWith: "Crafted with love for gastronomy lovers",
     }
   }
 };
