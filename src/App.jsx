@@ -89,6 +89,22 @@ function MainApp() {
     };
   }, [isAdmin, isLoadingAuth, openLoginModal]);
 
+  // Dynamic SEO page titles for Google and users
+  useEffect(() => {
+    const pageTitles = {
+      home: "ZAFARON Restaurant & Lounge | Toshkentdagi Premium Shohona Restoran",
+      menu: "Taomnoma va Menyu | ZAFARON Restaurant — Shohona Osh, Steyk va Kaboblar",
+      reservation: "Stol Band Qilish (Bron) | ZAFARON Restaurant & VIP Xonalar",
+      about: "Biz Haqimizda | ZAFARON Restaurant — Tarix va Oshpazlik San'ati",
+      contact: "Bog'lanish va Manzil | ZAFARON Restaurant Toshkent"
+    };
+    if (isAdminView) {
+      document.title = "Admin Boshqaruv Paneli | ZAFARON";
+    } else {
+      document.title = pageTitles[activePage] || pageTitles.home;
+    }
+  }, [activePage, isAdminView]);
+
   // Handle page change (Home, Menu, About, Reservation, Contact)
   const handlePageChange = (page) => {
     setActivePage(page);

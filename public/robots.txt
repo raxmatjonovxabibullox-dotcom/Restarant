@@ -1,0 +1,27 @@
+# Robots.txt for Zafaron Restaurant & Lounge
+# https://zafaron.uz
+
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /checkout
+Disallow: /track
+
+# Search Engine Crawlers
+User-agent: Googlebot
+Allow: /
+Allow: /*.js$
+Allow: /*.css$
+Allow: /*.png$
+Allow: /*.jpg$
+Allow: /*.webp$
+Allow: /*.svg$
+
+User-agent: Yandex
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# XML Sitemap
+Sitemap: https://zafaron.uz/sitemap.xml
