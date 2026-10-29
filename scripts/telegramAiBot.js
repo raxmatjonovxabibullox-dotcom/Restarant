@@ -270,7 +270,7 @@ function generateSmartRestaurantAnswer(userText, userLang = 'uz') {
     );
   }
 
-  // Greetings & casual chat (including typos like 'salo', 'salon', 'salomm', 'qalesan', 'qalay', etc.)
+  // Greetings & casual chat (Conversational AI response, NEVER static bullet templates!)
   if (
     q.includes('salom') ||
     q.includes('salon') ||
@@ -281,54 +281,58 @@ function generateSmartRestaurantAnswer(userText, userLang = 'uz') {
     q.includes('qale') ||
     q.includes('qalay') ||
     q.includes('yaxshimi') ||
+    q.includes('tuzukmi') ||
     q.includes('privet') ||
     q.includes('привет') ||
     q.includes('здравствуй') ||
     q.includes('как дела') ||
     q.includes('hello') ||
-    q.includes('hi') ||
+    q.includes('hi ') ||
+    q === 'hi' ||
     q.includes('hey') ||
-    q.includes('hayrli') ||
-    q === '/start'
+    q.includes('hayrli')
   ) {
     if (isRussian || q.includes('привет') || q.includes('здравствуй') || q.includes('как дела')) {
+      const isCasualRu = q.includes('как дела') || q.includes('как вы') || q.includes('что нового');
+      if (isCasualRu) {
+        return (
+          `😊 <b>Спасибо, замечательно! Ваше внимание и визит делают мой день ещё лучше!</b>\n\n` +
+          `Как ваши дела? Чем я могу помочь вам сегодня в Zafaron Restaurant & Lounge?\n\n` +
+          `Могу порекомендовать наши коронные блюда от шеф-повара, подсказать по свободным столикам или ответить на любой ваш вопрос! ✨`
+        );
+      }
       return (
         `👋 <b>Здравствуйте! Добро пожаловать в Zafaron Restaurant & Lounge!</b>\n\n` +
-        `Я ваш персональный AI-консьерж ресторана Zafaron. Выберите один из разделов ниже или задайте любой вопрос:\n\n` +
-        `📍 <b>Bizning manzilimiz</b> — Наш адрес и локация\n` +
-        `🍽 <b>Taomnoma</b> — Меню блюд и цены\n` +
-        `🥂 <b>Stol band qilish</b> — Бронирование столов и VIP залов\n` +
-        `🕒 <b>Ish vaqti</b> — Режим работы и живая музыка\n` +
-        `💬 <b>Muloqot</b> — Чат и связь с администратором\n\n` +
-        `<i>Нажмите на любую кнопку в меню внизу или напишите вопрос! 😊</i>`
+        `Я ваш персональный AI-консьерж. Очень рад общению с вами!\n\n` +
+        `Чем я могу помочь вам сегодня? Хотите забронировать столик на вечер, узнать подробнее о нашем шахском шафрановом плове и сочных стейках, или вам нужна индивидуальная рекомендация? Напишите, я с удовольствием отвечу! 😊✨`
       );
     }
     if (isEnglish) {
+      const isCasualEn = q.includes('how are') || q.includes('how do you') || q.includes('whats up');
+      if (isCasualEn) {
+        return (
+          `😊 <b>Thank you, doing wonderful! It is always a pleasure to hear from you!</b>\n\n` +
+          `How are you doing today? How can I assist you at Zafaron Restaurant & Lounge?\n\n` +
+          `I can recommend our chef's signature dishes, arrange table bookings, or answer any question! ✨`
+        );
+      }
       return (
-        `👋 <b>Hello! Welcome to Zafaron Restaurant & Lounge!</b>\n\n` +
-        `I am your personal smart culinary concierge. Please choose an option from the menu below or ask any question:\n\n` +
-        `📍 <b>Bizning manzilimiz</b> — Location & Maps\n` +
-        `🍽 <b>Taomnoma</b> — Dishes & prices\n` +
-        `🥂 <b>Stol band qilish</b> — Table reservation\n` +
-        `🕒 <b>Ish vaqti</b> — Opening hours & live music\n` +
-        `💬 <b>Muloqot</b> — Live chat & administration\n\n` +
-        `<i>Tap any menu button below or send a message! 😊</i>`
+        `👋 <b>Hello and a very warm welcome to Zafaron Restaurant & Lounge!</b>\n\n` +
+        `I am your personal AI culinary concierge. How may I assist you today?\n\n` +
+        `Would you like to reserve a table, explore our royal saffron plov and steaks, or receive a special recommendation? Feel free to ask anything! 😊✨`
       );
     }
-    const isFriendlyCasual = q.includes('qale') || q.includes('qalay') || q.includes('yaxshimi');
-    const greetingHeader = isFriendlyCasual
-      ? `😊 <b>Rahmat, juda yaxshi! O'zingiz qandaysiz?</b>\n\n<b>Zafaron Restaurant & Lounge'ga xush kelibsiz!</b>`
-      : `👋 <b>Assalomu alaykum! Zafaron Restaurant & Lounge'ga xush kelibsiz!</b>`;
-
+    const isFriendlyCasual = q.includes('qale') || q.includes('qalay') || q.includes('yaxshimi') || q.includes('tuzukmi');
+    if (isFriendlyCasual) {
+      return (
+        `😊 <b>Rahmat, ajoyib! Sizning e'tiboringiz va yozganingiz kayfiyatimni yanada ko'tardi!</b>\n\n` +
+        `O'zingiz yaxshimisiz, ishlaringiz tinchmi? Zafaron restoranida bugun sizga qanday shohona taom yoki qulay xizmat ulashishim mumkin? 😊🍽`
+      );
+    }
     return (
-      `${greetingHeader}\n\n` +
-      `Men sizning shaxsiy sun'iy intellekt konsyerjingizman. Quyidagi 5 ta bo'limdan birini tanlang yoki o'zingizni qiziqtirgan savolni yozing:\n\n` +
-      `📍 <b>Bizning manzilimiz</b> — Restoran joylashuvi va xarita\n` +
-      `🍽 <b>Taomnoma</b> — Shohona taomlar va narxlar\n` +
-      `🥂 <b>Stol band qilish</b> — Hashamatli zallarni bron qilish\n` +
-      `🕒 <b>Ish vaqti</b> — Ish tartibi va jonli musiqa oqshomlari\n` +
-      `💬 <b>Muloqot</b> — Jonli suhbat va administrator bilan aloqa\n\n` +
-      `<i>Quyidagi tugmalardan birini bosing yoki bemalol savolingizni yozing! 😊</i>`
+      `👋 <b>Va alaykum assalom!</b>\n\n` +
+      `<b>Zafaron Restaurant & Lounge'ga xush kelibsiz!</b> Siz bilan suhbatlashishdan juda mamnunman.\n\n` +
+      `Bugun sizga qanday yordam bera olaman? Shohona taomlarimiz, bugungi oqshom dasturi yoki stol band qilish bo'yicha savollaringiz bormi? Xohlagan savolingizni bemalol yozing, bajonidil yordam beraman! 😊✨`
     );
   }
 
@@ -509,10 +513,97 @@ function generateSmartRestaurantAnswer(userText, userLang = 'uz') {
     );
   }
 
-  // 5. Muloqot / Bog'lanish / Aloqa
+  // 5. Muloqot / Interactive AI Chat Mode Activation (Triggered by 💬 Muloqot button or command)
   if (
     q === '/muloqot' ||
+    q === '💬 muloqot' ||
+    q === 'muloqot' ||
+    q === 'chat' ||
+    q === '💬 chat' ||
+    q === 'общение' ||
+    q === '💬 общение' ||
     q.includes('muloqot') ||
+    q.includes('suhbat')
+  ) {
+    if (isRussian || q.includes('общение') || q.includes('чат')) {
+      return (
+        `💬 <b>Zafaron AI — Режим Живого Общения Активирован!</b> 🤖✨\n\n` +
+        `Здравствуйте! Я ваш персональный AI-консьерж ресторана <b>Zafaron Restaurant & Lounge</b>.\n\n` +
+        `Общайтесь со мной так же свободно, как с реальным консьержем или шеф-поваром! Вы можете задать любой вопрос:\n` +
+        `• <i>«Что порекомендуете на романтический ужин?»</i>\n` +
+        `• <i>«Сколько стоит ваш фирменный шахский плов?»</i>\n` +
+        `• <i>«Во сколько начинается живая музыка и в каком зале?»</i>\n` +
+        `• <i>«Как забронировать приватную VIP-комнату?»</i>\n\n` +
+        `<i>Я готов к диалогу — напишите ваш вопрос прямо сейчас! 😊👇</i>`
+      );
+    }
+    if (isEnglish) {
+      return (
+        `💬 <b>Zafaron AI — Live Interactive Chat Activated!</b> 🤖✨\n\n` +
+        `Hello! I am your personal AI concierge at <b>Zafaron Restaurant & Lounge</b>.\n\n` +
+        `Chat with me freely just like a real personal concierge or head chef! For instance:\n` +
+        `• <i>"What do you recommend for dinner tonight?"</i>\n` +
+        `• <i>"What are the ingredients in the royal saffron plov?"</i>\n` +
+        `• <i>"What time does live music start?"</i>\n` +
+        `• <i>"Can I reserve a romantic table for two?"</i>\n\n` +
+        `<i>I'm listening — please ask your question or share your request! 😊👇</i>`
+      );
+    }
+    return (
+      `💬 <b>Zafaron AI — Jonli Suhbat Rejimi Faollashdi!</b> 🤖✨\n\n` +
+      `Assalomu alaykum! Men Zafaron Restaurant & Lounge'ning shaxsiy sun'iy intellekt konsyerjiman.\n\n` +
+      `Menga xuddi restoranning bosh administratori yoki tajribali oshpazi bilan gaplashgandek bemalol yozing! Masalan:\n` +
+      `• <i>«Bugun kechki ovqat uchun qanday taom tavsiya qilasiz?»</i>\n` +
+      `• <i>«Shohona oshingiz narxi qancha va tarkibida nimalar bor?»</i>\n` +
+      `• <i>«Jonli musiqa soat nechida boshlanadi?»</i>\n` +
+      `• <i>«2 kishilik romantik stol qaysi zalda ma'qul?»</i>\n\n` +
+      `<i>Sizni diqqat bilan eshityapman, marhamat xohlagan savolingizni yoki fikringizni yozing! 😊👇</i>`
+    );
+  }
+
+  // 6. Food Recommendations & Chef's Advice (tavsiya, maslahat, nima yesam, eng mazali, etc.)
+  if (
+    q.includes('tavsiya') ||
+    q.includes('maslahat') ||
+    q.includes('nima yesam') ||
+    q.includes('nima buyurtma') ||
+    q.includes('eng zo\'r') ||
+    q.includes('eng zor') ||
+    q.includes('eng mazali') ||
+    q.includes('qaysi taom') ||
+    q.includes('qaysi biri') ||
+    q.includes('порекомендуй') ||
+    q.includes('что посоветуете') ||
+    q.includes('что заказать') ||
+    q.includes('что поесть') ||
+    q.includes('recommend') ||
+    q.includes('suggest') ||
+    q.includes('best dish')
+  ) {
+    if (isRussian) {
+      return (
+        `👑 <b>Рекомендация Главного Шеф-Повара Zafaron:</b>\n\n` +
+        `Для сегодняшнего ужина я настоятельно рекомендую:\n\n` +
+        `1. <b>Шахский Шафрановый Плов</b> (58,000 сум) — Отборная баранина, казы, рис лазер и горный шафран. Наш фирменный фаворит!\n` +
+        `2. <b>Стейк Рибай или Томагавк</b> — Сочнейшее мраморное мясо на живых углях.\n` +
+        `3. <b>Салат Буррата с заатаром</b> (65,000 сум) — Нежнейший сливочный сыр со свежими томатами.\n` +
+        `4. <b>Турецкая Пахлава</b> (45,000 сум) с ароматным шафрановым чаем.\n\n` +
+        `<i>Для какого повода выбираете блюдо — романтический вечер, встреча с друзьями или семейный обед? Подскажу точнее! 😊</i>`
+      );
+    }
+    return (
+      `👑 <b>Zafaron Bosh Oshpazining Maxsus Tavsiyasi:</b>\n\n` +
+      `Bugungi tashrifingiz uchun eng sara durdonalarimizni tavsiya qilaman:\n\n` +
+      `1. <b>Shohona Za'faron Oshi</b> (58,000 so'm) — Mayin lahm go'sht, qazi, bedana tuxumlari va tabiiy Eron za'faroni bilan damlangan afsonaviy taomimiz!\n` +
+      `2. <b>Ribeye yoki Tomahawk Steyki</b> — Qaynoq cho'g'da maxsus marinad bilan pishirilgan shirador go'sht.\n` +
+      `3. <b>Zafaron Burrata Salati</b> (65,000 so'm) — Qaymoqli nozik pishloq va pomidorlar uyg'unligi.\n` +
+      `4. <b>Turkcha Paxlava</b> (45,000 so'm) — Qatlama xamir va tog' yong'og'i, xushbo'y za'faron choyi bilan.\n\n` +
+      `<i>Sizga go'shtli, nozikroq yoki parhezbop taomlar ko'proq yoqadimi? Bemalol ayting, didingizga mosini tanlab beraman! 😊✨</i>`
+    );
+  }
+
+  // 7. Aloqa / Bog'lanish / Telefon
+  if (
     q === '/aloqa' ||
     q.includes("bog'lanish") ||
     q.includes('boglanish') ||
@@ -523,35 +614,173 @@ function generateSmartRestaurantAnswer(userText, userLang = 'uz') {
     q.includes('phone') ||
     q.includes('телефон') ||
     q.includes('номер') ||
-    q.includes('связь') ||
-    q.includes('чат') ||
-    q.includes('общен')
+    q.includes('связь')
   ) {
-    if (isRussian || q.includes('телефон') || q.includes('связь') || q.includes('чат') || q.includes('общен')) {
+    if (isRussian || q.includes('телефон') || q.includes('связь')) {
       return (
-        `💬 <b>Общение и Контакты Zafaron Restaurant & Lounge:</b>\n\n` +
-        `Я ваш персональный AI-консьерж и готов ответить на любые вопросы о меню, ингредиентах и столиках прямо в этом чате!\n\n` +
-        `👤 <b>Связь с администратором:</b>\n` +
+        `📞 <b>Контакты Zafaron Restaurant & Lounge:</b>\n\n` +
+        `👤 <b>Связь с администрацией:</b>\n` +
         `• Главный администратор: <b>+998 (71) 200-88-99</b>\n` +
         `• Дополнительный / Бронь: <b>+998 (90) 123-45-67</b>\n` +
         `• Telegram: @zafaron_admin\n` +
         `• Адрес: г. Ташкент, проспект Амира Темура, 45\n\n` +
-        `<i>Напишите свой вопрос или позвоните нам, мы всегда рады! 😊</i>`
+        `<i>Мы всегда рады вашему визиту! 😊</i>`
       );
     }
     return (
-      `💬 <b>Zafaron Restaurant & Lounge bilan Muloqot:</b>\n\n` +
-      `Men sizning shaxsiy aqlli konsyerjingizman! Restoran, sara taomlar, narxlar va tadbirlar bo'yicha har qanday savolingizni shu yerda erkin yozishingiz mumkin.\n\n` +
-      `👤 <b>Administrator bilan jonli muloqot:</b>\n` +
+      `📞 <b>Zafaron Restaurant Aloqa Ma'lumotlari:</b>\n\n` +
+      `👤 <b>Administrator bilan aloqa:</b>\n` +
       `• Bosh administrator: <b>+998 (71) 200-88-99</b>\n` +
       `• Qo'shimcha aloqa / Bron: <b>+998 (90) 123-45-67</b>\n` +
       `• Telegram administrator: @zafaron_admin\n` +
       `• Manzil: Toshkent sh., Amir Temur shoh ko'chasi, 45-uy\n\n` +
-      `<i>Xohlagan savolingiz yoki fikringizni yozing, bajonidil javob beraman! 😊</i>`
+      `<i>Har qanday savolingiz bo'lsa, xursandchilik bilan javob beramiz! 😊</i>`
     );
   }
 
-  // Halol / Go'sht sifati
+  // 8. Romantika / Sevishganlar / Uchrashuv
+  if (
+    q.includes('romantik') ||
+    q.includes('uchrashuv') ||
+    q.includes('qiz bilan') ||
+    q.includes('ayolim bilan') ||
+    q.includes('svidanie') ||
+    q.includes('свидание') ||
+    q.includes('романти') ||
+    q.includes('date') ||
+    q.includes('couple')
+  ) {
+    if (isRussian) {
+      return (
+        `🌹 <b>Идеальный Романтический Вечер в Zafaron:</b>\n\n` +
+        `Для романтического свидания рекомендуем:\n` +
+        `• <b>Панорамная Терраса</b> или уютный столик возле фонтана в Главном зале\n` +
+        `• Легкая живая музыка, свечи и утонченная атмосфера\n` +
+        `• Идеальное меню: Филе Миньон, Салат Буррата и фирменный десерт Fondant\n\n` +
+        `Забронировать романтический столик: <b>+998 (71) 200-88-99</b> ✨`
+      );
+    }
+    return (
+      `🌹 <b>Zafaron'da Unutilmas Romantik Oqshom:</b>\n\n` +
+      `Sevimli insoningiz bilan ajoyib uchrashuv uchun eng yaxshi tanlov:\n` +
+      `• <b>Ochiq Havo Terrasasi</b> yoki Asosiy zalimizdagi favvora yonidagi sokin stol\n` +
+      `• Shamlar yog'dusi, jonli skripka musiqasi va sokin hashamatli muhit\n` +
+      `• Tavsiya taomlar: Filet Mignon, Zafaron Burrata salati va shokoladli Fondan\n\n` +
+      `Maxsus bezatilgan stolni oldindan band qilish uchun telefon:\n` +
+      `📞 <b>+998 (71) 200-88-99</b> ✨`
+    );
+  }
+
+  // 9. Oila va bolalar / Family & Kids
+  if (
+    q.includes('oila') ||
+    q.includes('bolalar') ||
+    q.includes('farzand') ||
+    q.includes('deti') ||
+    q.includes('семь') ||
+    q.includes('family') ||
+    q.includes('kids')
+  ) {
+    return (
+      `👨‍👩‍👧‍👦 <b>Zafaron — Oilaviy Tantanalar va Qulaylik Maskani:</b>\n\n` +
+      `• Katta oilaviy davralar uchun qulay yumshoq divanli keng stollar va VIP xonalar\n` +
+      `• Bolalar uchun shirin va foydali taomlar, shirinliklar va tabiiy sharbatlar\n` +
+      `• Tinch, madaniyatli va xavfsiz muhit\n\n` +
+      `Oilaviy tashrif uchun stol band qilish: <b>+998 (71) 200-88-99</b> 😊`
+    );
+  }
+
+  // 10. Shirinliklar, Choy va Ichimliklar
+  if (
+    q.includes('shirinlik') ||
+    q.includes('desert') ||
+    q.includes('choy') ||
+    q.includes('kofe') ||
+    q.includes('sharbat') ||
+    q.includes('paxlava') ||
+    q.includes('baklava') ||
+    q.includes('десерт') ||
+    q.includes('чай') ||
+    q.includes('кофе') ||
+    q.includes('пахлава')
+  ) {
+    return (
+      `🍯 <b>Zafaron Shirinliklar va Choy Saroyi:</b>\n\n` +
+      `• <b>Za'faronli Shohona Choy:</b> <code>28,000 so'm</code> — Eron za'faroni, tog' giyohlari va asal bilan\n` +
+      `• <b>Turkcha Paxlava:</b> <code>45,000 so'm</code> — Qatlama xamir, mayin pista va yong'oqli\n` +
+      `• <b>Shokoladli Fondan:</b> <code>40,000 so'm</code> — Qaynoq oqib chiquvchi Belgiya shokoladi\n` +
+      `• <b>Yangi siqilgan sharbatlar:</b> <code>32,000 so'm</code>\n\n` +
+      `Kechki taomdan keyin xushbo'y choy ustida suhbatlashish uchun ayni muddao! ✨`
+    );
+  }
+
+  // 11. Compliments & Gratitude (rahmat, zo'r, malades, gap yo'q, etc.)
+  if (
+    q.includes('rahmat') ||
+    q.includes('raxmat') ||
+    q.includes('tashakkur') ||
+    q.includes('zo\'r') ||
+    q.includes('zor') ||
+    q.includes('gap yo\'q') ||
+    q.includes('gap yoq') ||
+    q.includes('malades') ||
+    q.includes('molodes') ||
+    q.includes('molodets') ||
+    q.includes('tasanno') ||
+    q.includes('krasava') ||
+    q.includes('спасибо') ||
+    q.includes('благодар') ||
+    q.includes('отлично') ||
+    q.includes('супер') ||
+    q.includes('круто') ||
+    q.includes('thank') ||
+    q.includes('great') ||
+    q.includes('awesome')
+  ) {
+    if (isRussian) {
+      return (
+        `✨ <b>Всегда к вашим услугам!</b>\n\n` +
+        `Для нас большая честь и радость заботиться о вашем комфорте. Двери Zafaron Restaurant & Lounge всегда открыты для вас!\n\n` +
+        `Если понадобятся столики, меню или доставка — просто напишите мне! 😊🥂`
+      );
+    }
+    return (
+      `✨ <b>Arzimaydi! Sizdek aziz mehmonimizga xizmat qilish biz uchun katta sharaf va quvonch!</b>\n\n` +
+      `Zafaron Restaurant & Lounge eshiklari siz uchun har doim ochiq. Yana biror savolingiz, buyurtmangiz yoki taklifingiz bo'lsa, bemalol yozing! 😊🥂`
+    );
+  }
+
+  // 12. AI Identity questions (kim san, sun'iy intellektmisan, etc.)
+  if (
+    q.includes('kim san') ||
+    q.includes('kimsan') ||
+    q.includes('isming') ||
+    q.includes('sun\'iy') ||
+    q.includes('intellekt') ||
+    q.includes('odammisan') ||
+    q.includes('botmisan') ||
+    q.includes('robot') ||
+    q.includes('кто ты') ||
+    q.includes('ты бот') ||
+    q.includes('ты ии') ||
+    q.includes('who are you') ||
+    q.includes('are you ai')
+  ) {
+    if (isRussian) {
+      return (
+        `🤖 <b>Я официальный AI-консьерж Zafaron Restaurant & Lounge!</b>\n\n` +
+        `Я работаю 24/7 на базе передового искусственного интеллекта и знаю всё о нашем меню, ингредиентах, свободных столиках и мероприятиях.\n\n` +
+        `Вы можете общаться со мной на любые темы о ресторане — задавайте вопросы! 😊✨`
+      );
+    }
+    return (
+      `🤖 <b>Men Zafaron Restaurant & Lounge'ning rasmiy sun'iy intellekt konsyerjiman!</b>\n\n` +
+      `Men 24/7 rejimida ishlayman va restoranimizning shohona taomlari, narxlari, VIP zallari, ish vaqti va buyurtmalar bo'yicha sizga yordam berish uchun yaratilganman.\n\n` +
+      `Menga xuddi do'stingizdek yoki restoranning bosh administratori kabi har qanday savolni berishingiz mumkin! Marhamat, sizni eshitaman 😊✨`
+    );
+  }
+
+  // 13. Halol / Go'sht sifati
   if (q.includes('halol') || q.includes('halal') || q.includes('халяль')) {
     return (
       `✨ <b>100% Halol Kafolati:</b>\n\n` +
@@ -559,26 +788,32 @@ function generateSmartRestaurantAnswer(userText, userLang = 'uz') {
     );
   }
 
-  // Default polite restaurant response
+  // 14. Conversational AI Fallback (Natural, warm and attentive dialogue — NEVER static bullet lists!)
   if (isRussian) {
     return (
-      `👑 <b>AI-Консьерж Zafaron Restaurant & Lounge:</b>\n\n` +
-      `Я готов ответить на любые вопросы о нашем ресторане:\n\n` +
-      `• <b>Меню и цены:</b> "Плов", "Стейки", "Шашлык"\n` +
-      `• <b>Бронирование:</b> "Забронировать стол", "VIP зал"\n` +
-      `• <b>Адрес и время:</b> "Где вы находитесь?", "Режим работы"\n` +
-      `• <b>Доставка:</b> "Доставка еды"\n\n` +
-      `Или свяжитесь с нашим администратором: <b>+998 (71) 200-88-99</b>`
+      `✨ <b>Я внимательно прочитал ваше сообщение!</b>\n\n` +
+      `Как AI-консьерж Zafaron Restaurant & Lounge, я с радостью отвечу на любой вопрос о нашем меню, шахском плове, сочных стейках, бронировании VIP-залов или доставке.\n\n` +
+      `Уточните, пожалуйста, что именно вас интересует, или позвоните нашему администратору:\n` +
+      `📞 <b>+998 (71) 200-88-99</b>\n\n` +
+      `<i>Я готов продолжить общение — напишите мне! 😊</i>`
+    );
+  }
+  if (isEnglish) {
+    return (
+      `✨ <b>Thank you for your message!</b>\n\n` +
+      `As the AI concierge of Zafaron Restaurant & Lounge, I am delighted to assist you with our chef's specialties, table reservations, VIP halls, or fast delivery.\n\n` +
+      `Please let me know how I can help you today, or speak directly to our manager:\n` +
+      `📞 <b>+998 (71) 200-88-99</b>\n\n` +
+      `<i>I'm right here listening — feel free to ask! 😊</i>`
     );
   }
   return (
-    `👑 <b>Zafaron Restaurant & Lounge AI Konsyerji:</b>\n\n` +
-    `Savolingizni qabul qildim! Zafaron restorani bo'yicha quyidagilarni bilishni istaysizmi?\n\n` +
-    `• <b>Taomnoma & Narxlar:</b> "Osh narxi", "Steyklar", "Menyu"\n` +
-    `• <b>Stol band qilish:</b> "Stol bron qilish", "VIP xona"\n` +
-    `• <b>Manzil va vaqt:</b> "Manzilingiz qayerda?", "Ish vaqti"\n` +
-    `• <b>Yetkazib berish:</b> "Dostavka bormi?"\n\n` +
-    `Yoki qo'shimcha ma'lumot uchun bosh administratorimizga qo'ng'iroq qiling: <b>+998 (71) 200-88-99</b>`
+    `✨ <b>Siz bilan suhbatlashayotganimdan mamnunman!</b>\n\n` +
+    `Zafaron Restaurant & Lounge sun'iy intellekt konsyerji sifatida barcha savollaringizga javob berishga tayyorman.\n\n` +
+    `Shohona za'faronli oshimiz, shirador steyklarimiz, VIP xonalarni bron qilish yoki yetkazib berish bo'yicha qanday tafsilot kerak bo'lsa, bemalol yozing!\n\n` +
+    `Shuningdek, bosh administratorimiz bilan ham bevosita bog'lanishingiz mumkin:\n` +
+    `📞 <b>+998 (71) 200-88-99</b> yoki Telegram: <b>@zafaron_admin</b>\n\n` +
+    `<i>Sizni eshityapman, marhamat savolingizni yozing! 😊</i>`
   );
 }
 
@@ -626,6 +861,66 @@ async function callGeminiAi(userPrompt) {
     console.warn('Gemini API call failed, falling back to Smart Engine:', err.message);
   }
   return null;
+}
+
+// 4.1 Fast Cloud Neural AI (Free fallback with 3.5s timeout)
+async function callCloudAi(userPrompt, userLang = 'uz') {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 3500);
+
+  try {
+    const langInstructions = {
+      uz: "O'zbek tilida juda iliq, shohona va xushmuomala javob bering. Zafaron Restaurant & Lounge restorani AI konsyerjisiz.",
+      ru: "Отвечайте на русском языке очень вежливо и гостеприимно. Вы AI-консьерж ресторана Zafaron Restaurant & Lounge.",
+      en: "Respond in English warmly and elegantly. You are the AI concierge of Zafaron Restaurant & Lounge."
+    };
+    const instr = langInstructions[userLang] || langInstructions.uz;
+    const prompt = `System: ${instr} Restoran: Toshkent Amir Temur 45. Shohona Osh 58000 som, Tomahawk steyk, 4 ta zal, 100% Halol. User: ${userPrompt}`;
+
+    const res = await fetch(`https://text.pollinations.ai/${encodeURIComponent(prompt)}?model=openai`, {
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
+    if (!res.ok) return null;
+    const text = await res.text();
+    if (
+      text &&
+      text.length > 5 &&
+      !text.includes('Free limit') &&
+      !text.includes('rate limit') &&
+      !text.includes('limit reached') &&
+      !text.includes('pollen key')
+    ) {
+      return text.trim();
+    }
+  } catch {
+    clearTimeout(timeoutId);
+  }
+  return null;
+}
+
+// 4.2 Multi-Tier AI Response Dispatcher
+async function getAiResponse(userText, userLang = 'uz') {
+  // 1. Google Gemini AI (if key is set)
+  if (GEMINI_API_KEY) {
+    try {
+      const geminiRes = await callGeminiAi(userText);
+      if (geminiRes && geminiRes.length > 5) {
+        return geminiRes;
+      }
+    } catch { }
+  }
+
+  // 2. Fast Cloud Neural AI
+  try {
+    const cloudRes = await callCloudAi(userText, userLang);
+    if (cloudRes && cloudRes.length > 5) {
+      return cloudRes;
+    }
+  } catch { }
+
+  // 3. Ultra-Smart Local Conversational AI Engine
+  return generateSmartRestaurantAnswer(userText, userLang);
 }
 
 // 5. Language selector & Interactive Keyboards (Til tanlash + flaglari bilan)
@@ -967,28 +1262,25 @@ async function pollUpdates() {
             continue;
           }
 
-          // Fast direct handling for 5 menu buttons, numbers & commands
-          const isDirectMenuItem = [
+          // Fast direct handling for exact menu buttons, numbers & commands
+          const directButtons = [
             '/menu', '/menyu', '/manzil', '/bron', '/vaqt', '/aloqa', '/muloqot',
-            '📍 bizning manzilimiz', 'bizning manzilimiz', 'наш адрес', 'our location',
-            '🍽 taomnoma', 'taomnoma', 'меню', 'menu',
-            '🥂 stol band qilish', 'stol band qilish', 'бронь стола', 'book a table',
-            '🕒 ish vaqti', 'ish vaqti', 'режим работы', 'opening hours',
-            '💬 muloqot', 'muloqot', 'общение', 'chat',
-            '📞 bog\'lanish', "bog'lanish", 'boglanish',
+            '📍 bizning manzilimiz', 'наш адрес', 'our location',
+            '🍽 taomnoma', 'меню', 'menu',
+            '🥂 stol band qilish', 'бронь стола', 'book a table',
+            '🕒 ish vaqti', 'режим работы', 'opening hours',
+            '💬 muloqot', '💬 общение', '💬 chat', 'muloqot',
             '1', '2', '3', '4', '1.', '2.', '3.', '4.', '1-zal', '2-zal', '3-zal', '4-zal',
             'bir', 'ikki', 'uch', 'to\'rt', 'tort', 'zal 1', 'zal 2', 'zal 3', 'zal 4',
             'asosiy zal', 'terrasa', 'vip xona', 'banket zali'
-          ].some(item => qLower === item || qLower.startsWith(item + ' ') || qLower.endsWith(' ' + item) || qLower.includes(item));
+          ];
+          const isDirectMenuItem = directButtons.includes(qLower);
 
           let aiResponse = null;
           if (isDirectMenuItem) {
             aiResponse = generateSmartRestaurantAnswer(userText, userLang);
           } else {
-            aiResponse = await callGeminiAi(userText);
-            if (!aiResponse) {
-              aiResponse = generateSmartRestaurantAnswer(userText, userLang);
-            }
+            aiResponse = await getAiResponse(userText, userLang);
           }
 
           if (aiResponse === '__LANGUAGE_PROMPT__') {
