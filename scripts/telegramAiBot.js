@@ -79,7 +79,7 @@ Sayt / Havola: https://zafaron.uz
 Zallar va muhit:
 - Asosiy Hashamatli Zal: Jonli musiqa (Juma va Shanba 19:30 dan boshlab), romantik favvora.
 - Ochiq Havo Terrasasi: Panoramali shahar manzarasi, yozgi salqin havo.
-- VIP Oltin Xona: 10-14 kishilik alohida xonalar, shaxsiy ofitsiant, to'liq shaxsiy muhit.
+- VIP Oltin Xona: 10-14 kishilik alohida xonalar, shaxsiy ofitsiant, to'liq shaxsiy muhit. Depozit / Bron puli: 200,000 - 300,000 so'm (Umumiy hisobdan to'liq chegiriladi).
 - Banket zali: 150 kishigacha bo'lgan to'y, yubiley va korporativ tadbirlar uchun.
 
 Menyu va mashhur taomlar:
@@ -216,8 +216,8 @@ function generateSmartRestaurantAnswer(userText, userLang = 'uz') {
       return (
         `👑 <b>3. Выбран VIP Золотой Зал!</b>\n\n` +
         `• Отдельный роскошный зал на 10-14 персон\n` +
-        `• Персональный официант\n` +
-        `• Для переговоров и семейных торжеств\n\n` +
+        `• Персональный официант и премиум сервис\n` +
+        `• 💰 <b>VIP Депозит / Бронь: 200,000 сум</b> (VIP-2 Президент: 300,000 сум) — сумма полностью списывается в счет заказа\n\n` +
         `Для бронирования VIP зала:\n` +
         `📞 <b>+998 (71) 200-88-99</b> или <b>+998 (90) 123-45-67</b>`
       );
@@ -226,7 +226,8 @@ function generateSmartRestaurantAnswer(userText, userLang = 'uz') {
       return (
         `👑 <b>3. VIP Gold Room selected!</b>\n\n` +
         `• Private luxury room for 10-14 guests\n` +
-        `• Personal waiter service\n\n` +
+        `• Personal waiter service & exclusive ambience\n` +
+        `• 💰 <b>VIP Room Deposit: 200,000 UZS</b> (VIP-2 Presidential: 300,000 UZS) — credited toward dining bill\n\n` +
         `To reserve VIP room:\n` +
         `📞 <b>+998 (71) 200-88-99</b> or <b>+998 (90) 123-45-67</b>`
       );
@@ -234,7 +235,8 @@ function generateSmartRestaurantAnswer(userText, userLang = 'uz') {
     return (
       `👑 <b>3. VIP Oltin Xona tanlandi!</b>\n\n` +
       `• 10-14 kishilik to'liq alohida qulay xona\n` +
-      `• Shaxsiy ofitsiant xizmati\n` +
+      `• Shaxsiy ofitsiant xizmati va maxsus servis\n` +
+      `• 💰 <b>VIP Bron Depoziti: 200,000 so'm</b> (VIP-2 Prezident: 300,000 so'm) — bu to'lov kechki ovqat hisobidan to'liq chegiriladi\n` +
       `• Muzokaralar, oilaviy tadbirlar va maxfiy uchrashuvlar uchun\n\n` +
       `VIP xonani band qilish uchun:\n` +
       `📞 <b>+998 (71) 200-88-99</b> yoki <b>+998 (90) 123-45-67</b>`
@@ -474,7 +476,7 @@ function generateSmartRestaurantAnswer(userText, userLang = 'uz') {
         `В ресторане доступны залы:\n` +
         `1. <b>Главный Роскошный Зал</b> — Живая музыка, фонтан и праздничная атмосфера\n` +
         `2. <b>Панорамная Терраса</b> — Вечерний вид на Ташкент и свежий воздух\n` +
-        `3. <b>VIP Золотые Залы</b> — Приватные залы на 6-14 гостей со своим официантом\n` +
+        `3. <b>VIP Золотые Залы</b> — Приватные залы на 6-14 гостей (Депозит: 200,000 сум, списывается в счет)\n` +
         `4. <b>Банкетный Зал</b> — До 150 персон для торжеств\n\n` +
         `Для бронирования позвоните нашему администратору:\n` +
         `📞 <b>+998 (71) 200-88-99</b> или <b>+998 (90) 123-45-67</b>`
@@ -486,7 +488,7 @@ function generateSmartRestaurantAnswer(userText, userLang = 'uz') {
       `🏛 <b>Mavjud Zallarimiz:</b>\n` +
       `1. <b>Asosiy Hashamatli Zal</b> — Jonli musiqa, shohona favvora va bayramona muhit\n` +
       `2. <b>Ochiq Havo Terrasasi</b> — Shahar panoramasi va salqin shabboda\n` +
-      `3. <b>VIP Oltin Xona</b> — 10-14 kishilik shaxsiy xona va alohida ofitsiant\n` +
+      `3. <b>VIP Oltin Xona</b> — 10-14 kishilik shaxsiy xona (Depozit: 200,000 so'm, hisobdan to'liq chegiriladi)\n` +
       `4. <b>Banket Zali</b> — 150 kishigacha bo'lgan to'y va tantanalar uchun\n\n` +
       `<i>Zal raqamini (1, 2, 3 yoki 4) yuboring yoki to'g'ridan-to'g'ri administrator bilan bog'laning:</i>\n` +
       `📞 <b>+998 (71) 200-88-99</b>`

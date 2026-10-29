@@ -241,6 +241,7 @@ export const sendTelegramReservation = async (reservation) => {
     `📅 <b>Sana va Vaqt:</b> <code>${reservation.date} • ${reservation.time}</code>\n` +
     `👥 <b>Mehmonlar soni:</b> <b>${reservation.guests} kishi</b>\n` +
     `🏛 <b>Tanlangan hudud:</b> <b>${reservation.zone}</b>${reservation.tableNumber ? ` (Stol #${reservation.tableNumber})` : ''}\n` +
+    (reservation.vipFee ? `💰 <b>VIP Xona Depoziti / To'lovi:</b> <code>${Number(reservation.vipFee).toLocaleString()} UZS</code>\n` : '') +
     `━━━━━━━━━━━━━━━━━━━━━━\n` +
     `<blockquote>` +
     (reservation.specialRequests ? `📝 <b>Maxsus istak:</b> <i>${reservation.specialRequests}</i>\n` : '') +

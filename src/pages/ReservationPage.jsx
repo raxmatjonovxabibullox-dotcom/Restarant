@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { useRestaurant } from '../context/RestaurantContext';
+import { useCurrency } from '../context/CurrencyContext';
 import { soundFx } from '../hooks/useSoundEffects';
 import { luxuryConfetti } from '../utils/confetti';
 import { TableFloorPlan } from '../components/TableFloorPlan';
@@ -21,6 +22,7 @@ const getTomorrowDate = () => new Date(Date.now() + 86400000).toISOString().spli
 export const ReservationPage = ({ setActivePage }) => {
   const { t, lang } = useLanguage();
   const { makeReservation } = useRestaurant();
+  const { formatPrice } = useCurrency();
 
   const [viewMode, setViewMode] = useState('floorplan'); // 'floorplan' or 'form'
   const [selectedTable, setSelectedTable] = useState(null);
@@ -36,6 +38,12 @@ export const ReservationPage = ({ setActivePage }) => {
     specialRequests: ''
   }));
 
+  const isVipSelected =
+    Boolean(formData.zone && formData.zone.toLowerCase().includes('vip')) ||
+    Boolean(formData.tableNumber && formData.tableNumber.toLowerCase().includes('vip'));
+
+  const vipFee = formData.tableNumber === 'VIP 2' ? 300000 : 200000;
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submittedReservation, setSubmittedReservation] = useState(null);
 
@@ -44,25 +52,33 @@ export const ReservationPage = ({ setActivePage }) => {
       id: 'main',
       name: lang === 'ru' ? 'Главный Роскошный Зал' : lang === 'en' ? 'Main Luxury Hall' : 'Asosiy Hashamatli Zal',
       desc: lang === 'ru' ? 'Роскошный восточный декор, живая музыка и удобные диваны' : lang === 'en' ? 'Royal oriental decor, live musical performance and comfortable lounges' : 'Shohona sharqona bezaklar, jonli musiqiy dastur va qulay divanlar',
-      capacity: lang === 'ru' ? '1 - 8 гостей' : lang === 'en' ? '1 - 8 guests' : '1 - 8 kishi'
+      capacity: lang === 'ru' ? '1 - 8 гостей' : lang === 'en' ? '1 - 8 guests' : '1 - 8 kishi',
+      depositText: lang === 'ru' ? 'Бесплатная бронь' : lang === 'en' ? 'Free booking' : 'Bepul bron',
+      isVip: false
     },
     {
       id: 'vip',
-      name: lang === 'ru' ? 'VIP Кабинет (6-12 гостей)' : lang === 'en' ? 'VIP Private Room (6-12 guests)' : 'VIP Alohida Xona (6-12 kishi)',
-      desc: lang === 'ru' ? 'Полное уединение, отдельный официант и премиальный камин' : lang === 'en' ? 'Complete private ambiance, dedicated waiter and premium fireplace' : "To'liq shaxsiy muhit, alohida ofitsiant va premium kamin",
-      capacity: lang === 'ru' ? '6 - 14 гостей' : lang === 'en' ? '6 - 14 guests' : '6 - 14 kishi'
+      name: lang === 'ru' ? 'VIP Кабинет (6-14 гостей)' : lang === 'en' ? 'VIP Private Room (6-14 guests)' : 'VIP Alohida Xona (6-14 kishi)',
+      desc: lang === 'ru' ? 'Полное уединение, отдельный официант и премиальный камин. Депозит за бронирование.' : lang === 'en' ? 'Complete private ambiance, dedicated waiter and premium fireplace. Chamber deposit.' : "To'liq shaxsiy muhit, alohida ofitsiant va premium kamin. Xona depoziti.",
+      capacity: lang === 'ru' ? '6 - 14 гостей' : lang === 'en' ? '6 - 14 guests' : '6 - 14 kishi',
+      depositText: '200,000 UZS Depozit',
+      isVip: true
     },
     {
       id: 'terrace',
       name: lang === 'ru' ? 'Летняя Терраса (Панорамная)' : lang === 'en' ? 'Open-Air Terrace (Scenic)' : 'Ochiq Havo Terrasasi (Manzarali)',
       desc: lang === 'ru' ? 'Вечерняя панорама Ташкента, свежий воздух и мерцание свечей' : lang === 'en' ? 'Evening panorama of Tashkent, fresh breeze and candlelight' : "Toshkent kechki panoramasi, toza havo va shamlar yog'dusi",
-      capacity: lang === 'ru' ? '2 - 8 гостей' : lang === 'en' ? '2 - 8 guests' : '2 - 8 kishi'
+      capacity: lang === 'ru' ? '2 - 8 гостей' : lang === 'en' ? '2 - 8 guests' : '2 - 8 kishi',
+      depositText: lang === 'ru' ? 'Бесплатная бронь' : lang === 'en' ? 'Free booking' : 'Bepul bron',
+      isVip: false
     },
     {
       id: 'family',
       name: lang === 'ru' ? 'Уютная Семейная Зона' : lang === 'en' ? 'Cozy Family Area' : 'Shinam Oila Hududi',
       desc: lang === 'ru' ? 'Рядом с детской игровой площадкой, просторные спокойные столы' : lang === 'en' ? 'Near kids play area, spacious calm tables' : "Bolalar o'yin maydonchasi yaqinida, keng va xotirjam stollar",
-      capacity: lang === 'ru' ? '3 - 8 гостей' : lang === 'en' ? '3 - 8 guests' : '3 - 8 kishi'
+      capacity: lang === 'ru' ? '3 - 8 гостей' : lang === 'en' ? '3 - 8 guests' : '3 - 8 kishi',
+      depositText: lang === 'ru' ? 'Бесплатная бронь' : lang === 'en' ? 'Free booking' : 'Bepul bron',
+      isVip: false
     }
   ];
 
@@ -100,8 +116,17 @@ export const ReservationPage = ({ setActivePage }) => {
     try {
       soundFx.playSuccess();
       luxuryConfetti.burst({ x: 0.5, y: 0.35, count: 120 });
-      const res = await makeReservation(formData);
-      setSubmittedReservation(res);
+      const payload = {
+        ...formData,
+        vipFee: isVipSelected ? vipFee : 0,
+        isVip: isVipSelected
+      };
+      const res = await makeReservation(payload);
+      setSubmittedReservation({
+        ...res,
+        vipFee: isVipSelected ? vipFee : 0,
+        isVip: isVipSelected
+      });
       // Reset form
       setFormData({
         fullName: '',
@@ -182,6 +207,18 @@ export const ReservationPage = ({ setActivePage }) => {
               <span className="text-gray-500">{lang === 'ru' ? 'Количество гостей:' : lang === 'en' ? 'Guests count:' : 'Mehmonlar soni:'}</span>
               <span className="font-bold text-gray-900 dark:text-white">{submittedReservation.guests} {lang === 'ru' ? 'чел.' : lang === 'en' ? 'guests' : 'kishi'}</span>
             </div>
+
+            {submittedReservation.vipFee > 0 && (
+              <div className="flex items-center justify-between p-3 rounded-xl bg-gradient-to-r from-amber-500/20 to-yellow-500/10 border border-gold-500/40 mt-2">
+                <span className="text-gold-400 font-bold flex items-center gap-1.5 text-xs">
+                  <Crown className="w-4 h-4 text-amber-400" />
+                  <span>{lang === 'ru' ? 'VIP Депозит / Оплата:' : lang === 'en' ? 'VIP Chamber Deposit:' : 'VIP Xona Depoziti:'}</span>
+                </span>
+                <span className="font-mono font-black text-sm text-gold-300">
+                  {formatPrice(submittedReservation.vipFee)}
+                </span>
+              </div>
+            )}
           </div>
 
           <div className="pt-2 flex flex-col sm:flex-row gap-3">
@@ -289,9 +326,18 @@ export const ReservationPage = ({ setActivePage }) => {
                       >
                         <div className="flex items-center justify-between">
                           <span className="font-bold text-sm">{zone.name}</span>
-                          <span className="text-[10px] text-gold-500 font-bold px-2 py-0.5 rounded-full bg-gold-500/10">
-                            {zone.capacity}
-                          </span>
+                          <div className="flex items-center gap-1.5">
+                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                              zone.isVip
+                                ? 'bg-amber-500/20 text-amber-400 border border-amber-500/40 shadow-sm'
+                                : 'bg-gold-500/10 text-gold-500'
+                            }`}>
+                              {zone.depositText}
+                            </span>
+                            <span className="text-[10px] text-gray-500 dark:text-gray-400 font-bold px-2 py-0.5 rounded-full bg-gray-100 dark:bg-white/5">
+                              {zone.capacity}
+                            </span>
+                          </div>
                         </div>
                         <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                           {zone.desc}
@@ -436,16 +482,45 @@ export const ReservationPage = ({ setActivePage }) => {
                       className="w-full glass-input resize-none text-xs"
                     />
                   </div>
+                  {/* VIP Deposit Box */}
+                  {isVipSelected && (
+                    <div className="p-4 rounded-2xl bg-gradient-to-r from-amber-500/20 via-yellow-500/15 to-amber-600/10 border-2 border-gold-500/60 shadow-lg text-xs space-y-2 animate-fade-in">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <Crown className="w-5 h-5 text-amber-400" />
+                          <span className="font-bold text-gray-900 dark:text-white uppercase tracking-wider">
+                            {lang === 'ru' ? 'VIP Депозит / Оплата:' : lang === 'en' ? 'VIP Chamber Deposit / Fee:' : 'VIP Xona Depoziti:'}
+                          </span>
+                        </div>
+                        <span className="font-mono font-black text-base text-gold-500 dark:text-gold-400">
+                          {formatPrice(vipFee)}
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-gray-600 dark:text-gray-300 leading-relaxed">
+                        {lang === 'ru'
+                          ? '💎 В стоимость входит: личный официант, изолированная VIP комната, премиальный камин. Сумма депозита полностью учитывается в вашем счете за блюда!'
+                          : lang === 'en'
+                          ? '💎 Includes: dedicated waiter, private VIP chamber, fireplace. Deposit is fully credited toward your dining bill!'
+                          : '💎 Xizmat ichida: shaxsiy ofitsiant, alohida VIP xona va kamin. Ushbu depozit restoranda umumiy taomlar hisobingizdan to\'liq chegiriladi!'}
+                      </p>
+                    </div>
+                  )}
                 </div>
 
-                <div className="pt-4">
+                <div className="pt-2">
                   <button
                     type="submit"
                     disabled={isSubmitting}
                     className="w-full py-4 rounded-2xl gold-gradient-bg text-dark-950 font-bold text-base flex items-center justify-center gap-2 shadow-xl hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50"
                   >
-                    <Sparkles className="w-5 h-5" />
-                    <span>{isSubmitting ? (lang === 'ru' ? 'Бронирование...' : lang === 'en' ? 'Booking...' : 'Band qilinmoqda...') : (lang === 'ru' ? 'Забронировать Стол' : lang === 'en' ? 'Book Table' : 'Stolni Band Qilish')}</span>
+                    {isVipSelected ? <Crown className="w-5 h-5" /> : <Sparkles className="w-5 h-5" />}
+                    <span>
+                      {isSubmitting
+                        ? (lang === 'ru' ? 'Бронирование...' : lang === 'en' ? 'Booking...' : 'Band qilinmoqda...')
+                        : isVipSelected
+                        ? (lang === 'ru' ? `Забронировать VIP Зал (${formatPrice(vipFee)} Депозит)` : lang === 'en' ? `Book VIP Chamber (${formatPrice(vipFee)} Deposit)` : `VIP Xonani Band Qilish (${formatPrice(vipFee)} Depozit)`)
+                        : (lang === 'ru' ? 'Забронировать Стол' : lang === 'en' ? 'Book Table' : 'Stolni Band Qilish')}
+                    </span>
                   </button>
                 </div>
               </div>

@@ -176,6 +176,8 @@ const TABLES = [
     seats: 10,
     type: 'vip',
     shape: 'vip',
+    vipFee: 200000,
+    depositText: '200,000 UZS Depozit',
     x: 18,
     y: 82,
     status: 'available',
@@ -185,9 +187,9 @@ const TABLES = [
       en: "VIP Private Chamber (6-12 guests)"
     },
     view: {
-      uz: 'Alohida VIP xona & Kamin',
-      ru: 'Приватная комната и камин',
-      en: 'Private room with fireplace'
+      uz: 'Alohida VIP xona & Kamin (200,000 UZS Depozit)',
+      ru: 'Приватная комната и камин (200,000 сум депозит)',
+      en: 'Private room with fireplace (200,000 UZS deposit)'
     }
   },
   {
@@ -196,6 +198,8 @@ const TABLES = [
     seats: 14,
     type: 'vip',
     shape: 'vip',
+    vipFee: 300000,
+    depositText: '300,000 UZS Depozit',
     x: 45,
     y: 82,
     status: 'occupied',
@@ -205,9 +209,9 @@ const TABLES = [
       en: "VIP Private Chamber (6-12 guests)"
     },
     view: {
-      uz: 'Prezident VIP Suite',
-      ru: 'Президентский VIP Сьют',
-      en: 'Presidential VIP Suite'
+      uz: 'Prezident VIP Suite (300,000 UZS Depozit)',
+      ru: 'Президентский VIP Сьют (300,000 сум депозит)',
+      en: 'Presidential VIP Suite (300,000 UZS deposit)'
     }
   },
 ];
