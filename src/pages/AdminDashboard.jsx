@@ -6,7 +6,16 @@ import { useCurrency } from '../context/CurrencyContext';
 import { useAuth } from '../context/AuthContext';
 import { soundFx } from '../hooks/useSoundEffects';
 import { testTelegramBot, sendPhotoToTelegramApi } from '../services/telegramService';
-import { getStoredSettings, saveStoredSettings } from '../lib/storage';
+import {
+  getStoredSettings,
+  saveStoredSettings,
+  getStoredAdminProfile,
+  saveStoredAdminProfile,
+  getStoredAutoDirect,
+  saveStoredAutoDirect,
+  DEFAULT_ADMIN_PROFILE,
+  DEFAULT_AUTODIRECT
+} from '../lib/storage';
 import { syncMenuWithSupabase, testSupabaseConnection } from '../lib/supabase';
 import { KitchenDisplay } from '../components/admin/KitchenDisplay';
 import { TableOccupancyManager } from '../components/admin/TableOccupancyManager';
@@ -51,7 +60,14 @@ import {
   Activity,
   User,
   Zap,
-  Layers
+  Layers,
+  Camera,
+  Upload,
+  Check,
+  ExternalLink,
+  Image as ImageIcon,
+  MessageSquare,
+  Bot
 } from 'lucide-react';
 
 // Tri-lingual dictionary specifically tailored for Maxton Executive Suite
@@ -121,7 +137,9 @@ const MAXTON_I18N = {
     searchGuests: "Stol Bandliklari",
     executiveProfile: "Ijrochi Profil (Admin)",
     kitchenVelocity: "Oshxona Tezligi",
-    hallOccupancy: "Zallar Bandligi"
+    hallOccupancy: "Zallar Bandligi",
+    autoDirect: "Avto-Direct",
+    changeAvatar: "Avatar Almashtirish"
   },
   ru: {
     brand: "Maxton",
@@ -188,7 +206,9 @@ const MAXTON_I18N = {
     searchGuests: "Брони",
     executiveProfile: "Профиль Администратора",
     kitchenVelocity: "Скорость Кухни",
-    hallOccupancy: "Занятость Залов"
+    hallOccupancy: "Занятость Залов",
+    autoDirect: "Авто-Директ",
+    changeAvatar: "Сменить аватар"
   },
   en: {
     brand: "Maxton",
@@ -255,9 +275,51 @@ const MAXTON_I18N = {
     searchGuests: "Reservations",
     executiveProfile: "Executive Profile",
     kitchenVelocity: "Kitchen Speed",
-    hallOccupancy: "Hall Occupancy"
+    hallOccupancy: "Hall Occupancy",
+    autoDirect: "Auto-Direct",
+    changeAvatar: "Change Avatar"
   }
 };
+
+// Preset Luxury Admin Avatars for quick selection
+const PRESET_AVATARS = [
+  {
+    id: 'exec_male',
+    label: "Bosh Boshqaruvchi",
+    badge: "Executive Leader",
+    url: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80"
+  },
+  {
+    id: 'exec_female',
+    label: "Ijrochi Administrator",
+    badge: "Lady Executive",
+    url: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80"
+  },
+  {
+    id: 'chef_gold',
+    label: "Bosh Oshpaz (Brand Chef)",
+    badge: "Master Chef",
+    url: "https://images.unsplash.com/photo-1577219491135-ce391730fb2c?auto=format&fit=crop&w=300&q=80"
+  },
+  {
+    id: 'vip_concierge',
+    label: "VIP Konsyerj",
+    badge: "VIP Host",
+    url: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80"
+  },
+  {
+    id: 'modern_manager',
+    label: "Zamonaviy Menejer",
+    badge: "Manager",
+    url: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=300&q=80"
+  },
+  {
+    id: 'cyber_gold',
+    label: "Prezident Darajasi",
+    badge: "Top Executive",
+    url: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=300&q=80"
+  }
+];
 
 export const AdminDashboard = ({ setIsAdminView }) => {
   const { logout } = useAuth();
@@ -283,7 +345,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
   const m = MAXTON_I18N[lang] || MAXTON_I18N.uz;
 
   // Active navigation tab
-  // 'ecommerce' (exact Maxton view from photo), 'analysis', 'orders', 'reservations', 'menu', 'kds', 'settings'
+  // 'ecommerce', 'analysis', 'orders', 'reservations', 'menu', 'kds', 'settings', 'autoDirect', 'userProfile', 'widgets'
   const [activeTab, setActiveTab] = useState('ecommerce');
 
   // Sidebar collapse toggle (for responsive and desktop toggle)
@@ -295,6 +357,109 @@ export const AdminDashboard = ({ setIsAdminView }) => {
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [appsMenuOpen, setAppsMenuOpen] = useState(false);
+
+  // Admin Profile & Avatar State
+  const [adminProfile, setAdminProfile] = useState(() => getStoredAdminProfile());
+  const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
+  const [avatarForm, setAvatarForm] = useState(() => ({
+    name: adminProfile.name || "Jhon Doe",
+    displayName: adminProfile.displayName || "Jhon (Admin)",
+    role: adminProfile.role || "Boshqaruvchi Administrator & Best Seller",
+    badge: adminProfile.badge || "Super Administrator",
+    avatar: adminProfile.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80",
+    phone: adminProfile.phone || "+998 (90) 123-45-67",
+    email: adminProfile.email || "admin@zafaron.uz",
+    branch: adminProfile.branch || "Zafaron Lounge Tashkent",
+    shiftHours: adminProfile.shiftHours || "09:00 - 23:00 (To'liq smena)"
+  }));
+
+  // Auto-Direct Settings State
+  const [autoDirectConfig, setAutoDirectConfig] = useState(() => getStoredAutoDirect());
+  const [testingAutoDirect, setTestingAutoDirect] = useState(false);
+  const [autoDirectTestResult, setAutoDirectTestResult] = useState(null);
+
+  // Synchronize avatarForm when adminProfile updates
+  useEffect(() => {
+    setAvatarForm({
+      name: adminProfile.name || "Jhon Doe",
+      displayName: adminProfile.displayName || "Jhon (Admin)",
+      role: adminProfile.role || "Boshqaruvchi Administrator & Best Seller",
+      badge: adminProfile.badge || "Super Administrator",
+      avatar: adminProfile.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80",
+      phone: adminProfile.phone || "+998 (90) 123-45-67",
+      email: adminProfile.email || "admin@zafaron.uz",
+      branch: adminProfile.branch || "Zafaron Lounge Tashkent",
+      shiftHours: adminProfile.shiftHours || "09:00 - 23:00 (To'liq smena)"
+    });
+  }, [adminProfile]);
+
+  const handleSaveAvatar = (overrideAvatarUrl = null) => {
+    const updated = {
+      ...adminProfile,
+      ...avatarForm,
+      avatar: overrideAvatarUrl || avatarForm.avatar
+    };
+    saveStoredAdminProfile(updated);
+    setAdminProfile(updated);
+    setIsAvatarModalOpen(false);
+    if (audioEnabled) soundFx.playSuccess();
+    showToast?.("✅ Profil rasmi muvaffaqiyatli saqlandi!", "success");
+  };
+
+  const handleFileUploadAvatar = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 4 * 1024 * 1024) {
+      showToast?.("⚠️ Rasm hajmi 4MB dan oshmasligi kerak", "error");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const dataUrl = event.target.result;
+      setAvatarForm(prev => ({ ...prev, avatar: dataUrl }));
+      showToast?.("📷 Rasm yuklandi! Saqlash tugmasini bosing.", "info");
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleSaveAutoDirect = () => {
+    saveStoredAutoDirect(autoDirectConfig);
+    if (audioEnabled) soundFx.playSuccess();
+    showToast?.("⚡ Avto-Direct sozlamalari muvaffaqiyatli saqlandi!", "success");
+  };
+
+  const handleTestAutoDirect = async () => {
+    setTestingAutoDirect(true);
+    setAutoDirectTestResult(null);
+    try {
+      const testCaption =
+        `⚡ <b>[TEST] ZAFARON AVTO-DIRECT PROBASI:</b>\n\n` +
+        `👤 <b>Mijoz:</b> Ali Valiyev (VIP Mehmon)\n` +
+        `📦 <b>Buyurtma:</b> #AUTO-DIRECT-777\n` +
+        `🍽 <b>Tarkibi:</b> 1x Shohona To'y Palov, 1x Zafaronli Choy\n` +
+        `💰 <b>Summa:</b> 230,000 UZS\n` +
+        `🚀 <b>Yo'naltirish:</b> Oshxona (KDS) & Telegram Admin\n\n` +
+        `<i>⚡ Avto-Direct tizimi 100% barqaror ishlamoqda!</i>`;
+
+      const settings = getStoredSettings();
+      const res = await sendPhotoToTelegramApi(
+        settings.telegramBotToken,
+        settings.telegramChatId,
+        "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1200&q=80",
+        testCaption
+      );
+      if (res.success) {
+        setAutoDirectTestResult({ success: true, message: "Avto-Direct probasi Telegramga muvaffaqiyatli yuborildi!" });
+        if (audioEnabled) soundFx.playSuccess();
+      } else {
+        setAutoDirectTestResult({ success: false, message: res.message || "Telegramga yuborishda xatolik yuz berdi" });
+      }
+    } catch (e) {
+      setAutoDirectTestResult({ success: false, message: e.message || "Internet xatoligi" });
+    } finally {
+      setTestingAutoDirect(false);
+    }
+  };
 
   // Close dropdowns on outside click or Escape
   useEffect(() => {
@@ -1000,6 +1165,25 @@ export const AdminDashboard = ({ setIsAdminView }) => {
             </button>
 
             <button
+              onClick={() => handleSelectTab('autoDirect')}
+              className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-colors ${
+                activeTab === 'autoDirect'
+                  ? theme === 'dark' ? 'bg-[#1f2438] text-white font-bold' : 'bg-slate-100 text-slate-900 font-bold'
+                  : 'text-slate-400 hover:text-current hover:bg-slate-500/10'
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <Zap className="w-4 h-4 text-amber-400" />
+                {sidebarOpen && <span>{m.autoDirect || "Avto-Direct"}</span>}
+              </div>
+              {sidebarOpen && (
+                <span className="px-1.5 py-0.5 rounded text-[9px] font-black bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                  AUTO
+                </span>
+              )}
+            </button>
+
+            <button
               onClick={() => handleSelectTab('settings')}
               className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-colors ${
                 activeTab === 'settings'
@@ -1390,11 +1574,12 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                   setNotificationsOpen(false);
                 }}
                 className="flex items-center gap-2 p-1 rounded-full hover:ring-2 hover:ring-blue-500/50 transition-all"
+                title="Admin Profil"
               >
                 <div className="relative">
                   <img
-                    src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80"
-                    alt="Jhon"
+                    src={adminProfile.avatar}
+                    alt={adminProfile.name}
                     className="w-8 h-8 rounded-full object-cover border border-slate-600"
                   />
                   <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-inherit absolute bottom-0 right-0" />
@@ -1402,15 +1587,52 @@ export const AdminDashboard = ({ setIsAdminView }) => {
               </button>
 
               {profileDropdownOpen && (
-                <div className={`absolute right-0 mt-2 w-48 py-2 rounded-2xl shadow-2xl border z-50 text-xs ${
+                <div className={`absolute right-0 mt-2 w-56 py-2 rounded-2xl shadow-2xl border z-50 text-xs ${
                   theme === 'dark'
                     ? 'bg-[#1c2032] border-[#2c324e] text-slate-200'
                     : 'bg-white border-slate-200 text-slate-800'
                 }`}>
-                  <div className="px-4 py-2 border-b border-inherit">
-                    <p className="font-bold text-sm">Jhon (Admin)</p>
-                    <p className="text-[10px] text-slate-400">admin@zafaron.uz</p>
+                  <div className="px-4 py-2 border-b border-inherit flex items-center gap-2.5">
+                    <img
+                      src={adminProfile.avatar}
+                      alt={adminProfile.name}
+                      className="w-9 h-9 rounded-full object-cover border border-blue-500/50"
+                    />
+                    <div className="min-w-0">
+                      <p className="font-bold text-sm truncate">{adminProfile.displayName || adminProfile.name}</p>
+                      <p className="text-[10px] text-slate-400 truncate">{adminProfile.email}</p>
+                    </div>
                   </div>
+                  <button
+                    onClick={() => {
+                      setProfileDropdownOpen(false);
+                      setIsAvatarModalOpen(true);
+                    }}
+                    className="w-full px-4 py-2 text-left hover:bg-slate-500/10 flex items-center gap-2 text-blue-400 font-semibold"
+                  >
+                    <Camera className="w-3.5 h-3.5" />
+                    <span>📷 {m.changeAvatar || "Avatar Almashtirish"}</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      setProfileDropdownOpen(false);
+                      handleSelectTab('autoDirect');
+                    }}
+                    className="w-full px-4 py-2 text-left hover:bg-slate-500/10 flex items-center gap-2 text-amber-400 font-semibold"
+                  >
+                    <Zap className="w-3.5 h-3.5" />
+                    <span>⚡ {m.autoDirect || "Avto-Direct Markazi"}</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      setProfileDropdownOpen(false);
+                      handleSelectTab('userProfile');
+                    }}
+                    className="w-full px-4 py-2 text-left hover:bg-slate-500/10 flex items-center gap-2"
+                  >
+                    <User className="w-3.5 h-3.5" />
+                    <span>{m.userProfile}</span>
+                  </button>
                   <button
                     onClick={() => {
                       setProfileDropdownOpen(false);
@@ -2839,33 +3061,105 @@ export const AdminDashboard = ({ setIsAdminView }) => {
             >
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-inherit">
                 <div className="flex items-center gap-4">
-                  <div className="relative">
+                  <div
+                    onClick={() => setIsAvatarModalOpen(true)}
+                    className="relative group cursor-pointer"
+                    title="Suratni o'zgartirish uchun bosing"
+                  >
                     <img
-                      src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80"
-                      alt="Jhon"
-                      className="w-16 h-16 rounded-2xl object-cover border-2 border-blue-500 shadow-lg shadow-blue-500/20"
+                      src={adminProfile.avatar}
+                      alt={adminProfile.name}
+                      className="w-16 h-16 rounded-2xl object-cover border-2 border-blue-500 shadow-lg shadow-blue-500/20 group-hover:brightness-75 transition-all"
                     />
+                    <div className="absolute inset-0 rounded-2xl bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all">
+                      <Camera className="w-5 h-5 text-white drop-shadow" />
+                    </div>
                     <span className="w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-inherit absolute -bottom-1 -right-1" />
                   </div>
                   <div>
                     <h2 className="font-black text-xl text-current flex items-center gap-2">
-                      <span>Jhon Doe</span>
+                      <span>{adminProfile.name}</span>
                       <span className="text-base">👑</span>
                     </h2>
-                    <p className="text-xs text-slate-400">Boshqaruvchi Administrator & Best Seller of the Month</p>
+                    <p className="text-xs text-slate-400">{adminProfile.role}</p>
                     <span className="inline-block mt-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/15 text-blue-400 border border-blue-500/30">
-                      Super Administrator
+                      {adminProfile.badge || "Super Administrator"}
                     </span>
                   </div>
                 </div>
 
-                <button
-                  onClick={() => setIsBestSellerModalOpen(true)}
-                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-fuchsia-600 to-pink-500 text-white font-bold text-xs shadow-lg shadow-pink-500/25 flex items-center gap-1.5"
-                >
-                  <Award className="w-4 h-4" />
-                  <span>Yutuqlar & Mukofotlar</span>
-                </button>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <button
+                    onClick={() => setIsAvatarModalOpen(true)}
+                    className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-lg shadow-blue-500/25 flex items-center gap-1.5 transition-all"
+                  >
+                    <Camera className="w-4 h-4" />
+                    <span>Avatar Almashtirish</span>
+                  </button>
+                  <button
+                    onClick={() => handleSelectTab('autoDirect')}
+                    className="px-4 py-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 border border-amber-500/30 font-bold text-xs flex items-center gap-1.5 transition-all"
+                  >
+                    <Zap className="w-4 h-4" />
+                    <span>Avto-Direct</span>
+                  </button>
+                  <button
+                    onClick={() => setIsBestSellerModalOpen(true)}
+                    className="px-4 py-2 rounded-xl bg-gradient-to-r from-fuchsia-600 to-pink-500 text-white font-bold text-xs shadow-lg shadow-pink-500/25 flex items-center gap-1.5"
+                  >
+                    <Award className="w-4 h-4" />
+                    <span>Yutuqlar & Mukofotlar</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Quick Preset Avatars Picker */}
+              <div className={`p-4 rounded-xl border space-y-3 ${
+                theme === 'dark' ? 'bg-[#1c2032] border-[#252a42]' : 'bg-slate-50 border-slate-200'
+              }`}>
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-xs uppercase tracking-wider text-current flex items-center gap-1.5">
+                    <Sparkles className="w-4 h-4 text-amber-400" />
+                    <span>Tezkor Hashamatli Avatarlar (1-bosish bilan almashtirish)</span>
+                  </span>
+                  <button
+                    onClick={() => setIsAvatarModalOpen(true)}
+                    className="text-xs text-blue-400 hover:underline font-bold"
+                  >
+                    Kompyuterdan yuklash →
+                  </button>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 pt-1">
+                  {PRESET_AVATARS.map((p) => {
+                    const isSelected = adminProfile.avatar === p.url;
+                    return (
+                      <button
+                        key={p.id}
+                        onClick={() => handleSaveAvatar(p.url)}
+                        className={`p-2 rounded-xl border text-center transition-all flex flex-col items-center gap-1.5 ${
+                          isSelected
+                            ? 'border-blue-500 bg-blue-500/15 shadow-md shadow-blue-500/20 ring-2 ring-blue-500/30'
+                            : theme === 'dark' ? 'bg-[#151827] border-[#22263d] hover:border-slate-500' : 'bg-white border-slate-200 hover:border-blue-300'
+                        }`}
+                      >
+                        <div className="relative">
+                          <img
+                            src={p.url}
+                            alt={p.label}
+                            className="w-12 h-12 rounded-xl object-cover"
+                          />
+                          {isSelected && (
+                            <span className="w-4 h-4 rounded-full bg-blue-500 text-white text-[9px] font-black flex items-center justify-center absolute -top-1 -right-1">
+                              ✓
+                            </span>
+                          )}
+                        </div>
+                        <span className="text-[10px] font-bold text-current truncate w-full">{p.label}</span>
+                        <span className="text-[9px] text-slate-400 truncate w-full">{p.badge}</span>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -2873,10 +3167,10 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                   theme === 'dark' ? 'bg-[#1c2032] border-[#252a42]' : 'bg-slate-50 border-slate-200'
                 }`}>
                   <span className="font-bold text-sm text-current block pb-1 border-b border-inherit">Shaxsiy Ma'lumotlar</span>
-                  <p className="flex justify-between"><span className="text-slate-400">Filial:</span><span className="font-bold text-current">Zafaron Lounge Tashkent</span></p>
-                  <p className="flex justify-between"><span className="text-slate-400">Email:</span><span className="font-mono text-current">admin@zafaron.uz</span></p>
-                  <p className="flex justify-between"><span className="text-slate-400">Telefon:</span><span className="font-mono text-current">+998 (90) 123-45-67</span></p>
-                  <p className="flex justify-between"><span className="text-slate-400">Ish Grafigi:</span><span className="font-bold text-emerald-400">09:00 - 23:00 (To'liq smena)</span></p>
+                  <p className="flex justify-between"><span className="text-slate-400">Filial:</span><span className="font-bold text-current">{adminProfile.branch}</span></p>
+                  <p className="flex justify-between"><span className="text-slate-400">Email:</span><span className="font-mono text-current">{adminProfile.email}</span></p>
+                  <p className="flex justify-between"><span className="text-slate-400">Telefon:</span><span className="font-mono text-current">{adminProfile.phone}</span></p>
+                  <p className="flex justify-between"><span className="text-slate-400">Ish Grafigi:</span><span className="font-bold text-emerald-400">{adminProfile.shiftHours}</span></p>
                 </div>
 
                 <div className={`p-4 rounded-xl border space-y-3 text-xs ${
@@ -2887,6 +3181,266 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                   <p className="flex justify-between"><span className="text-slate-400">Halol Sifat Elchisi:</span><span className="font-bold text-amber-400">Sertifikatlangan 🏆</span></p>
                   <p className="flex justify-between"><span className="text-slate-400">Telegram Bot Admin:</span><span className="font-bold text-blue-400">Faol Ulangan ✓</span></p>
                   <p className="flex justify-between"><span className="text-slate-400">Oylik Sotuv Bonusi:</span><span className="font-bold text-emerald-400">+$1,250 USD</span></p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ================= VIEW 11: AVTO-DIRECT (AVTOMATIK YO'NALTIRISH MARKAZI) ================= */}
+          {activeTab === 'autoDirect' && (
+            <div
+              className={`p-6 rounded-2xl border space-y-6 ${
+                theme === 'dark' ? 'bg-[#171a29] border-[#22263d]' : 'bg-white border-slate-200 shadow-sm'
+              }`}
+            >
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-inherit">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-2xl bg-amber-500/15 text-amber-400 border border-amber-500/30 flex items-center justify-center">
+                    <Zap className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h2 className="font-black text-xl text-current flex items-center gap-2">
+                      <span>⚡ Avto-Direct & Avtomatik Yo'naltirish</span>
+                    </h2>
+                    <p className="text-xs text-slate-400">
+                      Yangi buyurtmalarni Telegramga, Oshxonaga avtomatik yo'naltirish va sayt xaridorlarini avto-redirect qilish markazi
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 flex-wrap">
+                  <span className={`px-3 py-1 rounded-full text-xs font-bold border flex items-center gap-1.5 ${
+                    autoDirectConfig.enabled
+                      ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30'
+                      : 'bg-red-500/15 text-red-400 border-red-500/30'
+                  }`}>
+                    <span className={`w-2 h-2 rounded-full ${autoDirectConfig.enabled ? 'bg-emerald-400 animate-pulse' : 'bg-red-400'}`} />
+                    <span>{autoDirectConfig.enabled ? "Avto-Direct: FAOL" : "Avto-Direct: O'CHIRILGAN"}</span>
+                  </span>
+                  <button
+                    onClick={handleTestAutoDirect}
+                    disabled={testingAutoDirect}
+                    className="px-3.5 py-2 rounded-xl bg-slate-500/15 hover:bg-slate-500/25 text-xs font-bold flex items-center gap-1.5 transition-all"
+                  >
+                    <Send className="w-3.5 h-3.5 text-amber-400" />
+                    <span>{testingAutoDirect ? "Tekshirilmoqda..." : "Test Direct Yuborish"}</span>
+                  </button>
+                  <button
+                    onClick={handleSaveAutoDirect}
+                    className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 text-dark-950 font-black text-xs shadow-lg shadow-amber-500/20 hover:brightness-110 flex items-center gap-1.5 transition-all"
+                  >
+                    <Check className="w-4 h-4" />
+                    <span>Saqlash</span>
+                  </button>
+                </div>
+              </div>
+
+              {autoDirectTestResult && (
+                <div className={`p-4 rounded-xl text-xs font-semibold flex items-center justify-between ${
+                  autoDirectTestResult.success
+                    ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'
+                    : 'bg-red-500/10 text-red-400 border border-red-500/30'
+                }`}>
+                  <div className="flex items-center gap-2">
+                    <span>{autoDirectTestResult.success ? "✅" : "❌"}</span>
+                    <span>{autoDirectTestResult.message}</span>
+                  </div>
+                  <button
+                    onClick={() => setAutoDirectTestResult(null)}
+                    className="text-slate-400 hover:text-current"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              )}
+
+              {/* Master Switch */}
+              <div className={`p-5 rounded-xl border flex items-center justify-between ${
+                theme === 'dark' ? 'bg-[#1c2032] border-[#252a42]' : 'bg-slate-50 border-slate-200'
+              }`}>
+                <div>
+                  <h3 className="font-bold text-sm text-current flex items-center gap-2">
+                    <span>Avto-Direct Boshqaruvchisi (Master Switch)</span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 font-bold">Smart Dispatch</span>
+                  </h3>
+                  <p className="text-xs text-slate-400 mt-0.5">
+                    Tizim orqali barcha yo'naltirishlar (Telegram, Oshxona, Xaridor avto-redirect) bir vaqtda ishlaydi.
+                  </p>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={autoDirectConfig.enabled}
+                    onChange={(e) => setAutoDirectConfig({ ...autoDirectConfig, enabled: e.target.checked })}
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500" />
+                </label>
+              </div>
+
+              {/* 3 Channels Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {/* Channel 1: Telegram Direct */}
+                <div className={`p-4 rounded-xl border space-y-3 ${
+                  theme === 'dark' ? 'bg-[#1c2032] border-[#252a42]' : 'bg-slate-50 border-slate-200'
+                }`}>
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-xs uppercase tracking-wider text-blue-400 flex items-center gap-1.5">
+                      <Send className="w-4 h-4" />
+                      <span>Telegram Avto-Direct</span>
+                    </span>
+                    <input
+                      type="checkbox"
+                      checked={autoDirectConfig.telegramDirect}
+                      onChange={(e) => setAutoDirectConfig({ ...autoDirectConfig, telegramDirect: e.target.checked })}
+                      className="w-4 h-4 rounded text-blue-500 focus:ring-blue-400"
+                    />
+                  </div>
+                  <p className="text-[11px] text-slate-400 leading-relaxed">
+                    Yangi buyurtma va stol band qilishlari darhol Telegram rasmiy bot va adminga rasmli chek bilan to'g'ridan-to'g'ri yo'naltiriladi.
+                  </p>
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full inline-block ${
+                    autoDirectConfig.telegramDirect ? 'bg-blue-500/20 text-blue-400' : 'bg-slate-500/20 text-slate-400'
+                  }`}>
+                    {autoDirectConfig.telegramDirect ? "Avtomatik yuborish: YOQILGAN" : "O'chirilgan"}
+                  </span>
+                </div>
+
+                {/* Channel 2: Kitchen Direct */}
+                <div className={`p-4 rounded-xl border space-y-3 ${
+                  theme === 'dark' ? 'bg-[#1c2032] border-[#252a42]' : 'bg-slate-50 border-slate-200'
+                }`}>
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-xs uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+                      <ChefHat className="w-4 h-4" />
+                      <span>Oshxona (KDS) Direct</span>
+                    </span>
+                    <input
+                      type="checkbox"
+                      checked={autoDirectConfig.kitchenDirect}
+                      onChange={(e) => setAutoDirectConfig({ ...autoDirectConfig, kitchenDirect: e.target.checked })}
+                      className="w-4 h-4 rounded text-emerald-500 focus:ring-emerald-400"
+                    />
+                  </div>
+                  <p className="text-[11px] text-slate-400 leading-relaxed">
+                    Buyurtma tasdiqlangach avtomatik ravishda oshxona ekraniga (KDS) o'tkaziladi va oshpazlar monitorida qizil bildirishnoma bilan ko'rsatiladi.
+                  </p>
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full inline-block ${
+                    autoDirectConfig.kitchenDirect ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-500/20 text-slate-400'
+                  }`}>
+                    {autoDirectConfig.kitchenDirect ? "Oshxonaga yo'naltirish: YOQILGAN" : "O'chirilgan"}
+                  </span>
+                </div>
+
+                {/* Channel 3: Customer Auto-Direct */}
+                <div className={`p-4 rounded-xl border space-y-3 ${
+                  theme === 'dark' ? 'bg-[#1c2032] border-[#252a42]' : 'bg-slate-50 border-slate-200'
+                }`}>
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-xs uppercase tracking-wider text-fuchsia-400 flex items-center gap-1.5">
+                      <MessageSquare className="w-4 h-4" />
+                      <span>Mijozga Avto-Javob</span>
+                    </span>
+                    <input
+                      type="checkbox"
+                      checked={autoDirectConfig.customerDirectReply}
+                      onChange={(e) => setAutoDirectConfig({ ...autoDirectConfig, customerDirectReply: e.target.checked })}
+                      className="w-4 h-4 rounded text-fuchsia-500 focus:ring-fuchsia-400"
+                    />
+                  </div>
+                  <p className="text-[11px] text-slate-400 leading-relaxed">
+                    Xaridor buyurtma berganda uning ekranida va kvitansiyasida avtomatik tasdiqlash xabarnomasi taqdim etiladi.
+                  </p>
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full inline-block ${
+                    autoDirectConfig.customerDirectReply ? 'bg-fuchsia-500/20 text-fuchsia-400' : 'bg-slate-500/20 text-slate-400'
+                  }`}>
+                    {autoDirectConfig.customerDirectReply ? "Avto-javob: YOQILGAN" : "O'chirilgan"}
+                  </span>
+                </div>
+              </div>
+
+              {/* Website Auto-Redirect Configuration */}
+              <div className={`p-5 rounded-xl border space-y-4 ${
+                theme === 'dark' ? 'bg-[#1c2032] border-[#252a42]' : 'bg-slate-50 border-slate-200'
+              }`}>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="font-bold text-sm text-current flex items-center gap-2">
+                      <span>Saytdan Avto-Redirect (Avtomatik O'tish)</span>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-bold">Auto-Redirect</span>
+                    </h3>
+                    <p className="text-xs text-slate-400 mt-0.5">
+                      Xaridor savatchadan buyurtma bergandan so'ng, tizim uni avtomatik tarzda Telegram botga yoki chek oynasiga yo'naltiradi.
+                    </p>
+                  </div>
+                  <input
+                    type="checkbox"
+                    checked={autoDirectConfig.autoRedirectSite}
+                    onChange={(e) => setAutoDirectConfig({ ...autoDirectConfig, autoRedirectSite: e.target.checked })}
+                    className="w-5 h-5 rounded text-amber-500 focus:ring-amber-400"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-400 mb-1">
+                      Yo'naltirish Kutish Vaqti (Soniyalar)
+                    </label>
+                    <select
+                      value={autoDirectConfig.autoRedirectDelay}
+                      onChange={(e) => setAutoDirectConfig({ ...autoDirectConfig, autoRedirectDelay: Number(e.target.value) })}
+                      className={`w-full px-3 py-2 rounded-xl text-xs border ${
+                        theme === 'dark' ? 'bg-[#141622] border-[#252a42] text-white' : 'bg-white border-slate-200'
+                      }`}
+                    >
+                      <option value={3}>⚡ 3 soniya (Tezkor)</option>
+                      <option value={4}>⏱ 4 soniya (Tavsiya etiladi)</option>
+                      <option value={5}>⌛ 5 soniya (O'rtacha)</option>
+                      <option value={10}>⏳ 10 soniya (Sekin)</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-400 mb-1">
+                      Telegram Bot Havolasi
+                    </label>
+                    <input
+                      type="text"
+                      value={autoDirectConfig.telegramBotLink || ''}
+                      onChange={(e) => setAutoDirectConfig({ ...autoDirectConfig, telegramBotLink: e.target.value })}
+                      placeholder="https://t.me/zafaron_restarant_bot"
+                      className={`w-full px-3 py-2 rounded-xl text-xs border ${
+                        theme === 'dark' ? 'bg-[#141622] border-[#252a42] text-white' : 'bg-white border-slate-200'
+                      }`}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-400 mb-1">
+                    Avto-Direct Xabar Shabloni (Mijozga yo'naltiriladigan xabar)
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={autoDirectConfig.directMessageTemplate || ''}
+                    onChange={(e) => setAutoDirectConfig({ ...autoDirectConfig, directMessageTemplate: e.target.value })}
+                    className={`w-full px-3 py-2 rounded-xl text-xs border resize-none ${
+                      theme === 'dark' ? 'bg-[#141622] border-[#252a42] text-white' : 'bg-white border-slate-200'
+                    }`}
+                  />
+                  <span className="text-[10px] text-slate-400 block mt-1">
+                    Mavjud o'zgaruvchilar: <code>{'{customer}'}</code>, <code>{'{orderId}'}</code>, <code>{'{total}'}</code>
+                  </span>
+                </div>
+
+                <div className="flex justify-end pt-1">
+                  <button
+                    onClick={handleSaveAutoDirect}
+                    className="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-dark-950 font-black text-xs shadow-lg shadow-amber-500/20 transition-all flex items-center gap-1.5"
+                  >
+                    <Check className="w-4 h-4" />
+                    <span>Avto-Direct Sozlamalarini Saqlash</span>
+                  </button>
                 </div>
               </div>
             </div>
@@ -3255,6 +3809,181 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                 className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-lg shadow-blue-500/25 transition-all"
               >
                 Tushunarli & Rahmat!
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ================= MODAL: CHANGE ADMIN AVATAR ================= */}
+      {isAvatarModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fade-in">
+          <div
+            className={`w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-3xl p-6 border shadow-2xl space-y-5 ${
+              theme === 'dark' ? 'bg-[#171a29] border-[#242940] text-white' : 'bg-white border-slate-200 text-slate-900'
+            }`}
+          >
+            <div className="flex items-center justify-between pb-3 border-b border-inherit">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-xl bg-blue-500/15 text-blue-400 border border-blue-500/30 flex items-center justify-center">
+                  <Camera className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-extrabold text-base">Admin Avatarini Almashtirish</h3>
+                  <p className="text-[11px] text-slate-400">Profil rasmi, ism va lavozimni sozlash</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setIsAvatarModalOpen(false)}
+                className="p-1.5 rounded-full hover:bg-slate-500/10 text-slate-400 hover:text-current transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Current Selected Avatar Preview */}
+            <div className="flex items-center gap-4 p-4 rounded-2xl bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-transparent border border-blue-500/20">
+              <div className="relative">
+                <img
+                  src={avatarForm.avatar}
+                  alt={avatarForm.name}
+                  className="w-20 h-20 rounded-2xl object-cover border-2 border-blue-500 shadow-xl shadow-blue-500/25"
+                />
+                <span className="w-4 h-4 rounded-full bg-emerald-500 border-2 border-inherit absolute -bottom-1 -right-1" />
+              </div>
+              <div className="space-y-1">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-blue-400">Tanlangan Surat</span>
+                <h4 className="font-bold text-sm text-current">{avatarForm.name}</h4>
+                <p className="text-[11px] text-slate-400">{avatarForm.role}</p>
+                <span className="inline-block text-[9px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                  Faol holatda
+                </span>
+              </div>
+            </div>
+
+            {/* Method 1: Upload from Device */}
+            <div className="space-y-2">
+              <span className="text-xs font-bold text-current block flex items-center gap-1.5">
+                <Upload className="w-3.5 h-3.5 text-blue-400" />
+                <span>1. Kompyuterdan yangi rasm yuklash</span>
+              </span>
+              <label className={`w-full py-3 px-4 rounded-2xl border-2 border-dashed flex items-center justify-center gap-2 cursor-pointer transition-all ${
+                theme === 'dark'
+                  ? 'border-[#2c324e] hover:border-blue-500 bg-[#141622]'
+                  : 'border-slate-300 hover:border-blue-500 bg-slate-50'
+              }`}>
+                <Upload className="w-4 h-4 text-blue-400" />
+                <span className="text-xs font-semibold text-slate-400">
+                  Faylni tanlang (JPG, PNG, WEBP, max 4MB)
+                </span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileUploadAvatar}
+                  className="hidden"
+                />
+              </label>
+            </div>
+
+            {/* Method 2: Image URL input */}
+            <div className="space-y-2">
+              <span className="text-xs font-bold text-current block flex items-center gap-1.5">
+                <ImageIcon className="w-3.5 h-3.5 text-purple-400" />
+                <span>2. Rasm URL havolasi orqali</span>
+              </span>
+              <input
+                type="text"
+                placeholder="https://... rasm havolasini kiriting"
+                value={avatarForm.avatar}
+                onChange={(e) => setAvatarForm({ ...avatarForm, avatar: e.target.value })}
+                className={`w-full px-3.5 py-2.5 rounded-xl text-xs border ${
+                  theme === 'dark' ? 'bg-[#141622] border-[#252a42] text-white' : 'bg-slate-50 border-slate-200'
+                }`}
+              />
+            </div>
+
+            {/* Method 3: Preset Avatars */}
+            <div className="space-y-2">
+              <span className="text-xs font-bold text-current block flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                <span>3. Tayyor Hashamatli Avatarlardan tanlang</span>
+              </span>
+              <div className="grid grid-cols-3 gap-2.5">
+                {PRESET_AVATARS.map((p) => {
+                  const isSelected = avatarForm.avatar === p.url;
+                  return (
+                    <button
+                      type="button"
+                      key={p.id}
+                      onClick={() => setAvatarForm({ ...avatarForm, avatar: p.url })}
+                      className={`p-2 rounded-2xl border text-center transition-all flex flex-col items-center gap-1.5 ${
+                        isSelected
+                          ? 'border-blue-500 bg-blue-500/15 shadow-md shadow-blue-500/20 ring-2 ring-blue-500/40'
+                          : theme === 'dark' ? 'bg-[#141622] border-[#252a42] hover:border-slate-500' : 'bg-slate-50 border-slate-200 hover:border-blue-300'
+                      }`}
+                    >
+                      <div className="relative">
+                        <img
+                          src={p.url}
+                          alt={p.label}
+                          className="w-12 h-12 rounded-xl object-cover"
+                        />
+                        {isSelected && (
+                          <span className="w-4 h-4 rounded-full bg-blue-500 text-white text-[9px] font-black flex items-center justify-center absolute -top-1 -right-1">
+                            ✓
+                          </span>
+                        )}
+                      </div>
+                      <span className="text-[10px] font-bold text-current truncate w-full">{p.label}</span>
+                      <span className="text-[9px] text-slate-400 truncate w-full">{p.badge}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Name & Role Form */}
+            <div className="grid grid-cols-2 gap-3 pt-1">
+              <div>
+                <label className="block text-[11px] font-semibold text-slate-400 mb-1">Ism / Nik</label>
+                <input
+                  type="text"
+                  value={avatarForm.name}
+                  onChange={(e) => setAvatarForm({ ...avatarForm, name: e.target.value, displayName: e.target.value })}
+                  className={`w-full px-3 py-2 rounded-xl text-xs border ${
+                    theme === 'dark' ? 'bg-[#141622] border-[#252a42] text-white' : 'bg-slate-50 border-slate-200'
+                  }`}
+                />
+              </div>
+              <div>
+                <label className="block text-[11px] font-semibold text-slate-400 mb-1">Lavozim</label>
+                <input
+                  type="text"
+                  value={avatarForm.role}
+                  onChange={(e) => setAvatarForm({ ...avatarForm, role: e.target.value })}
+                  className={`w-full px-3 py-2 rounded-xl text-xs border ${
+                    theme === 'dark' ? 'bg-[#141622] border-[#252a42] text-white' : 'bg-slate-50 border-slate-200'
+                  }`}
+                />
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="pt-3 border-t border-inherit flex items-center justify-end gap-2.5">
+              <button
+                type="button"
+                onClick={() => setIsAvatarModalOpen(false)}
+                className="px-4 py-2.5 rounded-xl text-xs font-bold text-slate-400 hover:text-current hover:bg-slate-500/10 transition-colors"
+              >
+                Bekor Qilish
+              </button>
+              <button
+                type="button"
+                onClick={() => handleSaveAvatar()}
+                className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-black text-xs shadow-lg shadow-blue-500/25 flex items-center gap-1.5 transition-all"
+              >
+                <Check className="w-4 h-4" />
+                <span>Saqlash & Qo'llash</span>
               </button>
             </div>
           </div>

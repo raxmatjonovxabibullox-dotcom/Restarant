@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useCart } from '../context/CartContext';
 import { useRestaurant } from '../context/RestaurantContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useCurrency } from '../context/CurrencyContext';
 import { soundFx } from '../hooks/useSoundEffects';
 import { PrintReceiptModal } from './PrintReceiptModal';
+import { getStoredAutoDirect } from '../lib/storage';
 import {
   X,
   Plus,
@@ -15,7 +16,9 @@ import {
   Printer,
   CheckCircle2,
   ChefHat,
-  Bike
+  Bike,
+  Zap,
+  ExternalLink
 } from 'lucide-react';
 import { handlePhoneInputChange, blockNonPhoneKeys, isValidUzPhone } from '../lib/phoneUtils';
 
@@ -38,6 +41,10 @@ export const CartDrawer = () => {
   const [placedOrder, setPlacedOrder] = useState(null);
   const [isReceiptOpen, setIsReceiptOpen] = useState(false);
   const [trackerStep, setTrackerStep] = useState(1);
+
+  // Auto-Direct Countdown & Redirect State
+  const [autoRedirectTimer, setAutoRedirectTimer] = useState(null);
+  const [isRedirectCancelled, setIsRedirectCancelled] = useState(false);
 
   // Multilingual Cart Dictionary
   const tCart = {
@@ -117,6 +124,14 @@ export const CartDrawer = () => {
       setPlacedOrder(newOrder);
       setTrackerStep(1);
 
+      // Trigger Avto-Direct countdown if enabled
+      const autoDirect = getStoredAutoDirect();
+      if (autoDirect?.enabled && autoDirect?.autoRedirectSite) {
+        setIsRedirectCancelled(false);
+        const delay = autoDirect.autoRedirectDelay || 4;
+        setAutoRedirectTimer(delay);
+      }
+
       // Simulate live order status advancement
       setTimeout(() => setTrackerStep(2), 2500); // 2. Oshxonada tayyorlanmoqda
       clearCart();
@@ -127,8 +142,26 @@ export const CartDrawer = () => {
     }
   };
 
+  // Avto-Direct countdown effect
+  useEffect(() => {
+    if (autoRedirectTimer === null || isRedirectCancelled) return;
+    if (autoRedirectTimer <= 0) {
+      const autoDirect = getStoredAutoDirect();
+      const botUrl = autoDirect?.telegramBotLink || 'https://t.me/zafaron_restarant_bot';
+      window.open(botUrl, '_blank', 'noopener,noreferrer');
+      setAutoRedirectTimer(null);
+      return;
+    }
+    const timer = setTimeout(() => {
+      setAutoRedirectTimer(prev => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [autoRedirectTimer, isRedirectCancelled]);
+
   const handleCloseAndReset = () => {
     setPlacedOrder(null);
+    setAutoRedirectTimer(null);
+    setIsRedirectCancelled(false);
     closeCart();
   };
 
@@ -182,6 +215,44 @@ export const CartDrawer = () => {
                     {tCart.orderSentInfo}
                   </p>
                 </div>
+
+                {/* Real-time Avto-Direct Banner */}
+                {autoRedirectTimer !== null && autoRedirectTimer > 0 && !isRedirectCancelled && (
+                  <div className="p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/15 via-gold-500/20 to-blue-500/15 border border-gold-500/30 flex items-center justify-between gap-3 animate-pulse">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-xl bg-gold-500 text-dark-950 font-black flex items-center justify-center text-xs shadow-glow shrink-0">
+                        ⚡ {autoRedirectTimer}s
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-xs font-bold text-gray-900 dark:text-white flex items-center gap-1.5">
+                          <span>Avto-Direct yo'naltirilmoqda</span>
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
+                        </p>
+                        <p className="text-[10px] text-gray-500 dark:text-gray-400 truncate">
+                          Telegram botga avtomatik o'tilmoqda...
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <a
+                        href={getStoredAutoDirect()?.telegramBotLink || "https://t.me/zafaron_restarant_bot"}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-2.5 py-1.5 rounded-lg bg-gold-500 text-dark-950 font-bold text-[10px] hover:brightness-110 flex items-center gap-1"
+                      >
+                        <span>O'tish</span>
+                        <ExternalLink className="w-3 h-3" />
+                      </a>
+                      <button
+                        type="button"
+                        onClick={() => setIsRedirectCancelled(true)}
+                        className="px-2 py-1.5 rounded-lg bg-gray-200 dark:bg-dark-700 text-gray-600 dark:text-gray-300 font-bold text-[10px] hover:bg-gray-300 dark:hover:bg-dark-600"
+                      >
+                        To'xtatish
+                      </button>
+                    </div>
+                  </div>
+                )}
 
                 {/* ANIMATED REAL-TIME ORDER TRACKER */}
                 <div className="p-5 rounded-2xl bg-gray-50 dark:bg-dark-800/80 border border-gray-200 dark:border-white/10 space-y-4">

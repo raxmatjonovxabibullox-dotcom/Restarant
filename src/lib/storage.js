@@ -9,7 +9,9 @@ const KEYS = {
   AUTH: 'zafaron_auth_v1',
   LANGUAGE: 'zafaron_language_v1',
   THEME: 'zafaron_theme_v1',
-  CART: 'zafaron_cart_v1'
+  CART: 'zafaron_cart_v1',
+  ADMIN_PROFILE: 'zafaron_admin_profile_v1',
+  AUTODIRECT: 'zafaron_autodirect_v1'
 };
 
 // Menu Items
@@ -178,5 +180,84 @@ export const saveStoredAuth = (auth) => {
     localStorage.setItem(KEYS.AUTH, JSON.stringify(auth));
   } else {
     localStorage.removeItem(KEYS.AUTH);
+  }
+};
+
+// Admin Profile (Avatar, Name, Role, Contact)
+export const DEFAULT_ADMIN_PROFILE = {
+  name: "Jhon Doe",
+  username: "admin",
+  displayName: "Jhon (Admin)",
+  role: "Boshqaruvchi Administrator & Best Seller",
+  badge: "Super Administrator",
+  email: "admin@zafaron.uz",
+  phone: "+998 (90) 123-45-67",
+  branch: "Zafaron Lounge Tashkent",
+  shiftHours: "09:00 - 23:00 (To'liq smena)",
+  avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80"
+};
+
+export const getStoredAdminProfile = () => {
+  try {
+    const data = localStorage.getItem(KEYS.ADMIN_PROFILE);
+    if (!data) {
+      localStorage.setItem(KEYS.ADMIN_PROFILE, JSON.stringify(DEFAULT_ADMIN_PROFILE));
+      return DEFAULT_ADMIN_PROFILE;
+    }
+    const parsed = JSON.parse(data);
+    return { ...DEFAULT_ADMIN_PROFILE, ...parsed };
+  } catch (e) {
+    return DEFAULT_ADMIN_PROFILE;
+  }
+};
+
+export const saveStoredAdminProfile = (profile) => {
+  try {
+    const current = getStoredAdminProfile();
+    const updated = { ...current, ...profile };
+    localStorage.setItem(KEYS.ADMIN_PROFILE, JSON.stringify(updated));
+    return updated;
+  } catch (e) {
+    console.error("Failed to save admin profile:", e);
+    return profile;
+  }
+};
+
+// Auto-Direct Settings (Orders & Reservations Auto-Routing + Telegram Auto-Redirect)
+export const DEFAULT_AUTODIRECT = {
+  enabled: true,
+  telegramDirect: true, // Orders and reservations directly forwarded to Telegram bot
+  kitchenDirect: true,  // Auto-forward order to Kitchen Display System (KDS)
+  customerDirectReply: true, // Auto-send direct confirmation to customer
+  autoRedirectSite: true, // Automatically redirect customer after placing order
+  autoRedirectDelay: 4, // Countdown in seconds before redirecting
+  redirectDestination: 'telegramBot', // 'telegramBot' | 'menu' | 'receipt'
+  telegramBotLink: 'https://t.me/zafaron_restarant_bot',
+  directMessageTemplate: "Hurmatli {customer}! Zafaron Restaurant & Lounge'dagi #{orderId} sonli buyurtmangiz qabul qilindi va tayyorlashga yo'naltirildi. Rahmat! 🍽✨"
+};
+
+export const getStoredAutoDirect = () => {
+  try {
+    const data = localStorage.getItem(KEYS.AUTODIRECT);
+    if (!data) {
+      localStorage.setItem(KEYS.AUTODIRECT, JSON.stringify(DEFAULT_AUTODIRECT));
+      return DEFAULT_AUTODIRECT;
+    }
+    const parsed = JSON.parse(data);
+    return { ...DEFAULT_AUTODIRECT, ...parsed };
+  } catch (e) {
+    return DEFAULT_AUTODIRECT;
+  }
+};
+
+export const saveStoredAutoDirect = (config) => {
+  try {
+    const current = getStoredAutoDirect();
+    const updated = { ...current, ...config };
+    localStorage.setItem(KEYS.AUTODIRECT, JSON.stringify(updated));
+    return updated;
+  } catch (e) {
+    console.error("Failed to save autodirect config:", e);
+    return config;
   }
 };
