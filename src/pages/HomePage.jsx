@@ -6,6 +6,7 @@ import { useCurrency } from '../context/CurrencyContext';
 import { useFavorites } from '../context/FavoritesContext';
 import { soundFx } from '../hooks/useSoundEffects';
 import { GoldParticles } from '../components/GoldParticles';
+import { GastroShowcase3D } from '../components/GastroShowcase3D';
 import {
   Sparkles,
   ArrowRight,
@@ -179,6 +180,9 @@ export const HomePage = ({ setActivePage, onOpenConcierge }) => {
           ))}
         </div>
       </section>
+
+      {/* 3D GASTRO SHOWCASE & CHEF'S TABLE EXPERIENCE */}
+      <GastroShowcase3D />
 
       {/* SPECIALS (CHEF'S SIGNATURE DISHES) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { useRestaurant } from '../context/RestaurantContext';
 import { soundFx } from '../hooks/useSoundEffects';
+import { luxuryConfetti } from '../utils/confetti';
 import { TableFloorPlan } from '../components/TableFloorPlan';
 import {
   CalendarDays,
@@ -97,7 +98,8 @@ export const ReservationPage = ({ setActivePage }) => {
 
     setIsSubmitting(true);
     try {
-      soundFx.playSuccessFanfare();
+      soundFx.playSuccess();
+      luxuryConfetti.burst({ x: 0.5, y: 0.35, count: 120 });
       const res = await makeReservation(formData);
       setSubmittedReservation(res);
       // Reset form

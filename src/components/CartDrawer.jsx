@@ -4,6 +4,7 @@ import { useRestaurant } from '../context/RestaurantContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useCurrency } from '../context/CurrencyContext';
 import { soundFx } from '../hooks/useSoundEffects';
+import { luxuryConfetti } from '../utils/confetti';
 import { PrintReceiptModal } from './PrintReceiptModal';
 import { getStoredAutoDirect } from '../lib/storage';
 import {
@@ -107,7 +108,8 @@ export const CartDrawer = () => {
 
     setIsSubmitting(true);
     try {
-      soundFx.playSuccessFanfare();
+      soundFx.playSuccess();
+      luxuryConfetti.burst({ x: 0.5, y: 0.4, count: 130 });
       const orderPayload = {
         items: cart,
         totalPrice: grandTotal,
