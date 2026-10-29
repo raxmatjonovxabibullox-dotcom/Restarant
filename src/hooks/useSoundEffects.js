@@ -87,6 +87,64 @@ class SoundSynthesizer {
     } catch {}
   }
 
+  // Crisp and satisfying "Di-ding!" (Correct / Success Chime)
+  playSuccess() {
+    if (this.muted) return;
+    try {
+      this.init();
+      if (!this.ctx) return;
+      const now = this.ctx.currentTime;
+
+      // Note 1: "Di" - crisp mid-high chime (E5: 659.25 Hz)
+      const osc1 = this.ctx.createOscillator();
+      const gain1 = this.ctx.createGain();
+      osc1.type = 'sine';
+      osc1.frequency.setValueAtTime(659.25, now);
+      gain1.gain.setValueAtTime(0.09, now);
+      gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+      osc1.connect(gain1);
+      gain1.connect(this.ctx.destination);
+      osc1.start(now);
+      osc1.stop(now + 0.12);
+
+      // Note 2: "Ding!" - bright high correct bell tone (B5 -> E6: 987.77 Hz -> 1318.5 Hz)
+      const osc2 = this.ctx.createOscillator();
+      const osc2Harmonic = this.ctx.createOscillator();
+      const gain2 = this.ctx.createGain();
+
+      osc2.type = 'sine';
+      osc2Harmonic.type = 'triangle';
+
+      const dingStart = now + 0.08;
+      const dingDuration = 0.50;
+
+      osc2.frequency.setValueAtTime(987.77, dingStart);
+      osc2.frequency.exponentialRampToValueAtTime(1318.5, dingStart + 0.06);
+
+      osc2Harmonic.frequency.setValueAtTime(1975.5, dingStart);
+      osc2Harmonic.frequency.exponentialRampToValueAtTime(2637.0, dingStart + 0.06);
+
+      gain2.gain.setValueAtTime(0.12, dingStart);
+      gain2.gain.exponentialRampToValueAtTime(0.001, dingStart + dingDuration);
+
+      osc2.connect(gain2);
+      osc2Harmonic.connect(gain2);
+      gain2.connect(this.ctx.destination);
+
+      osc2.start(dingStart);
+      osc2Harmonic.start(dingStart);
+      osc2.stop(dingStart + dingDuration);
+      osc2Harmonic.stop(dingStart + dingDuration);
+    } catch {
+      // AudioContext might need user interaction first
+    }
+  }
+
+  // Alias for playSuccess
+  playCorrect() {
+    this.playSuccess();
+  }
+
   // Success fanfare when order or reservation is successfully placed
   playSuccessFanfare() {
     if (this.muted) return;
