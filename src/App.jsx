@@ -17,6 +17,7 @@ import { LoginModal } from './components/LoginModal';
 import { ToastNotification } from './components/ToastNotification';
 import { AudioPlayer } from './components/AudioPlayer';
 import { SmartConciergeModal } from './components/SmartConciergeModal';
+import { FloatingVipHub } from './components/FloatingVipHub';
 
 // Pages
 import { HomePage } from './pages/HomePage';
@@ -170,6 +171,12 @@ function MainApp() {
 
           {/* Floating Luxury Lounge Audio Player */}
           <AudioPlayer />
+
+          {/* Floating VIP Hub & Golden Scroll Progress */}
+          <FloatingVipHub
+            setActivePage={handlePageChange}
+            onOpenConcierge={() => setIsConciergeOpen(true)}
+          />
         </>
       )}
 

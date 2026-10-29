@@ -21,6 +21,8 @@ import { KitchenDisplay } from '../components/admin/KitchenDisplay';
 import { TableOccupancyManager } from '../components/admin/TableOccupancyManager';
 import { PrintDailyReportModal } from '../components/admin/PrintDailyReportModal';
 import { PrintReceiptModal } from '../components/PrintReceiptModal';
+import { PosTerminal } from '../components/admin/PosTerminal';
+import { AdminAiCopilotModal } from '../components/admin/AdminAiCopilotModal';
 import {
   LayoutDashboard,
   UtensilsCrossed,
@@ -139,7 +141,9 @@ const MAXTON_I18N = {
     kitchenVelocity: "Oshxona Tezligi",
     hallOccupancy: "Zallar Bandligi",
     autoDirect: "Avto-Direct",
-    changeAvatar: "Avatar Almashtirish"
+    changeAvatar: "Avatar Almashtirish",
+    pos: "POS Kassa Terminali",
+    aiCopilot: "AI Boshqaruvchi"
   },
   ru: {
     brand: "Maxton",
@@ -208,7 +212,9 @@ const MAXTON_I18N = {
     kitchenVelocity: "Скорость Кухни",
     hallOccupancy: "Занятость Залов",
     autoDirect: "Авто-Директ",
-    changeAvatar: "Сменить аватар"
+    changeAvatar: "Сменить аватар",
+    pos: "POS Касса",
+    aiCopilot: "AI Ассистент"
   },
   en: {
     brand: "Maxton",
@@ -277,7 +283,9 @@ const MAXTON_I18N = {
     kitchenVelocity: "Kitchen Speed",
     hallOccupancy: "Hall Occupancy",
     autoDirect: "Auto-Direct",
-    changeAvatar: "Change Avatar"
+    changeAvatar: "Change Avatar",
+    pos: "POS Cash Terminal",
+    aiCopilot: "AI Co-Pilot"
   }
 };
 
@@ -338,6 +346,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
     resetToDefaultMenu,
     updateOrderStatus,
     updateReservationStatus,
+    placeOrder,
     showToast
   } = useRestaurant();
 
@@ -345,7 +354,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
   const m = MAXTON_I18N[lang] || MAXTON_I18N.uz;
 
   // Active navigation tab
-  // 'ecommerce', 'analysis', 'orders', 'reservations', 'menu', 'kds', 'settings', 'autoDirect', 'userProfile', 'widgets'
+  // 'ecommerce', 'analysis', 'orders', 'reservations', 'menu', 'kds', 'settings', 'autoDirect', 'userProfile', 'widgets', 'pos'
   const [activeTab, setActiveTab] = useState('ecommerce');
 
   // Sidebar collapse toggle (for responsive and desktop toggle)
@@ -357,6 +366,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [appsMenuOpen, setAppsMenuOpen] = useState(false);
+  const [isAiCopilotOpen, setIsAiCopilotOpen] = useState(false);
 
   // Admin Profile & Avatar State
   const [adminProfile, setAdminProfile] = useState(() => getStoredAdminProfile());
@@ -1121,6 +1131,25 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                 </span>
               )}
             </button>
+
+            <button
+              onClick={() => handleSelectTab('pos')}
+              className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
+                activeTab === 'pos'
+                  ? theme === 'dark' ? 'bg-[#1f2438] text-white font-bold' : 'bg-slate-100 text-slate-900 font-bold'
+                  : 'text-slate-400 hover:text-current hover:bg-slate-500/10'
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <UtensilsCrossed className="w-4 h-4 text-amber-500" />
+                {sidebarOpen && <span>{m.pos || "POS Kassa Terminali"}</span>}
+              </div>
+              {sidebarOpen && (
+                <span className="px-1.5 py-0.5 rounded text-[9px] font-black bg-amber-500/20 text-amber-400 border border-amber-500/30 animate-pulse">
+                  POS
+                </span>
+              )}
+            </button>
           </div>
 
           {/* Section: Pages */}
@@ -1551,6 +1580,30 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                 </div>
               )}
             </div>
+
+            {/* Quick POS Terminal Button */}
+            <button
+              onClick={() => handleSelectTab('pos')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all ${
+                activeTab === 'pos'
+                  ? 'bg-amber-500 text-dark-950 shadow-md shadow-amber-500/25 ring-2 ring-amber-500/40'
+                  : 'bg-amber-500/15 text-amber-400 hover:bg-amber-500/25 border border-amber-500/30'
+              }`}
+              title="Tezkor POS Kassa Terminali"
+            >
+              <UtensilsCrossed className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">POS Kassa</span>
+            </button>
+
+            {/* AI Executive Co-Pilot Button */}
+            <button
+              onClick={() => setIsAiCopilotOpen(true)}
+              className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-indigo-600/30 via-purple-600/30 to-amber-600/30 hover:brightness-125 border border-purple-500/40 text-purple-300 font-bold text-xs flex items-center gap-1.5 shadow-md shadow-purple-500/10 transition-all group"
+              title="Zafaron AI Manager Assistant"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-amber-400 group-hover:rotate-12 transition-transform" />
+              <span className="hidden sm:inline">AI Co-Pilot</span>
+            </button>
 
             {/* Shopping Cart Icon with Badge */}
             <button
@@ -3446,6 +3499,19 @@ export const AdminDashboard = ({ setIsAdminView }) => {
             </div>
           )}
 
+          {/* ================= VIEW 12: POS CASH REGISTER TERMINAL ================= */}
+          {activeTab === 'pos' && (
+            <PosTerminal
+              menuItems={menuItems}
+              onPlaceOrder={placeOrder}
+              onOpenReceipt={(order) => setSelectedOrderForReceipt(order)}
+              formatPrice={formatPrice}
+              theme={theme}
+              audioEnabled={audioEnabled}
+              showToast={showToast}
+            />
+          )}
+
         </main>
       </div>
 
@@ -4007,6 +4073,17 @@ export const AdminDashboard = ({ setIsAdminView }) => {
         reservations={reservations}
         menuItems={menuItems}
         formatPrice={formatPrice}
+      />
+
+      {/* AI Executive Co-Pilot Assistant Modal */}
+      <AdminAiCopilotModal
+        isOpen={isAiCopilotOpen}
+        onClose={() => setIsAiCopilotOpen(false)}
+        orders={orders}
+        reservations={reservations}
+        menuItems={menuItems}
+        theme={theme}
+        audioEnabled={audioEnabled}
       />
     </div>
   );
