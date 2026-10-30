@@ -18,7 +18,6 @@ import { ToastNotification } from './components/ToastNotification';
 import { AudioPlayer } from './components/AudioPlayer';
 import { SmartConciergeModal } from './components/SmartConciergeModal';
 import { FloatingVipHub } from './components/FloatingVipHub';
-import { DemodayCommandBar } from './components/DemodayCommandBar';
 
 // Pages
 import { HomePage } from './pages/HomePage';
@@ -209,12 +208,6 @@ function MainApp() {
         setActivePage={handlePageChange}
       />
 
-      {/* Demoday Showcase Command HUD & Live Order Simulator */}
-      <DemodayCommandBar
-        setActivePage={handlePageChange}
-        setIsAdminView={handleAdminViewChange}
-        onOpenConcierge={() => setIsConciergeOpen(true)}
-      />
     </div>
   );
 }

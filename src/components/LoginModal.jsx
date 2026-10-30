@@ -5,57 +5,72 @@ import { X, Lock, Mail, ShieldCheck, ArrowRight, Loader2, Database, Sparkles } f
 import { soundFx } from '../hooks/useSoundEffects';
 
 export const LoginModal = ({ setIsAdminView }) => {
-  const { isLoginModalOpen, closeLoginModal, login } = useAuth();
+  const { isLoginModalOpen, closeLoginModal, login, signUp } = useAuth();
   const { lang } = useLanguage();
 
+  const [authMode, setAuthMode] = useState('login'); // 'login' or 'signup'
+  const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
+  const [successMsg, setSuccessMsg] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (!isLoginModalOpen) return null;
 
   const tLogin = {
     uz: {
-      title: "Admin Panelga Kirish",
-      subtitle: "Supabase & Master Administrator boshqaruv tizimi",
-      securityBadge: "Supabase Authentication & Master Executive Suite",
-      emailLabel: "Admin Email",
-      emailPlaceholder: "admin@zafaron.uz yoki emailingiz",
+      title: authMode === 'login' ? "Admin Panelga Kirish" : "Yangi Admin Qo'shish (Supabase)",
+      subtitle: "Supabase Authentication & Master Administrator tizimi",
+      securityBadge: "Supabase Live Auth & Role-Based Access Control",
+      tabLogin: "Tizimga Kirish",
+      tabSignUp: "Ro'yxatdan O'tish",
+      nameLabel: "To'liq Ism (Full Name)",
+      namePlaceholder: "Masalan: Jasur Rahimov",
+      emailLabel: "Supabase Admin Email yoki Username",
+      emailPlaceholder: "admin@zafaron.uz yoki user@gmail.com",
       passwordLabel: "Maxfiy Parol",
       submitting: "Tekshirilmoqda...",
-      submitBtn: "Tizimga Kirish",
-      quickMasterBtn: "⚡ Master Admin sifatida tezkor kirish (1-Click)",
+      submitBtn: authMode === 'login' ? "Tizimga Kirish" : "Supabase Admin Sifatida Ro'yxatdan O'tish",
+      quickMasterBtn: "⚡ Master Admin (1-Click Tezkor Kirish)",
       quickFilled: "Master admin hisob ma'lumotlari kiritildi!",
-      notice: "Admin akkauntlari Supabase Authentication orqali boshqariladi. Tezkor kirish: admin@zafaron.uz / admin123",
+      notice: "Supabase foydalanuvchisi avtomatik tarzda to'liq Admin huquqi bilan qabul qilinadi. Baza: mvmrndhvcvjccliqyyvk.supabase.co",
       defaultError: "Login yoki parol noto'g'ri!"
     },
     ru: {
-      title: "Вход в Панель Управления",
-      subtitle: "Система управления через Supabase & Master Administrator",
-      securityBadge: "Supabase Authentication & Master Executive Suite",
-      emailLabel: "Email Администратора",
-      emailPlaceholder: "admin@zafaron.uz или ваш email",
+      title: authMode === 'login' ? "Вход в Панель Управления" : "Регистрация Админа (Supabase)",
+      subtitle: "Система аутентификации Supabase & Master Administrator",
+      securityBadge: "Supabase Live Auth & Контроль Доступа",
+      tabLogin: "Вход в Систему",
+      tabSignUp: "Регистрация",
+      nameLabel: "Полное Имя",
+      namePlaceholder: "Например: Жасур Рахимов",
+      emailLabel: "Email или Имя пользователя Supabase",
+      emailPlaceholder: "admin@zafaron.uz или user@gmail.com",
       passwordLabel: "Пароль",
-      submitting: "Проверка входа...",
-      submitBtn: "Войти в Систему",
-      quickMasterBtn: "⚡ Быстрый вход как Master Admin (1-Клик)",
+      submitting: "Проверка...",
+      submitBtn: authMode === 'login' ? "Войти в Систему" : "Зарегистрировать в Supabase",
+      quickMasterBtn: "⚡ Master Admin (Быстрый вход в 1-Клик)",
       quickFilled: "Данные Master Admin подставлены!",
-      notice: "Управление аккаунтами через Supabase. Для быстрого теста: admin@zafaron.uz / admin123",
+      notice: "Любой пользователь Supabase автоматически авторизуется как Администратор.",
       defaultError: "Неверный логин или пароль!"
     },
     en: {
-      title: "Administrator Portal",
-      subtitle: "Supabase & Master Administrator Management Suite",
-      securityBadge: "Supabase Authentication & Master Executive Suite",
-      emailLabel: "Admin Email",
-      emailPlaceholder: "admin@zafaron.uz or your email",
+      title: authMode === 'login' ? "Administrator Portal" : "Register Admin (Supabase)",
+      subtitle: "Supabase Authentication & Master Management Suite",
+      securityBadge: "Supabase Live Auth & Full Admin Suite",
+      tabLogin: "Sign In",
+      tabSignUp: "Register Admin",
+      nameLabel: "Full Name",
+      namePlaceholder: "e.g. Jasur Rahimov",
+      emailLabel: "Supabase Admin Email or Username",
+      emailPlaceholder: "admin@zafaron.uz or user@gmail.com",
       passwordLabel: "Password",
       submitting: "Verifying...",
-      submitBtn: "Sign In",
-      quickMasterBtn: "⚡ Quick Login as Master Admin (1-Click)",
+      submitBtn: authMode === 'login' ? "Sign In" : "Register & Enter Admin Panel",
+      quickMasterBtn: "⚡ Master Admin (1-Click Quick Access)",
       quickFilled: "Master Admin credentials applied!",
-      notice: "Admin management powered by Supabase. Fast access: admin@zafaron.uz / admin123",
+      notice: "Any Supabase user is instantly accepted with full administrative privileges.",
       defaultError: "Invalid login credentials!"
     }
   };
@@ -66,6 +81,7 @@ export const LoginModal = ({ setIsAdminView }) => {
     setEmail('admin@zafaron.uz');
     setPassword('admin123');
     setErrorMsg('');
+    setSuccessMsg('');
     setIsSubmitting(true);
     try {
       soundFx.playSuccessFanfare();
@@ -86,17 +102,27 @@ export const LoginModal = ({ setIsAdminView }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMsg('');
+    setSuccessMsg('');
     setIsSubmitting(true);
 
     try {
       soundFx.playPop();
-      const res = await login(email, password);
+      let res;
+      if (authMode === 'signup') {
+        res = await signUp(email, password, fullName);
+      } else {
+        res = await login(email, password);
+      }
+
       if (res.success) {
         soundFx.playSuccessFanfare();
-        closeLoginModal();
-        if (setIsAdminView) {
-          setIsAdminView(true);
-        }
+        setSuccessMsg("Muvaffaqiyatli qabul qilindi! Admin panelga yo'naltirilmoqda...");
+        setTimeout(() => {
+          closeLoginModal();
+          if (setIsAdminView) {
+            setIsAdminView(true);
+          }
+        }, 300);
       } else {
         soundFx.playChime();
         setErrorMsg(res.message || cur.defaultError);
@@ -153,11 +179,44 @@ export const LoginModal = ({ setIsAdminView }) => {
           </button>
         </div>
 
+        {/* Tab Switcher: Login vs SignUp */}
+        <div className="mb-4 grid grid-cols-2 p-1 rounded-2xl bg-gray-100 dark:bg-dark-800 border border-gray-200 dark:border-white/5">
+          <button
+            type="button"
+            onClick={() => { setAuthMode('login'); setErrorMsg(''); setSuccessMsg(''); }}
+            className={`py-2 text-xs font-bold rounded-xl transition-all ${
+              authMode === 'login'
+                ? 'bg-white dark:bg-dark-900 text-amber-500 dark:text-gold-400 shadow-sm'
+                : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'
+            }`}
+          >
+            {cur.tabLogin}
+          </button>
+          <button
+            type="button"
+            onClick={() => { setAuthMode('signup'); setErrorMsg(''); setSuccessMsg(''); }}
+            className={`py-2 text-xs font-bold rounded-xl transition-all ${
+              authMode === 'signup'
+                ? 'bg-white dark:bg-dark-900 text-amber-500 dark:text-gold-400 shadow-sm'
+                : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'
+            }`}
+          >
+            {cur.tabSignUp}
+          </button>
+        </div>
+
         {/* Supabase Security Badge */}
         <div className="mb-4 p-2.5 rounded-xl bg-gray-100 dark:bg-dark-800/80 border border-gray-200 dark:border-white/5 flex items-center gap-2.5 text-xs text-gray-600 dark:text-gray-300 font-medium">
           <Database className="w-4 h-4 shrink-0 text-emerald-500" />
           <span>{cur.securityBadge}</span>
         </div>
+
+        {/* Success message */}
+        {successMsg && (
+          <div className="mb-4 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-500 text-center font-medium leading-relaxed">
+            {successMsg}
+          </div>
+        )}
 
         {/* Error message */}
         {errorMsg && (
@@ -168,6 +227,30 @@ export const LoginModal = ({ setIsAdminView }) => {
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
+          {authMode === 'signup' && (
+            <div>
+              <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
+                {cur.nameLabel}
+              </label>
+              <div className="relative">
+                <div className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 flex items-center justify-center">
+                  <ShieldCheck className="w-4 h-4" />
+                </div>
+                <input
+                  id="signup-name"
+                  type="text"
+                  required
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  placeholder={cur.namePlaceholder}
+                  style={{ paddingLeft: '2.75rem' }}
+                  className="glass-input w-full !pl-11 text-sm"
+                  disabled={isSubmitting}
+                />
+              </div>
+            </div>
+          )}
+
           <div>
             <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
               {cur.emailLabel}

@@ -341,7 +341,7 @@ const PRESET_AVATARS = [
 ];
 
 export const AdminDashboard = ({ setIsAdminView }) => {
-  const { logout } = useAuth();
+  const { user: authUser, logout } = useAuth();
   const { lang, setLang, getLocalized } = useLanguage();
   const { theme, toggleTheme } = useTheme();
   const { formatPrice } = useCurrency();
@@ -379,17 +379,43 @@ export const AdminDashboard = ({ setIsAdminView }) => {
   const [appsMenuOpen, setAppsMenuOpen] = useState(false);
   const [isAiCopilotOpen, setIsAiCopilotOpen] = useState(false);
 
-  // Admin Profile & Avatar State
-  const [adminProfile, setAdminProfile] = useState(() => getStoredAdminProfile());
+  // Admin Profile & Avatar State - automatically populate from Supabase user if logged in
+  const [adminProfile, setAdminProfile] = useState(() => {
+    const stored = getStoredAdminProfile();
+    if (authUser) {
+      return {
+        ...stored,
+        name: authUser.displayName || authUser.username || stored.name,
+        displayName: authUser.displayName || authUser.username || stored.displayName,
+        email: authUser.email || stored.email,
+        badge: authUser.isSupabaseUser ? "Supabase Administrator" : stored.badge
+      };
+    }
+    return stored;
+  });
+
+  // Sync Supabase Auth User dynamically whenever authUser changes
+  useEffect(() => {
+    if (authUser) {
+      setAdminProfile(prev => ({
+        ...prev,
+        name: authUser.displayName || authUser.username || prev.name,
+        displayName: authUser.displayName || authUser.username || prev.displayName,
+        email: authUser.email || prev.email,
+        badge: authUser.isSupabaseUser ? "Supabase Administrator" : prev.badge
+      }));
+    }
+  }, [authUser]);
+
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
   const [avatarForm, setAvatarForm] = useState(() => ({
-    name: adminProfile.name || "Jhon Doe",
-    displayName: adminProfile.displayName || "Jhon (Admin)",
+    name: adminProfile.name || (authUser?.displayName || "Admin"),
+    displayName: adminProfile.displayName || (authUser?.displayName || "Admin"),
     role: adminProfile.role || "Boshqaruvchi Administrator & Best Seller",
     badge: adminProfile.badge || "Super Administrator",
     avatar: adminProfile.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80",
     phone: adminProfile.phone || "+998 (90) 123-45-67",
-    email: adminProfile.email || "admin@zafaron.uz",
+    email: authUser?.email || adminProfile.email || "admin@zafaron.uz",
     branch: adminProfile.branch || "Zafaron Lounge Tashkent",
     shiftHours: adminProfile.shiftHours || "09:00 - 23:00 (To'liq smena)"
   }));
@@ -402,17 +428,17 @@ export const AdminDashboard = ({ setIsAdminView }) => {
   // Synchronize avatarForm when adminProfile updates
   useEffect(() => {
     setAvatarForm({
-      name: adminProfile.name || "Jhon Doe",
-      displayName: adminProfile.displayName || "Jhon (Admin)",
+      name: adminProfile.name || (authUser?.displayName || "Admin"),
+      displayName: adminProfile.displayName || (authUser?.displayName || "Admin"),
       role: adminProfile.role || "Boshqaruvchi Administrator & Best Seller",
       badge: adminProfile.badge || "Super Administrator",
       avatar: adminProfile.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80",
       phone: adminProfile.phone || "+998 (90) 123-45-67",
-      email: adminProfile.email || "admin@zafaron.uz",
+      email: adminProfile.email || authUser?.email || "admin@zafaron.uz",
       branch: adminProfile.branch || "Zafaron Lounge Tashkent",
       shiftHours: adminProfile.shiftHours || "09:00 - 23:00 (To'liq smena)"
     });
-  }, [adminProfile]);
+  }, [adminProfile, authUser]);
 
   const handleSaveAvatar = (overrideAvatarUrl = null) => {
     const updated = {
@@ -1821,7 +1847,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                 >
                   <div className="space-y-1 relative z-10">
                     <h2 className="font-black text-lg text-current flex items-center gap-2">
-                      {m.congratulations}
+                      <span>{lang === 'uz' ? `Tabriklaymiz, ${adminProfile.displayName || adminProfile.name} 🎉` : lang === 'ru' ? `Поздравляем, ${adminProfile.displayName || adminProfile.name} 🎉` : `Congratulations, ${adminProfile.displayName || adminProfile.name} 🎉`}</span>
                     </h2>
                     <p className="text-xs text-slate-400">
                       {m.bestSellerSubtitle}
@@ -3206,11 +3232,16 @@ export const AdminDashboard = ({ setIsAdminView }) => {
 
                 <div className={`p-4 rounded-xl border space-y-3 text-xs ${theme === 'dark' ? 'bg-[#1c2032] border-[#252a42]' : 'bg-slate-50 border-slate-200'
                   }`}>
-                  <span className="font-bold text-sm text-current block pb-1 border-b border-inherit">Tizim Imtiyozlari & Sertifikatlar</span>
-                  <p className="flex justify-between"><span className="text-slate-400">Ruxsat darajasi:</span><span className="font-bold text-emerald-400">Cheklovsiz (Full Access) ✓</span></p>
-                  <p className="flex justify-between"><span className="text-slate-400">Halol Sifat Elchisi:</span><span className="font-bold text-amber-400">Sertifikatlangan 🏆</span></p>
-                  <p className="flex justify-between"><span className="text-slate-400">Telegram Bot Admin:</span><span className="font-bold text-blue-400">Faol Ulangan ✓</span></p>
-                  <p className="flex justify-between"><span className="text-slate-400">Oylik Sotuv Bonusi:</span><span className="font-bold text-emerald-400">+$1,250 USD</span></p>
+                  <span className="font-bold text-sm text-current block pb-1 border-b border-inherit flex items-center justify-between">
+                    <span>Supabase Sessiya & Autentifikatsiya</span>
+                    <span className="px-2 py-0.5 rounded-full text-[10px] bg-emerald-500/15 text-emerald-400 font-bold border border-emerald-500/30">
+                      Qabul Qilingan ✓
+                    </span>
+                  </span>
+                  <p className="flex justify-between items-center"><span className="text-slate-400">Foydalanuvchi:</span><span className="font-bold text-current">{authUser?.displayName || authUser?.username || adminProfile.name}</span></p>
+                  <p className="flex justify-between items-center"><span className="text-slate-400">Baza Manzili:</span><span className="font-mono text-[10px] text-amber-400">mvmrndhvcvjccliqyyvk.supabase.co</span></p>
+                  <p className="flex justify-between items-center"><span className="text-slate-400">Ruxsat Holati:</span><span className="font-bold text-emerald-400">Administrator (Executive Full)</span></p>
+                  <p className="flex justify-between items-center"><span className="text-slate-400">Kirish Vaqti:</span><span className="text-slate-300 font-mono text-[10px]">{authUser?.loggedInAt ? new Date(authUser.loggedInAt).toLocaleTimeString() : "Hozir (Active)"}</span></p>
                 </div>
               </div>
             </div>
