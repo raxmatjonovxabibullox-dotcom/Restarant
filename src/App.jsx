@@ -139,20 +139,24 @@ function MainApp() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // Strictly verify admin privileges
+  const hasAdminAccess = Boolean(isAdmin || getStoredAuth()?.role === 'admin');
+
   // If user logs out while in admin view, return to site
   useEffect(() => {
-    if (isAdminView && !isAdmin && !getStoredAuth()?.role) {
+    if (isAdminView && !hasAdminAccess) {
       setIsAdminView(false);
       setActivePage('home');
+      openLoginModal();
       if (window.location.pathname === '/admin') {
         window.history.replaceState({}, '', '/');
       }
     }
-  }, [isAdmin, isAdminView]);
+  }, [isAdminView, hasAdminAccess, openLoginModal]);
 
   return (
     <div className="min-h-screen bg-white dark:bg-dark-950 text-gray-900 dark:text-gray-100 flex flex-col transition-colors selection:bg-gold-500 selection:text-dark-950">
-      {isAdminView ? (
+      {(isAdminView && hasAdminAccess) ? (
         <AdminDashboard setIsAdminView={handleAdminViewChange} />
       ) : (
         <>

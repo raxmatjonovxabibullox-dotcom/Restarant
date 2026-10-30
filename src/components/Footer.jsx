@@ -1,11 +1,13 @@
 import React from 'react';
 import { useLanguage } from '../context/LanguageContext';
-import { UtensilsCrossed, Phone, MapPin, Clock, Send, Heart } from 'lucide-react';
+import { UtensilsCrossed, Phone, MapPin, Clock, Send, Heart, Lock, ShieldCheck } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 const CURRENT_YEAR = new Date().getFullYear();
 
 export const Footer = ({ setActivePage, setIsAdminView }) => {
   const { t } = useLanguage();
+  const { isAdmin } = useAuth();
 
   return (
     <footer className="bg-white dark:bg-dark-900 border-t border-gray-200 dark:border-white/10 pt-16 pb-12 transition-colors">
@@ -140,9 +142,15 @@ export const Footer = ({ setActivePage, setIsAdminView }) => {
           <div className="flex items-center gap-4">
             <button
               onClick={() => { setIsAdminView(true); window.scrollTo(0, 0); }}
-              className="text-gray-500 hover:text-gold-500 underline text-xs"
+              className="inline-flex items-center gap-1.5 text-gray-500 hover:text-gold-500 transition-colors text-xs group"
+              title={isAdmin ? "Admin Panel" : "Admin Panel (Login talab qilinadi)"}
             >
-              {t('nav.admin')}
+              {isAdmin ? (
+                <ShieldCheck className="w-3.5 h-3.5 text-gold-500" />
+              ) : (
+                <Lock className="w-3 h-3 text-gray-400 group-hover:text-gold-500 transition-colors" />
+              )}
+              <span className="underline">{t('nav.admin')}</span>
             </button>
             <span>•</span>
             <span className="flex items-center gap-1">
