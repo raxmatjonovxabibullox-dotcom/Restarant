@@ -23,6 +23,9 @@ import { PrintDailyReportModal } from '../components/admin/PrintDailyReportModal
 import { PrintReceiptModal } from '../components/PrintReceiptModal';
 import { PosTerminal } from '../components/admin/PosTerminal';
 import { AdminAiCopilotModal } from '../components/admin/AdminAiCopilotModal';
+import { VipSuiteManager } from '../components/admin/VipSuiteManager';
+import { TelegramBotManager } from '../components/admin/TelegramBotManager';
+import { ExecutiveTickerBar } from '../components/admin/ExecutiveTickerBar';
 import {
   LayoutDashboard,
   UtensilsCrossed,
@@ -69,7 +72,9 @@ import {
   ExternalLink,
   Image as ImageIcon,
   MessageSquare,
-  Bot
+  Bot,
+  Crown,
+  Radio
 } from 'lucide-react';
 
 // Tri-lingual dictionary specifically tailored for Maxton Executive Suite
@@ -143,7 +148,9 @@ const MAXTON_I18N = {
     autoDirect: "Avto-Direct",
     changeAvatar: "Avatar Almashtirish",
     pos: "POS Kassa Terminali",
-    aiCopilot: "AI Boshqaruvchi"
+    aiCopilot: "AI Boshqaruvchi",
+    vipSuite: "VIP Boshqaruv & Depozitlar",
+    telegramBot: "Telegram AI Boti"
   },
   ru: {
     brand: "Maxton",
@@ -214,7 +221,9 @@ const MAXTON_I18N = {
     autoDirect: "Авто-Директ",
     changeAvatar: "Сменить аватар",
     pos: "POS Касса",
-    aiCopilot: "AI Ассистент"
+    aiCopilot: "AI Ассистент",
+    vipSuite: "VIP Залы & Депозиты",
+    telegramBot: "Telegram AI Бот"
   },
   en: {
     brand: "Maxton",
@@ -285,7 +294,9 @@ const MAXTON_I18N = {
     autoDirect: "Auto-Direct",
     changeAvatar: "Change Avatar",
     pos: "POS Cash Terminal",
-    aiCopilot: "AI Co-Pilot"
+    aiCopilot: "AI Co-Pilot",
+    vipSuite: "VIP Suites & Deposits",
+    telegramBot: "Telegram AI Bot"
   }
 };
 
@@ -1177,6 +1188,24 @@ export const AdminDashboard = ({ setIsAdminView }) => {
             </button>
 
             <button
+              onClick={() => handleSelectTab('vipSuite')}
+              className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all ${activeTab === 'vipSuite'
+                  ? 'bg-gradient-to-r from-amber-500/20 to-yellow-500/10 text-amber-300 font-bold border border-amber-500/30 shadow-md shadow-amber-500/10'
+                  : 'text-slate-400 hover:text-current hover:bg-slate-500/10'
+                }`}
+            >
+              <div className="flex items-center gap-3">
+                <Crown className="w-4 h-4 text-amber-400" />
+                {sidebarOpen && <span>{m.vipSuite}</span>}
+              </div>
+              {sidebarOpen && (
+                <span className="px-1.5 py-0.5 rounded text-[9px] font-black bg-amber-500/20 text-amber-400 border border-amber-500/40">
+                  VIP 200K+
+                </span>
+              )}
+            </button>
+
+            <button
               onClick={() => handleSelectTab('userProfile')}
               className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-colors ${activeTab === 'userProfile'
                   ? theme === 'dark' ? 'bg-[#1f2438] text-white font-bold' : 'bg-slate-100 text-slate-900 font-bold'
@@ -1188,6 +1217,25 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                 {sidebarOpen && <span>{m.userProfile}</span>}
               </div>
               {sidebarOpen && <ChevronRight className="w-3.5 h-3.5 text-slate-500" />}
+            </button>
+
+            <button
+              onClick={() => handleSelectTab('telegramBot')}
+              className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all ${activeTab === 'telegramBot'
+                  ? 'bg-blue-600/20 text-blue-300 font-bold border border-blue-500/30 shadow-md shadow-blue-500/10'
+                  : 'text-slate-400 hover:text-current hover:bg-slate-500/10'
+                }`}
+            >
+              <div className="flex items-center gap-3">
+                <Bot className="w-4 h-4 text-cyan-400" />
+                {sidebarOpen && <span>{m.telegramBot}</span>}
+              </div>
+              {sidebarOpen && (
+                <span className="flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-black bg-emerald-500/20 text-emerald-400 border border-emerald-500/40">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  <span>ONLINE</span>
+                </span>
+              )}
             </button>
 
             <button
@@ -1472,18 +1520,19 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                   }`}>
                   <div className="flex items-center justify-between pb-2 border-b border-inherit mb-2">
                     <span className="font-bold text-xs uppercase tracking-wider">{m.appLauncher}</span>
-                    <span className="text-[10px] text-blue-500 font-bold">8 ta vosita</span>
+                    <span className="text-[10px] text-blue-500 font-bold">10 ta vosita</span>
                   </div>
                   <div className="grid grid-cols-3 gap-2 text-center text-[11px]">
                     {[
                       { tab: 'ecommerce', label: 'eCommerce', icon: '🛒', color: 'bg-blue-500/15 text-blue-400' },
+                      { tab: 'vipSuite', label: 'VIP Xonalar', icon: '👑', color: 'bg-amber-500/15 text-amber-400' },
+                      { tab: 'telegramBot', label: 'AI Bot Live', icon: '🤖', color: 'bg-cyan-500/15 text-cyan-400' },
                       { tab: 'menu', label: 'Taomnoma', icon: '🍽️', color: 'bg-fuchsia-500/15 text-fuchsia-400' },
                       { tab: 'orders', label: 'Buyurtmalar', icon: '🛍️', color: 'bg-emerald-500/15 text-emerald-400' },
                       { tab: 'kds', label: 'Oshxona', icon: '👨‍🍳', color: 'bg-amber-500/15 text-amber-400' },
                       { tab: 'tableOccupancy', label: 'Zal Xaritasi', icon: '📍', color: 'bg-indigo-500/15 text-indigo-400' },
                       { tab: 'reservations', label: 'Bandliklar', icon: '📅', color: 'bg-purple-500/15 text-purple-400' },
                       { tab: 'analysis', label: 'Tahlillar', icon: '📊', color: 'bg-cyan-500/15 text-cyan-400' },
-                      { tab: 'settings', label: 'Bot & AI', icon: '🤖', color: 'bg-teal-500/15 text-teal-400' },
                     ].map((app) => (
                       <button
                         key={app.tab}
@@ -1746,6 +1795,11 @@ export const AdminDashboard = ({ setIsAdminView }) => {
               <span>{m.settings}</span>
             </button>
           </div>
+        </div>
+
+        {/* EXECUTIVE REAL-TIME TICKER BAR */}
+        <div className="px-6 pb-2">
+          <ExecutiveTickerBar totalRevenue={totalRevenue} vipDepositTotal={500000} ordersCount={orders.length} />
         </div>
 
         {/* ================= MAIN CONTENT BODY ================= */}
@@ -3414,6 +3468,21 @@ export const AdminDashboard = ({ setIsAdminView }) => {
               formatPrice={formatPrice}
               theme={theme}
               audioEnabled={audioEnabled}
+              showToast={showToast}
+            />
+          )}
+
+          {/* ================= VIEW 13: VIP SUITE & DEPOSITS COMMAND CENTER ================= */}
+          {activeTab === 'vipSuite' && (
+            <VipSuiteManager
+              reservations={reservations}
+              showToast={showToast}
+            />
+          )}
+
+          {/* ================= VIEW 14: TELEGRAM AI BOT LIVE MONITOR ================= */}
+          {activeTab === 'telegramBot' && (
+            <TelegramBotManager
               showToast={showToast}
             />
           )}
