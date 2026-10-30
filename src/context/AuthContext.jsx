@@ -25,17 +25,15 @@ export const AuthProvider = ({ children }) => {
             username: session.user.email?.split('@')[0] || 'admin',
             displayName: session.user.user_metadata?.full_name || session.user.email,
             role: 'admin',
+            isSupabaseUser: true,
             loggedInAt: new Date().toISOString()
           };
           setUser(authUser);
           saveStoredAuth(authUser);
         } else {
-          // If no active Supabase session, keep local master admin if flagged, otherwise clear
-          const stored = getStoredAuth();
-          if (stored?.role === 'admin' && !session && !stored?.isLocalMaster) {
-            setUser(null);
-            saveStoredAuth(null);
-          }
+          // Strictly clear if no active Supabase session
+          setUser(null);
+          saveStoredAuth(null);
         }
         setIsLoadingAuth(false);
       }).catch(() => {
@@ -45,23 +43,21 @@ export const AuthProvider = ({ children }) => {
       // 2. Listen to Supabase Auth State changes (login, logout, token refresh)
       const { data: { subscription } } = client.auth.onAuthStateChange((event, session) => {
         if (!isMounted) return;
-        if (event === 'SIGNED_IN' && session?.user) {
+        if ((event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED') && session?.user) {
           const authUser = {
             id: session.user.id,
             email: session.user.email,
             username: session.user.email?.split('@')[0] || 'admin',
             displayName: session.user.user_metadata?.full_name || session.user.email,
             role: 'admin',
+            isSupabaseUser: true,
             loggedInAt: new Date().toISOString()
           };
           setUser(authUser);
           saveStoredAuth(authUser);
         } else if (event === 'SIGNED_OUT') {
-          const stored = getStoredAuth();
-          if (!stored?.isLocalMaster) {
-            setUser(null);
-            saveStoredAuth(null);
-          }
+          setUser(null);
+          saveStoredAuth(null);
         }
       });
 
@@ -74,109 +70,54 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  // Supabase Login with Master Admin fallback
+  // Pure Supabase Auth Login (boshqa parollar va lokal bypass mutlaqo taqiqlanadi)
   const login = async (emailInput, password) => {
     const cleanEmail = emailInput?.trim().toLowerCase();
     const cleanPassword = password?.trim();
 
-    // 1. Check Master Admin Credentials
-    const isMasterEmail = cleanEmail === 'admin@zafaron.uz' || cleanEmail === 'admin';
-    const validMasterPasswords = ['admin123', 'zafaron2025', 'zafaron2026', 'admin'];
-    
-    if (isMasterEmail && validMasterPasswords.includes(cleanPassword)) {
-      const masterUser = {
-        id: 'master-admin-zafaron',
-        email: 'admin@zafaron.uz',
-        username: 'admin',
-        displayName: 'Bosh Administrator (Executive Suite)',
-        role: 'admin',
-        isLocalMaster: true,
-        loggedInAt: new Date().toISOString()
+    if (!cleanEmail || !cleanPassword) {
+      return {
+        success: false,
+        message: "Supabase email va maxfiy parolni kiriting!"
       };
-      setUser(masterUser);
-      saveStoredAuth(masterUser);
-      return { success: true, user: masterUser };
     }
 
     const client = getSupabaseClient();
     if (!client) {
-      // If client not connected and not master credentials
       return {
         success: false,
-        message: "Supabase serveriga ulanish mavjud emas. Master admin uchun 'admin@zafaron.uz' / 'admin123' dan foydalaning!"
+        message: "Supabase serveriga ulanish mavjud emas! Sozlamalarni tekshiring."
       };
     }
 
-    // Supabase Login with flexible handling (accept unconfirmed email, auto-create, normalize username)
     let emailToUse = cleanEmail;
     if (!emailToUse.includes('@')) {
       emailToUse = `${cleanEmail}@zafaron.uz`;
     }
 
     try {
-      let { data, error } = await client.auth.signInWithPassword({
+      const { data, error } = await client.auth.signInWithPassword({
         email: emailToUse,
         password: cleanPassword
       });
 
-      // If email is not confirmed, Supabase throws error "Email not confirmed". We accept and proceed!
-      if (error && error.message?.toLowerCase().includes('email not confirmed')) {
-        const authUser = {
-          id: `supabase-${cleanEmail.replace(/[^a-zA-Z0-9]/g, '_')}`,
-          email: emailToUse,
-          username: emailToUse.split('@')[0],
-          displayName: emailToUse.split('@')[0],
-          role: 'admin',
-          isSupabaseUser: true,
-          unconfirmedEmailAccepted: true,
-          loggedInAt: new Date().toISOString()
-        };
-        setUser(authUser);
-        saveStoredAuth(authUser);
-        return { success: true, user: authUser };
-      }
-
-      // If invalid credentials, attempt sign up or retry with @gmail.com if user entered a bare name
-      if (error && (error.message?.includes('Invalid login credentials') || error.message?.includes('User not found'))) {
-        // Try to auto-register new Supabase user or accept as valid Supabase admin credential
-        try {
-          const signUpRes = await client.auth.signUp({
-            email: emailToUse,
-            password: cleanPassword,
-            options: {
-              data: {
-                full_name: emailToUse.split('@')[0],
-                role: 'admin'
-              }
-            }
-          });
-
-          if (signUpRes.data?.user) {
-            const authUser = {
-              id: signUpRes.data.user.id || `supabase-${cleanEmail.replace(/[^a-zA-Z0-9]/g, '_')}`,
-              email: signUpRes.data.user.email || emailToUse,
-              username: (signUpRes.data.user.email || emailToUse).split('@')[0],
-              displayName: signUpRes.data.user.user_metadata?.full_name || emailToUse.split('@')[0],
-              role: 'admin',
-              isSupabaseUser: true,
-              loggedInAt: new Date().toISOString()
-            };
-            setUser(authUser);
-            saveStoredAuth(authUser);
-            return { success: true, user: authUser };
-          }
-        } catch (signupErr) {
-          console.warn("Supabase auto-signup attempt:", signupErr);
+      if (error) {
+        if (error.message?.includes('Invalid login credentials')) {
+          return {
+            success: false,
+            message: "Supabase: Noto'g'ri login yoki parol! Boshqa parollar mumkin emas, faqat Supabase'dagi to'g'ri foydalanuvchi qabul qilinadi."
+          };
         }
-
+        if (error.message?.toLowerCase().includes('email not confirmed')) {
+          return {
+            success: false,
+            message: "Supabase: Pochtangiz (Email) tasdiqlanmagan. Iltimos pochtangizdagi tasdiqlash xatini tekshiring yoki yangi hisob oching."
+          };
+        }
         return {
           success: false,
-          message: "Supabase foydalanuvchisi topilmadi yoki parol noto'g'ri. Iltimos 'Ro'yxatdan o'tish' orqali yangi admin yarating yoki Master Admindan ('admin@zafaron.uz' / 'admin123') foydalaning."
+          message: `Supabase: ${error.message}`
         };
-      }
-
-      if (error) {
-        return { success: false, message: error.message };
       }
 
       if (data?.user) {
@@ -194,9 +135,9 @@ export const AuthProvider = ({ children }) => {
         return { success: true, user: authUser };
       }
 
-      return { success: false, message: "Foydalanuvchi ma'lumotlari topilmadi!" };
+      return { success: false, message: "Supabase foydalanuvchisi topilmadi!" };
     } catch (err) {
-      return { success: false, message: err.message || "Tizimga kirishda xatolik yuz berdi" };
+      return { success: false, message: err.message || "Supabase tizimiga kirishda xatolik yuz berdi" };
     }
   };
 
@@ -232,24 +173,27 @@ export const AuthProvider = ({ children }) => {
       });
 
       if (error) {
-        return { success: false, message: error.message };
+        return { success: false, message: `Supabase: ${error.message}` };
       }
 
-      // Auto-login the user immediately upon Supabase sign-up!
-      const authUser = {
-        id: data.user?.id || `supabase-${emailToUse.replace(/[^a-zA-Z0-9]/g, '_')}`,
-        email: emailToUse,
-        username: emailToUse.split('@')[0],
-        displayName: fullName.trim() || data.user?.user_metadata?.full_name || emailToUse.split('@')[0],
-        role: 'admin',
-        isSupabaseUser: true,
-        loggedInAt: new Date().toISOString()
-      };
-      setUser(authUser);
-      saveStoredAuth(authUser);
-      return { success: true, user: authUser };
+      if (data?.user) {
+        const authUser = {
+          id: data.user.id,
+          email: data.user.email || emailToUse,
+          username: (data.user.email || emailToUse).split('@')[0],
+          displayName: fullName.trim() || data.user.user_metadata?.full_name || emailToUse.split('@')[0],
+          role: 'admin',
+          isSupabaseUser: true,
+          loggedInAt: new Date().toISOString()
+        };
+        setUser(authUser);
+        saveStoredAuth(authUser);
+        return { success: true, user: authUser };
+      }
+
+      return { success: false, message: "Supabase'da foydalanuvchi yaratilmadi!" };
     } catch (err) {
-      return { success: false, message: err.message || "Ro'yxatdan o'tishda xatolik yuz berdi" };
+      return { success: false, message: err.message || "Supabase ro'yxatdan o'tish xatosi" };
     }
   };
 

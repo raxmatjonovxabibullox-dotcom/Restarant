@@ -20,84 +20,56 @@ export const LoginModal = ({ setIsAdminView }) => {
 
   const tLogin = {
     uz: {
-      title: authMode === 'login' ? "Admin Panelga Kirish" : "Yangi Admin Qo'shish (Supabase)",
-      subtitle: "Supabase Authentication & Master Administrator tizimi",
+      title: authMode === 'login' ? "Supabase Admin Kirish" : "Yangi Supabase Admin Qo'shish",
+      subtitle: "Faqat rasmiy Supabase Authentication tizimi orqali",
       securityBadge: "Supabase Live Auth & Role-Based Access Control",
-      tabLogin: "Tizimga Kirish",
-      tabSignUp: "Ro'yxatdan O'tish",
+      tabLogin: "Tizimga Kirish (Supabase)",
+      tabSignUp: "Ro'yxatdan O'tish (Supabase)",
       nameLabel: "To'liq Ism (Full Name)",
       namePlaceholder: "Masalan: Jasur Rahimov",
-      emailLabel: "Supabase Admin Email yoki Username",
+      emailLabel: "Supabase Email yoki Foydalanuvchi nomi",
       emailPlaceholder: "admin@zafaron.uz yoki user@gmail.com",
       passwordLabel: "Maxfiy Parol",
-      submitting: "Tekshirilmoqda...",
-      submitBtn: authMode === 'login' ? "Tizimga Kirish" : "Supabase Admin Sifatida Ro'yxatdan O'tish",
-      quickMasterBtn: "⚡ Master Admin (1-Click Tezkor Kirish)",
-      quickFilled: "Master admin hisob ma'lumotlari kiritildi!",
-      notice: "Supabase foydalanuvchisi avtomatik tarzda to'liq Admin huquqi bilan qabul qilinadi. Baza: mvmrndhvcvjccliqyyvk.supabase.co",
-      defaultError: "Login yoki parol noto'g'ri!"
+      submitting: "Supabase tekshirmoqda...",
+      submitBtn: authMode === 'login' ? "Supabase orqali Kirish" : "Supabase'da Ro'yxatdan O'tish",
+      notice: "🔒 Boshqa parollar mumkin emas! Faqat Supabase bazasida mavjud bo'lgan foydalanuvchilar qabul qilinadi. Baza: mvmrndhvcvjccliqyyvk.supabase.co",
+      defaultError: "Login yoki parol noto'g'ri! Faqat Supabase foydalanuvchilari qabul qilinadi."
     },
     ru: {
-      title: authMode === 'login' ? "Вход в Панель Управления" : "Регистрация Админа (Supabase)",
-      subtitle: "Система аутентификации Supabase & Master Administrator",
-      securityBadge: "Supabase Live Auth & Контроль Доступа",
-      tabLogin: "Вход в Систему",
-      tabSignUp: "Регистрация",
+      title: authMode === 'login' ? "Вход в Supabase Админ" : "Регистрация в Supabase",
+      subtitle: "Исключительно через официальную аутентификацию Supabase",
+      securityBadge: "Supabase Live Auth & Защита Данных",
+      tabLogin: "Вход (Supabase)",
+      tabSignUp: "Регистрация (Supabase)",
       nameLabel: "Полное Имя",
       namePlaceholder: "Например: Жасур Рахимов",
       emailLabel: "Email или Имя пользователя Supabase",
       emailPlaceholder: "admin@zafaron.uz или user@gmail.com",
       passwordLabel: "Пароль",
-      submitting: "Проверка...",
-      submitBtn: authMode === 'login' ? "Войти в Систему" : "Зарегистрировать в Supabase",
-      quickMasterBtn: "⚡ Master Admin (Быстрый вход в 1-Клик)",
-      quickFilled: "Данные Master Admin подставлены!",
-      notice: "Любой пользователь Supabase автоматически авторизуется как Администратор.",
-      defaultError: "Неверный логин или пароль!"
+      submitting: "Supabase проверяет...",
+      submitBtn: authMode === 'login' ? "Войти через Supabase" : "Зарегистрироваться в Supabase",
+      notice: "🔒 Другие пароли отключены! Доступ разрешен только пользователям базы данных Supabase.",
+      defaultError: "Неверный логин или пароль! Доступ только для пользователей Supabase."
     },
     en: {
-      title: authMode === 'login' ? "Administrator Portal" : "Register Admin (Supabase)",
-      subtitle: "Supabase Authentication & Master Management Suite",
-      securityBadge: "Supabase Live Auth & Full Admin Suite",
-      tabLogin: "Sign In",
-      tabSignUp: "Register Admin",
+      title: authMode === 'login' ? "Supabase Admin Portal" : "Register Supabase Admin",
+      subtitle: "Strictly authenticated via official Supabase Auth",
+      securityBadge: "Supabase Live Auth & Role-Based Security",
+      tabLogin: "Sign In (Supabase)",
+      tabSignUp: "Register (Supabase)",
       nameLabel: "Full Name",
       namePlaceholder: "e.g. Jasur Rahimov",
-      emailLabel: "Supabase Admin Email or Username",
+      emailLabel: "Supabase Email or Username",
       emailPlaceholder: "admin@zafaron.uz or user@gmail.com",
       passwordLabel: "Password",
-      submitting: "Verifying...",
-      submitBtn: authMode === 'login' ? "Sign In" : "Register & Enter Admin Panel",
-      quickMasterBtn: "⚡ Master Admin (1-Click Quick Access)",
-      quickFilled: "Master Admin credentials applied!",
-      notice: "Any Supabase user is instantly accepted with full administrative privileges.",
-      defaultError: "Invalid login credentials!"
+      submitting: "Verifying with Supabase...",
+      submitBtn: authMode === 'login' ? "Sign In with Supabase" : "Create Account in Supabase",
+      notice: "🔒 Other passwords are not allowed! Only verified Supabase users can access the system.",
+      defaultError: "Invalid credentials! Only authorized Supabase users are accepted."
     }
   };
 
   const cur = tLogin[lang] || tLogin.uz;
-
-  const handleQuickMasterLogin = async () => {
-    setEmail('admin@zafaron.uz');
-    setPassword('admin123');
-    setErrorMsg('');
-    setSuccessMsg('');
-    setIsSubmitting(true);
-    try {
-      soundFx.playSuccessFanfare();
-      const res = await login('admin@zafaron.uz', 'admin123');
-      if (res.success) {
-        closeLoginModal();
-        if (setIsAdminView) setIsAdminView(true);
-      } else {
-        setErrorMsg(res.message || cur.defaultError);
-      }
-    } catch (err) {
-      setErrorMsg(err.message || cur.defaultError);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -116,7 +88,7 @@ export const LoginModal = ({ setIsAdminView }) => {
 
       if (res.success) {
         soundFx.playSuccessFanfare();
-        setSuccessMsg("Muvaffaqiyatli qabul qilindi! Admin panelga yo'naltirilmoqda...");
+        setSuccessMsg("Supabase foydalanuvchisi qabul qilindi! Admin panel ochilmoqda...");
         setTimeout(() => {
           closeLoginModal();
           if (setIsAdminView) {
@@ -164,19 +136,6 @@ export const LoginModal = ({ setIsAdminView }) => {
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 max-w-xs mx-auto">
             {cur.subtitle}
           </p>
-        </div>
-
-        {/* 1-Click Quick Demo / Master Admin Login Button */}
-        <div className="mb-4">
-          <button
-            type="button"
-            onClick={handleQuickMasterLogin}
-            disabled={isSubmitting}
-            className="w-full py-2.5 px-3 rounded-2xl bg-amber-500/10 hover:bg-amber-500/20 border border-gold-500/30 text-gold-500 text-xs font-bold flex items-center justify-center gap-2 transition-all hover:scale-[1.01] shadow-sm"
-          >
-            <Sparkles className="w-4 h-4 text-gold-400" />
-            <span>{cur.quickMasterBtn}</span>
-          </button>
         </div>
 
         {/* Tab Switcher: Login vs SignUp */}

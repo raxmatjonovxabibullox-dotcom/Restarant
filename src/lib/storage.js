@@ -183,11 +183,18 @@ export const saveStoredCart = (cart) => {
   }
 };
 
-// Auth
+// Auth (Faqat Supabase foydalanuvchilari qabul qilinadi)
 export const getStoredAuth = () => {
   try {
     const data = localStorage.getItem(KEYS.AUTH);
-    return data ? JSON.parse(data) : null;
+    if (!data) return null;
+    const parsed = JSON.parse(data);
+    // User supabasedan bo'lishi shart, boshqa parollar va lokal master qat'iyan taqiqlanadi!
+    if (parsed?.isLocalMaster || !parsed?.isSupabaseUser) {
+      localStorage.removeItem(KEYS.AUTH);
+      return null;
+    }
+    return parsed;
   } catch (e) {
     return null;
   }
