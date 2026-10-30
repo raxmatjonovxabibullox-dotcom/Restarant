@@ -39,7 +39,7 @@ export const Footer = ({ setActivePage, setIsAdminView }) => {
                 {t('footer.organic')}
               </span>
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-blue-500/10 text-blue-400 border border-blue-500/20">
-                🚭 Spirtsiz & Tamakisiz
+                {t('footer.alcoholFree')}
               </span>
             </div>
           </div>

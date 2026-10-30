@@ -5,12 +5,8 @@ import {
   Award,
   ShieldCheck,
   ShoppingBag,
-  Star,
   Info,
-  Clock,
-  Utensils,
-  ChevronRight,
-  CheckCircle2
+  ChevronRight
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useCart } from '../context/CartContext';
@@ -32,7 +28,11 @@ const SIGNATURE_DISHES = [
       en: "Mountain saffron, tender lamb, kazi & quail eggs"
     },
     price: 58000,
-    prepTime: "25 daqiqa",
+    prepTime: {
+      uz: "25 daqiqa",
+      ru: "25 минут",
+      en: "25 mins"
+    },
     image: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1200&q=80",
     chefNote: {
       uz: "Bosh oshpazimiz 12 xil noyob ziravor va tabiiy tog' za'faroni bilan 4 soat mobaynida past olovda damlaydi.",
@@ -45,15 +45,31 @@ const SIGNATURE_DISHES = [
       en: "Signature Saffron Tea & Tomato Salad"
     },
     metrics: [
-      { label: "Shohona Aromat", value: "99%", color: "from-amber-500 to-yellow-400" },
-      { label: "Mayinlik & Shiradorlik", value: "100%", color: "from-orange-500 to-amber-500" },
-      { label: "Halol Sertifikati", value: "100%", color: "from-emerald-500 to-teal-400" },
-      { label: "VIP Reyting", value: "5.0 ★", color: "from-gold-400 to-yellow-500" }
+      {
+        label: { uz: "Shohona Aromat", ru: "Королевский Аромат", en: "Royal Aroma" },
+        value: "99%",
+        color: "from-amber-500 to-yellow-400"
+      },
+      {
+        label: { uz: "Mayinlik & Shiradorlik", ru: "Нежность и Сочность", en: "Tenderness & Juiciness" },
+        value: "100%",
+        color: "from-orange-500 to-amber-500"
+      },
+      {
+        label: { uz: "Halol Sertifikati", ru: "Халяль Стандарт", en: "Halal Certified" },
+        value: "100%",
+        color: "from-emerald-500 to-teal-400"
+      },
+      {
+        label: { uz: "VIP Reyting", ru: "VIP Рейтинг", en: "VIP Rating" },
+        value: "5.0 ★",
+        color: "from-gold-400 to-yellow-500"
+      }
     ],
     hotspots: [
-      { x: "32%", y: "42%", label: "Sara Lahm Go'sht" },
-      { x: "55%", y: "30%", label: "Tabiiy Za'faron" },
-      { x: "68%", y: "55%", label: "Shohona Qazi" }
+      { x: "32%", y: "42%", label: { uz: "Sara Lahm Go'sht", ru: "Отборное Мясо", en: "Choice Lamb Cut" } },
+      { x: "55%", y: "30%", label: { uz: "Tabiiy Za'faron", ru: "Горный Шафран", en: "Pure Saffron" } },
+      { x: "68%", y: "55%", label: { uz: "Shohona Qazi", ru: "Праздничный Казы", en: "Royal Kazi" } }
     ]
   },
   {
@@ -69,7 +85,11 @@ const SIGNATURE_DISHES = [
       en: "1.2 kg prime dry-aged beef over oak charcoal with rosemary butter"
     },
     price: 320000,
-    prepTime: "30 daqiqa",
+    prepTime: {
+      uz: "30 daqiqa",
+      ru: "30 минут",
+      en: "30 mins"
+    },
     image: "https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=1200&q=80",
     chefNote: {
       uz: "45 kun quruq usulda yetiltirilgan marmar mol go'shti, 450°C olovda pishirilib, shirasi ichida muhrlanadi.",
@@ -82,14 +102,30 @@ const SIGNATURE_DISHES = [
       en: "Charred grill veggies & house chimichurri"
     },
     metrics: [
-      { label: "Shiradorlik", value: "100%", color: "from-red-500 to-rose-400" },
-      { label: "Cho'g' Tutuni Aromatici", value: "98%", color: "from-amber-600 to-orange-500" },
-      { label: "Halol Standarti", value: "100%", color: "from-emerald-500 to-teal-400" },
-      { label: "Eksklyuzivlik", value: "Ultra VIP", color: "from-gold-400 to-yellow-500" }
+      {
+        label: { uz: "Shiradorlik", ru: "Сочность", en: "Juiciness" },
+        value: "100%",
+        color: "from-red-500 to-rose-400"
+      },
+      {
+        label: { uz: "Cho'g' Tutuni Aromatici", ru: "Древесный Аромат", en: "Oak Smoke Aroma" },
+        value: "98%",
+        color: "from-amber-600 to-orange-500"
+      },
+      {
+        label: { uz: "Halol Standarti", ru: "Халяль Стандарт", en: "Halal Standard" },
+        value: "100%",
+        color: "from-emerald-500 to-teal-400"
+      },
+      {
+        label: { uz: "Eksklyuzivlik", ru: "Эксклюзивность", en: "Exclusivity" },
+        value: "Ultra VIP",
+        color: "from-gold-400 to-yellow-500"
+      }
     ],
     hotspots: [
-      { x: "40%", y: "38%", label: "Marmar Qovurg'a" },
-      { x: "65%", y: "50%", label: "Yog'och Cho'g'i Qobiq" }
+      { x: "40%", y: "38%", label: { uz: "Marmar Qovurg'a", ru: "Мраморное Ребро", en: "Marbled Rib" } },
+      { x: "65%", y: "50%", label: { uz: "Yog'och Cho'g'i Qobiq", ru: "Угольная Корочка", en: "Seared Crust" } }
     ]
   },
   {
@@ -105,7 +141,11 @@ const SIGNATURE_DISHES = [
       en: "Creamy artisanal burrata, sweet cherry tomatoes & zaatar pesto"
     },
     price: 65000,
-    prepTime: "15 daqiqa",
+    prepTime: {
+      uz: "15 daqiqa",
+      ru: "15 минут",
+      en: "15 mins"
+    },
     image: "https://images.unsplash.com/photo-1592417817098-8f3d69109853?auto=format&fit=crop&w=1200&q=80",
     chefNote: {
       uz: "Har kuni tongda tayyorlanadigan yangi qaymoqli Burrata pishlog'i va Eron za'faron moyi qo'shimchasi.",
@@ -113,19 +153,35 @@ const SIGNATURE_DISHES = [
       en: "Crafted fresh every morning with saffron-infused extra virgin olive oil."
     },
     pairing: {
-      uz: "Tandirda yopilgan yangi fokaсha noni",
+      uz: "Tandirda yopilgan yangi fokacha noni",
       ru: "Свежая тандырная фокачча",
       en: "Warm clay-oven focaccia"
     },
     metrics: [
-      { label: "Yengillik & Mayinlik", value: "100%", color: "from-emerald-400 to-teal-300" },
-      { label: "Qaymoq Shirasi", value: "97%", color: "from-amber-400 to-yellow-300" },
-      { label: "Yangi Tayyorlangan", value: "Bugun", color: "from-blue-400 to-cyan-300" },
-      { label: "Gurmanlar Tanlovi", value: "5.0 ★", color: "from-gold-400 to-yellow-500" }
+      {
+        label: { uz: "Yengillik & Mayinlik", ru: "Легкость и Нежность", en: "Lightness & Softness" },
+        value: "100%",
+        color: "from-emerald-400 to-teal-300"
+      },
+      {
+        label: { uz: "Qaymoq Shirasi", ru: "Сливочный Вкус", en: "Rich Creaminess" },
+        value: "97%",
+        color: "from-amber-400 to-yellow-300"
+      },
+      {
+        label: { uz: "Yangi Tayyorlangan", ru: "Свежесть", en: "Freshness" },
+        value: "100%",
+        color: "from-blue-400 to-cyan-300"
+      },
+      {
+        label: { uz: "Gurmanlar Tanlovi", ru: "Выбор Гурманов", en: "Gourmet Choice" },
+        value: "5.0 ★",
+        color: "from-gold-400 to-yellow-500"
+      }
     ],
     hotspots: [
-      { x: "50%", y: "45%", label: "Qaymoqli Markaz" },
-      { x: "35%", y: "60%", label: "Zaatar Moyi" }
+      { x: "50%", y: "45%", label: { uz: "Qaymoqli Markaz", ru: "Сливочный Центр", en: "Creamy Heart" } },
+      { x: "35%", y: "60%", label: { uz: "Zaatar Moyi", ru: "Масло Заатара", en: "Zaatar Infusion" } }
     ]
   },
   {
@@ -138,47 +194,109 @@ const SIGNATURE_DISHES = [
     subtitle: {
       uz: "Mayin qatlama xamir, sara pista mag'zi, tog' asali va za'faron sharbati",
       ru: "40 слоев тончайшего теста, фисташки, горный мед и шафран",
-      en: "40 whisper-thin layers, Gaziantep pistachios, mountain honey & saffron"
+      en: "40 whisper-thin layers, Gaziantep pistachios, mountain honey & edible 24K gold"
     },
-    price: 45000,
-    prepTime: "10 daqiqa",
+    price: 48000,
+    prepTime: {
+      uz: "10 daqiqa",
+      ru: "10 минут",
+      en: "10 mins"
+    },
     image: "https://images.unsplash.com/photo-1519676867240-f03562e64548?auto=format&fit=crop&w=1200&q=80",
     chefNote: {
-      uz: "Qo'lda yoyilgan 40 qavat mayin xamir va Turkiyaning Gaziantep shahridan keltirilgan zumrad pista.",
-      ru: "Тончайшее тесто ручной раскатки и отборные изумрудные фисташки из Газиантепа.",
-      en: "Hand-rolled 40-layer pastry with emerald pistachios from Gaziantep."
+      uz: "Qadimiy Gaziantep uslubida 40 qavat yupqa xamir, Eron pista mag'zi va tabiiy asal bilan tayyorlangan shohona shirinlik.",
+      ru: "Традиционная пахлава по рецепту Газиантепа с горным медом и съедобным золотом.",
+      en: "Authentic Gaziantep recipe with wild mountain honey, pistachios, and edible gold leaf."
     },
     pairing: {
-      uz: "Qaynoq Turk Qahvasi yoki Zafaron Choyi",
-      ru: "Кофе по-восточному или шафрановый чай",
-      en: "Traditional Turkish coffee or saffron infusion"
+      uz: "Zafaron tog' choyi yoki Turkcha qahva",
+      ru: "Шафрановый горный чай или кофе по-восточному",
+      en: "Signature saffron herbal tea or Turkish coffee"
     },
     metrics: [
-      { label: "Shirinlik Balansi", value: "Mukammal", color: "from-amber-500 to-yellow-400" },
-      { label: "Qatlama Qisirlashi", value: "100%", color: "from-orange-500 to-amber-400" },
-      { label: "Gaziantep Pistasi", value: "100%", color: "from-emerald-500 to-teal-400" },
-      { label: "Oltin Hashamat", value: "24K", color: "from-gold-400 to-yellow-300" }
+      {
+        label: { uz: "Qarsildoq Qatlam", ru: "Хрусткость Слоев", en: "Crispy Layers" },
+        value: "100%",
+        color: "from-yellow-400 to-amber-500"
+      },
+      {
+        label: { uz: "Pista Mag'zi", ru: "Изумрудные Фисташки", en: "Green Pistachios" },
+        value: "100%",
+        color: "from-emerald-400 to-teal-400"
+      },
+      {
+        label: { uz: "Asal Shirasi", ru: "Медовая Сладость", en: "Natural Honey" },
+        value: "95%",
+        color: "from-amber-400 to-orange-400"
+      },
+      {
+        label: { uz: "Shohona Sertifikat", ru: "Королевский Сертификат", en: "Royal Grade" },
+        value: "VIP 24K",
+        color: "from-gold-400 to-yellow-500"
+      }
     ],
     hotspots: [
-      { x: "48%", y: "40%", label: "40 Qavat Xamir" },
-      { x: "62%", y: "58%", label: "Zumrad Pista" }
+      { x: "45%", y: "40%", label: { uz: "24K Oltin Barg", ru: "24K Пищевое Золото", en: "24K Edible Gold" } },
+      { x: "60%", y: "55%", label: { uz: "Yashil Pista Mag'zi", ru: "Фисташковое Сердце", en: "Pistachio Filling" } }
     ]
   }
 ];
 
 export const GastroShowcase3D = ({ onAddToCartSuccess }) => {
-  const { lang } = useLanguage();
+  const { lang, getLocalized } = useLanguage();
   const { addToCart } = useCart();
   const { formatPrice } = useCurrency();
+
   const [selectedIdx, setSelectedIdx] = useState(0);
   const [activeHotspot, setActiveHotspot] = useState(null);
   const [isHovered, setIsHovered] = useState(false);
 
+  const tGastro = {
+    uz: {
+      badge: "Zafaron 3D Oshpazlik San'ati Tajribasi",
+      sectionTitle: "Shohona Gastronomiya",
+      sectionHighlight: "Durdonalari",
+      sectionDesc: "Har bir taom — san'at asari. Bosh oshpazimizning mualliflik durdonalari bilan 3D interaktiv shaklda tanishing, tarkibiy qismlarni kashf eting va didingizga mos shohona lazzatni tanlang.",
+      halalBadge: "100% Halol",
+      specialPriceLabel: "Maxsus Narx",
+      chefAward: "Bosh Oshpazning Faxriy Tavsiyasi",
+      pairingTitle: "Tavsiya Etiladigan Lazzat Uyg'unligi:",
+      metricsTitle: "Gastronomik Indeks & Lazzat Metrikasi:",
+      addToCartBtn: "Savatga Qo'shish"
+    },
+    ru: {
+      badge: "Zafaron 3D Авторский Стол Шеф-Повара",
+      sectionTitle: "Королевская Гастрономия",
+      sectionHighlight: "Шедевры Вкуса",
+      sectionDesc: "Каждое блюдо — произведение искусства. Исследуйте авторские шедевры нашего шеф-повара в интерактивном формате, изучайте ингредиенты и выбирайте королевский вкус.",
+      halalBadge: "100% Халяль",
+      specialPriceLabel: "Особая Цена",
+      chefAward: "Почетная Рекомендация Шеф-Повара",
+      pairingTitle: "Идеальное Гастрономическое Сочетание:",
+      metricsTitle: "Гастрономический Индекс и Метрика Вкуса:",
+      addToCartBtn: "Добавить в Корзину"
+    },
+    en: {
+      badge: "Zafaron 3D Chef's Table Experience",
+      sectionTitle: "Royal Gastronomic",
+      sectionHighlight: "Masterpieces",
+      sectionDesc: "Every dish is a work of culinary art. Explore our executive chef's signature masterpieces interactively, uncover premium ingredients and experience dining excellence.",
+      halalBadge: "100% Halal",
+      specialPriceLabel: "Signature Price",
+      chefAward: "Executive Chef's Signature Choice",
+      pairingTitle: "Sommelier Recommended Pairing:",
+      metricsTitle: "Gastronomic Index & Flavor Metrics:",
+      addToCartBtn: "Add to Cart"
+    }
+  };
+
+  const cur = tGastro[lang] || tGastro.uz;
   const dish = SIGNATURE_DISHES[selectedIdx];
   const curTitle = dish.title[lang] || dish.title.uz;
   const curSub = dish.subtitle[lang] || dish.subtitle.uz;
   const curNote = dish.chefNote[lang] || dish.chefNote.uz;
   const curPairing = dish.pairing[lang] || dish.pairing.uz;
+  const curPrepTime = typeof dish.prepTime === 'object' ? (dish.prepTime[lang] || dish.prepTime.uz) : dish.prepTime;
 
   const handleOrderDish = () => {
     soundFx.playSuccess();
@@ -209,16 +327,15 @@ export const GastroShowcase3D = ({ onAddToCartSuccess }) => {
         <div className="text-center space-y-4 max-w-3xl mx-auto">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gold-500/15 border border-gold-500/30 text-gold-400 text-xs font-black tracking-widest uppercase backdrop-blur-md shadow-glow">
             <Sparkles className="w-4 h-4 text-amber-400 animate-spin-slow" />
-            <span>Zafaron 3D Chef's Table Experience</span>
+            <span>{cur.badge}</span>
           </div>
 
           <h2 className="font-serif font-black text-3xl sm:text-5xl text-gray-900 dark:text-white tracking-tight">
-            Shohona Gastronomiya <span className="gold-gradient-text">Durdonasi</span>
+            {cur.sectionTitle} <span className="gold-gradient-text">{cur.sectionHighlight}</span>
           </h2>
 
           <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 font-light leading-relaxed">
-            Har bir taom — san'at asari. Bosh oshpazimizning mualliflik durdonalari bilan 3D interaktiv shaklda tanishing,
-            tarkibiy qismlarni kashf eting va didingizga mos shohona lazzatni tanlang.
+            {cur.sectionDesc}
           </p>
         </div>
 
@@ -278,17 +395,18 @@ export const GastroShowcase3D = ({ onAddToCartSuccess }) => {
               <div className="absolute top-4 left-4 flex items-center gap-2">
                 <span className="px-3 py-1 rounded-full bg-dark-950/80 border border-gold-500/50 text-gold-400 text-xs font-black backdrop-blur-md flex items-center gap-1.5">
                   <Flame className="w-3.5 h-3.5 text-amber-500" />
-                  <span>{dish.prepTime}</span>
+                  <span>{curPrepTime}</span>
                 </span>
                 <span className="px-3 py-1 rounded-full bg-emerald-500/90 text-white text-xs font-black backdrop-blur-md flex items-center gap-1">
                   <ShieldCheck className="w-3.5 h-3.5" />
-                  <span>100% Halol</span>
+                  <span>{cur.halalBadge}</span>
                 </span>
               </div>
 
               {/* Interactive Hotspots */}
               {dish.hotspots.map((hs, hIdx) => {
                 const isActive = activeHotspot === hIdx;
+                const hsLabel = typeof hs.label === 'object' ? (hs.label[lang] || hs.label.uz) : hs.label;
                 return (
                   <div
                     key={hIdx}
@@ -309,7 +427,7 @@ export const GastroShowcase3D = ({ onAddToCartSuccess }) => {
                     {/* Hotspot Floating Tooltip */}
                     {isActive && (
                       <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 rounded-xl bg-dark-950/95 border border-gold-500 text-gold-300 font-bold text-xs whitespace-nowrap shadow-2xl animate-fade-in">
-                        {hs.label}
+                        {hsLabel}
                       </div>
                     )}
                   </div>
@@ -323,7 +441,7 @@ export const GastroShowcase3D = ({ onAddToCartSuccess }) => {
                   <p className="text-xs text-gray-300 max-w-xs truncate">{curSub}</p>
                 </div>
                 <div className="text-right">
-                  <span className="text-xs text-gold-400 block font-semibold">Maxsus Narx</span>
+                  <span className="text-xs text-gold-400 block font-semibold">{cur.specialPriceLabel}</span>
                   <span className="font-black text-xl text-white">{formatPrice(dish.price)}</span>
                 </div>
               </div>
@@ -335,7 +453,7 @@ export const GastroShowcase3D = ({ onAddToCartSuccess }) => {
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-amber-500 text-xs font-black uppercase tracking-wider">
                 <Award className="w-4 h-4" />
-                <span>Bosh Oshpazning Faxriy Tavsiyasi</span>
+                <span>{cur.chefAward}</span>
               </div>
               <h3 className="font-serif font-black text-2xl sm:text-3xl text-gray-900 dark:text-white leading-tight">
                 {curTitle}
@@ -355,7 +473,7 @@ export const GastroShowcase3D = ({ onAddToCartSuccess }) => {
             <div className="flex items-center gap-3 p-3.5 rounded-2xl bg-white dark:bg-dark-900/60 border border-gray-200 dark:border-gold-500/20 text-xs text-gray-800 dark:text-gray-200">
               <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
               <div>
-                <span className="text-[10px] text-gray-400 block font-bold uppercase">Tavsiya Etiladigan Lazzat Uyg'unligi:</span>
+                <span className="text-[10px] text-gray-400 block font-bold uppercase">{cur.pairingTitle}</span>
                 <span className="font-semibold text-gold-400">{curPairing}</span>
               </div>
             </div>
@@ -363,21 +481,24 @@ export const GastroShowcase3D = ({ onAddToCartSuccess }) => {
             {/* Taste Profile Metric Bars */}
             <div className="space-y-3 pt-2">
               <span className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-wider uppercase block">
-                Gastronomik Indeks & Lazzat Metrikasi:
+                {cur.metricsTitle}
               </span>
               <div className="grid grid-cols-2 gap-2.5">
-                {dish.metrics.map((m, mIdx) => (
-                  <div
-                    key={mIdx}
-                    className="p-3 rounded-xl bg-white dark:bg-dark-900/80 border border-gray-200 dark:border-gold-500/20 flex flex-col justify-between"
-                  >
-                    <span className="text-[11px] text-gray-500 dark:text-gray-400 font-medium">{m.label}</span>
-                    <span className="text-sm font-black text-gray-900 dark:text-white mt-1 flex items-center gap-1.5">
-                      <span className={`w-2 h-2 rounded-full bg-gradient-to-r ${m.color}`} />
-                      <span>{m.value}</span>
-                    </span>
-                  </div>
-                ))}
+                {dish.metrics.map((m, mIdx) => {
+                  const mLabel = typeof m.label === 'object' ? (m.label[lang] || m.label.uz) : m.label;
+                  return (
+                    <div
+                      key={mIdx}
+                      className="p-3 rounded-xl bg-white dark:bg-dark-900/80 border border-gray-200 dark:border-gold-500/20 flex flex-col justify-between"
+                    >
+                      <span className="text-[11px] text-gray-500 dark:text-gray-400 font-medium">{mLabel}</span>
+                      <span className="text-sm font-black text-gray-900 dark:text-white mt-1 flex items-center gap-1.5">
+                        <span className={`w-2 h-2 rounded-full bg-gradient-to-r ${m.color}`} />
+                        <span>{m.value}</span>
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
             </div>
 
@@ -388,7 +509,7 @@ export const GastroShowcase3D = ({ onAddToCartSuccess }) => {
                 className="flex-1 py-4 px-6 rounded-2xl gold-gradient-bg text-dark-950 font-black text-sm flex items-center justify-center gap-2.5 shadow-xl shadow-gold-500/30 hover:brightness-110 active:scale-95 transition-all"
               >
                 <ShoppingBag className="w-5 h-5 text-dark-950" />
-                <span>Savatga Qo'shish ({formatPrice(dish.price)})</span>
+                <span>{cur.addToCartBtn} ({formatPrice(dish.price)})</span>
                 <ChevronRight className="w-4 h-4 text-dark-950" />
               </button>
             </div>

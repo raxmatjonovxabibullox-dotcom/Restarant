@@ -20,29 +20,61 @@ import { soundFx } from '../hooks/useSoundEffects';
 const LOUNGE_STREAMS = [
   {
     id: 'groove',
-    title: "Zafaron Sunset Chillout",
-    artist: "SomaFM Ambient Lounge",
+    title: {
+      uz: "Zafaron Sunset Chillout",
+      ru: "Зафарон Закатный Чиллаут",
+      en: "Zafaron Sunset Chillout"
+    },
+    artist: {
+      uz: "SomaFM Ambient Lounge",
+      ru: "SomaFM Эмбиент Лаундж",
+      en: "SomaFM Ambient Lounge"
+    },
     url: "https://ice1.somafm.com/groovesalad-128-mp3",
     isStream: true
   },
   {
     id: 'jazz',
-    title: "Royal Dining Jazz",
-    artist: "Classic Cocktail & Spy Lounge",
+    title: {
+      uz: "Shohona Kechki Jazz",
+      ru: "Королевский Вечерний Джаз",
+      en: "Royal Dining Jazz"
+    },
+    artist: {
+      uz: "Klassik Kokteyl & Spy Lounge",
+      ru: "Классический Коктейль & Лаундж",
+      en: "Classic Cocktail & Spy Lounge"
+    },
     url: "https://ice1.somafm.com/secretagent-128-mp3",
     isStream: true
   },
   {
     id: 'lush',
-    title: "Oqshom Bog'i Melodiyalari",
-    artist: "Sensuous Mellow Chill",
+    title: {
+      uz: "Oqshom Bog'i Melodiyalari",
+      ru: "Мелодии Вечернего Сада",
+      en: "Sensuous Garden Melodies"
+    },
+    artist: {
+      uz: "Mayin Akustik Chillaout",
+      ru: "Мягкий Акустический Чиллаут",
+      en: "Sensuous Mellow Chill"
+    },
     url: "https://ice1.somafm.com/lush-128-mp3",
     isStream: true
   },
   {
     id: 'synth',
-    title: "Zafaron Zen Sanctuary",
-    artist: "Oflayn Relaks & Meditatsiya",
+    title: {
+      uz: "Zafaron Zen Sanctuary",
+      ru: "Зафарон Дзен Святилище",
+      en: "Zafaron Zen Sanctuary"
+    },
+    artist: {
+      uz: "Oflayn Relaks & Meditatsiya",
+      ru: "Офлайн Релакс & Медитация",
+      en: "Offline Relax & Meditation"
+    },
     url: "",
     isStream: false
   }
@@ -280,8 +312,12 @@ export const AudioPlayer = () => {
                   {streamError ? cur.offlineMode : (currentTrack.isStream ? cur.live : cur.offline)}
                 </span>
               </div>
-              <p className="text-xs font-bold text-white truncate mt-0.5">{currentTrack.title}</p>
-              <p className="text-[11px] text-gray-400 truncate">{currentTrack.artist}</p>
+              <p className="text-xs font-bold text-white truncate mt-0.5">
+                {typeof currentTrack.title === 'object' ? (currentTrack.title[lang] || currentTrack.title.uz || currentTrack.title.en) : currentTrack.title}
+              </p>
+              <p className="text-[11px] text-gray-400 truncate">
+                {typeof currentTrack.artist === 'object' ? (currentTrack.artist[lang] || currentTrack.artist.uz || currentTrack.artist.en) : currentTrack.artist}
+              </p>
             </div>
           </div>
 
@@ -305,20 +341,23 @@ export const AudioPlayer = () => {
 
           {/* Station Selector Pills */}
           <div className="grid grid-cols-2 gap-1.5 py-2 border-t border-b border-white/5 my-2">
-            {LOUNGE_STREAMS.map((s, idx) => (
-              <button
-                key={s.id}
-                onClick={() => selectTrack(idx)}
-                className={`text-left p-1.5 px-2 rounded-xl text-[10px] transition-all flex items-center justify-between ${
-                  currentTrackIndex === idx
-                    ? 'bg-gold-500/20 border border-gold-500/50 text-gold-300 font-bold'
-                    : 'bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white'
-                }`}
-              >
-                <span className="truncate">{s.title.split(' ')[0]} {s.title.split(' ')[1] || ''}</span>
-                {currentTrackIndex === idx && <Radio className="w-2.5 h-2.5 text-gold-400 flex-shrink-0" />}
-              </button>
-            ))}
+            {LOUNGE_STREAMS.map((s, idx) => {
+              const sTitle = typeof s.title === 'object' ? (s.title[lang] || s.title.uz || s.title.en) : s.title;
+              return (
+                <button
+                  key={s.id}
+                  onClick={() => selectTrack(idx)}
+                  className={`text-left p-1.5 px-2 rounded-xl text-[10px] transition-all flex items-center justify-between ${
+                    currentTrackIndex === idx
+                      ? 'bg-gold-500/20 border border-gold-500/50 text-gold-300 font-bold'
+                      : 'bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white'
+                  }`}
+                >
+                  <span className="truncate">{sTitle.split(' ')[0]} {sTitle.split(' ')[1] || ''}</span>
+                  {currentTrackIndex === idx && <Radio className="w-2.5 h-2.5 text-gold-400 flex-shrink-0" />}
+                </button>
+              );
+            })}
           </div>
 
           {/* Controls & Volume */}
@@ -415,7 +454,11 @@ export const AudioPlayer = () => {
             {isPlaying && <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping inline-block" />}
           </span>
           <span className="block text-[11px] text-gray-300 font-light truncate max-w-[110px]">
-            {isLoading ? cur.connecting : isPlaying ? currentTrack.title : cur.clickToPlay}
+            {isLoading
+              ? cur.connecting
+              : isPlaying
+              ? (typeof currentTrack.title === 'object' ? (currentTrack.title[lang] || currentTrack.title.uz || currentTrack.title.en) : currentTrack.title)
+              : cur.clickToPlay}
           </span>
         </button>
 

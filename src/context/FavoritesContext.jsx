@@ -7,7 +7,9 @@ export const FavoritesProvider = ({ children }) => {
   const [favorites, setFavorites] = useState(() => {
     try {
       const saved = localStorage.getItem('zafaron_favorites_v1');
-      return saved ? JSON.parse(saved) : [];
+      if (!saved) return [];
+      const parsed = JSON.parse(saved);
+      return Array.isArray(parsed) ? parsed : [];
     } catch {
       return [];
     }

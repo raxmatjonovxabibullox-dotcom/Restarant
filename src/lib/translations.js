@@ -338,6 +338,7 @@ export const translations = {
     footer: {
       halal: "100% Halol Sertifikatlangan",
       organic: "Yangi & Organik",
+      alcoholFree: "🚭 Spirtsiz & Tamakisiz Hudud",
       quickLinks: "Tezkor havolalar",
       liveMusic: "Jonli musiqa:",
       musicSchedule: "Har payshanba, juma va shanba 19:30 dan",
@@ -683,6 +684,7 @@ export const translations = {
     footer: {
       halal: "100% Халяль Сертификат",
       organic: "Свежие & Эко-продукты",
+      alcoholFree: "🚭 Без алкоголя и табака",
       quickLinks: "Быстрые ссылки",
       liveMusic: "Живая музыка:",
       musicSchedule: "Каждый четверг, пятницу и субботу с 19:30",
@@ -1028,6 +1030,7 @@ export const translations = {
     footer: {
       halal: "100% Halal Certified",
       organic: "Fresh & Organic",
+      alcoholFree: "🚭 Alcohol & Smoke Free",
       quickLinks: "Quick Links",
       liveMusic: "Live Music:",
       musicSchedule: "Every Thursday, Friday and Saturday from 19:30",

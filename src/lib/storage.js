@@ -23,17 +23,23 @@ export const getStoredMenu = () => {
       return initialMenu;
     }
     const parsed = JSON.parse(data);
+    if (!Array.isArray(parsed) || parsed.length === 0) {
+      localStorage.setItem(KEYS.MENU, JSON.stringify(initialMenu));
+      return initialMenu;
+    }
     // Guarantee 100% Halal tag and smooth HD imagery on all menu items
-    const validated = parsed.map(dish => {
-      const tags = Array.isArray(dish.tags) ? [...dish.tags] : [];
-      if (!tags.includes('halal')) tags.push('halal');
-      return {
-        ...dish,
-        tags,
-        image: dish.image ? dish.image.replace('w=800&q=80', 'w=1200&q=85') : dish.image
-      };
-    });
-    return validated;
+    const validated = parsed
+      .filter(dish => dish && typeof dish === 'object' && dish.id)
+      .map(dish => {
+        const tags = Array.isArray(dish.tags) ? [...dish.tags] : [];
+        if (!tags.includes('halal')) tags.push('halal');
+        return {
+          ...dish,
+          tags,
+          image: dish.image ? dish.image.replace('w=800&q=80', 'w=1200&q=85') : dish.image
+        };
+      });
+    return validated.length > 0 ? validated : initialMenu;
   } catch (e) {
     console.error("Storage error:", e);
     return initialMenu;
@@ -42,7 +48,9 @@ export const getStoredMenu = () => {
 
 export const saveStoredMenu = (items) => {
   try {
-    localStorage.setItem(KEYS.MENU, JSON.stringify(items));
+    if (Array.isArray(items)) {
+      localStorage.setItem(KEYS.MENU, JSON.stringify(items));
+    }
   } catch (e) {
     console.error("Failed to save menu:", e);
   }
@@ -61,14 +69,17 @@ export const getStoredOrders = () => {
       localStorage.setItem(KEYS.ORDERS, JSON.stringify(initialOrders));
       return initialOrders;
     }
-    return JSON.parse(data);
+    const parsed = JSON.parse(data);
+    return Array.isArray(parsed) ? parsed : initialOrders;
   } catch (e) {
     return initialOrders;
   }
 };
 
 export const saveStoredOrders = (orders) => {
-  localStorage.setItem(KEYS.ORDERS, JSON.stringify(orders));
+  if (Array.isArray(orders)) {
+    localStorage.setItem(KEYS.ORDERS, JSON.stringify(orders));
+  }
 };
 
 export const addStoredOrder = (order) => {
@@ -86,14 +97,17 @@ export const getStoredReservations = () => {
       localStorage.setItem(KEYS.RESERVATIONS, JSON.stringify(initialReservations));
       return initialReservations;
     }
-    return JSON.parse(data);
+    const parsed = JSON.parse(data);
+    return Array.isArray(parsed) ? parsed : initialReservations;
   } catch (e) {
     return initialReservations;
   }
 };
 
 export const saveStoredReservations = (reservations) => {
-  localStorage.setItem(KEYS.RESERVATIONS, JSON.stringify(reservations));
+  if (Array.isArray(reservations)) {
+    localStorage.setItem(KEYS.RESERVATIONS, JSON.stringify(reservations));
+  }
 };
 
 export const addStoredReservation = (reservation) => {
@@ -155,14 +169,18 @@ export const saveStoredSettings = (settings) => {
 export const getStoredCart = () => {
   try {
     const data = localStorage.getItem(KEYS.CART);
-    return data ? JSON.parse(data) : [];
+    if (!data) return [];
+    const parsed = JSON.parse(data);
+    return Array.isArray(parsed) ? parsed : [];
   } catch (e) {
     return [];
   }
 };
 
 export const saveStoredCart = (cart) => {
-  localStorage.setItem(KEYS.CART, JSON.stringify(cart));
+  if (Array.isArray(cart)) {
+    localStorage.setItem(KEYS.CART, JSON.stringify(cart));
+  }
 };
 
 // Auth

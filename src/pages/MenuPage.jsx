@@ -55,7 +55,9 @@ export const MenuPage = ({ onOpenConcierge }) => {
 
   // Filter & Sort
   const filteredDishes = useMemo(() => {
+    if (!Array.isArray(menuItems)) return [];
     return menuItems.filter((dish) => {
+      if (!dish || typeof dish !== 'object') return false;
       // Category match
       if (selectedCategory !== 'all') {
         if (selectedCategory === 'european' || selectedCategory === 'mains') {
@@ -65,24 +67,24 @@ export const MenuPage = ({ onOpenConcierge }) => {
         }
       }
       // Tag match
-      if (selectedTag && !dish.tags?.includes(selectedTag)) {
+      if (selectedTag && (!Array.isArray(dish.tags) || !dish.tags.includes(selectedTag))) {
         return false;
       }
       // Search query match across languages
-      if (searchQuery.trim()) {
+      if (searchQuery && typeof searchQuery === 'string' && searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
-        const nameUz = dish.name?.uz?.toLowerCase() || '';
+        const nameUz = dish.name?.uz?.toLowerCase() || (typeof dish.name === 'string' ? dish.name.toLowerCase() : '');
         const nameRu = dish.name?.ru?.toLowerCase() || '';
         const nameEn = dish.name?.en?.toLowerCase() || '';
-        const descUz = dish.description?.uz?.toLowerCase() || '';
+        const descUz = dish.description?.uz?.toLowerCase() || (typeof dish.description === 'string' ? dish.description.toLowerCase() : '');
         if (!nameUz.includes(q) && !nameRu.includes(q) && !nameEn.includes(q) && !descUz.includes(q)) {
           return false;
         }
       }
       return true;
     }).sort((a, b) => {
-      if (sortBy === 'priceAsc') return a.price - b.price;
-      if (sortBy === 'priceDesc') return b.price - a.price;
+      if (sortBy === 'priceAsc') return (a.price || 0) - (b.price || 0);
+      if (sortBy === 'priceDesc') return (b.price || 0) - (a.price || 0);
       if (sortBy === 'rating') return (b.rating || 5) - (a.rating || 5);
       if (sortBy === 'popular') return (b.ordersCount || 0) - (a.ordersCount || 0);
       return 0;

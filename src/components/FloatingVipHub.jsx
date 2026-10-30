@@ -37,6 +37,7 @@ export const FloatingVipHub = ({
   const tHub = {
     uz: {
       vipHub: "Zafaron VIP Hub",
+      hubSubtitle: "Tezkor xizmatlar markazi",
       bookTable: "Stol Band Qilish",
       bookSub: "Hashamatli zallar va xonalar",
       menu: "Taomnoma",
@@ -50,6 +51,7 @@ export const FloatingVipHub = ({
     },
     ru: {
       vipHub: "Zafaron VIP Hub",
+      hubSubtitle: "Центр быстрых сервисов",
       bookTable: "Бронь Стола",
       bookSub: "Роскошные залы и VIP",
       menu: "Меню Ресторана",
@@ -63,6 +65,7 @@ export const FloatingVipHub = ({
     },
     en: {
       vipHub: "Zafaron VIP Hub",
+      hubSubtitle: "Quick services hub",
       bookTable: "Book a Table",
       bookSub: "Luxury halls & VIP rooms",
       menu: "Gourmet Menu",
@@ -105,7 +108,7 @@ export const FloatingVipHub = ({
                 </div>
                 <div>
                   <h4 className="font-serif font-bold text-xs text-gold-400">{t.vipHub}</h4>
-                  <p className="text-[10px] text-gray-400">Tezkor xizmatlar markazi</p>
+                  <p className="text-[10px] text-gray-400">{t.hubSubtitle}</p>
                 </div>
               </div>
               <button
