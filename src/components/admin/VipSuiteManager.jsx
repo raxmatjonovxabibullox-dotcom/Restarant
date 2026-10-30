@@ -11,7 +11,6 @@ import {
   AlertCircle,
   Flame,
   Music,
-  Wine,
   Printer,
   Plus,
   Trash2,

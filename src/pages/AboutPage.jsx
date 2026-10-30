@@ -71,7 +71,7 @@ export const AboutPage = ({ setActivePage }) => {
     {
       year: "2026",
       title: "Zafaron Royal & Lounge",
-      desc: lang === 'ru' ? 'Открыт новый флагман: терраса, VIP-сьюты, интерактивный сервис и умный сомелье.' : lang === 'en' ? 'New venue with panoramic terrace, VIP suites, and smart concierge service opened.' : "Yangi bino, panoramik terrasa, VIP suite xonalar va aqlli raqamli servis ochildi."
+      desc: lang === 'ru' ? 'Открыт новый флагман: терраса, VIP-сьюты, интерактивный сервис и умный консьерж.' : lang === 'en' ? 'New venue with panoramic terrace, VIP suites, and smart concierge service opened.' : "Yangi bino, panoramik terrasa, VIP suite xonalar va aqlli raqamli servis ochildi."
     }
   ];
 

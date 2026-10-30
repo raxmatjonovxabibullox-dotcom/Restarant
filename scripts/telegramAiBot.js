@@ -103,6 +103,9 @@ Xizmatlar:
 - Yetkazib berish (Dostavka): Toshkent bo'ylab 30-45 daqiqada issiq holda yetkaziladi.
 - Stol bron qilish: Sayt orqali yoki telefon orqali bepul amalga oshiriladi.
 - To'lov usullari: Naqd pul, Humo, Uzcard, Visa, MasterCard, Click, Payme.
+
+Halol Standarti & Poklik Qoidasi:
+- Restoran 100% Halol! Spirtli ichimliklar (pivo, vino, aroq) va tamaki/sigaret/kalyan chekish QAT'IYAN MAN ETILADI. Restoranda spirtli ichimlik va sigaretlar umuman yo'q va chekish qat'iyan taqiqlangan.
 `;
 
 // 3. Built-in Smart Fallback Engine (Answers instantly in Uzbek, Russian, or English)
@@ -335,6 +338,36 @@ function generateSmartRestaurantAnswer(userText, userLang = 'uz') {
       `👋 <b>Va alaykum assalom!</b>\n\n` +
       `<b>Zafaron Restaurant & Lounge'ga xush kelibsiz!</b> Siz bilan suhbatlashishdan juda mamnunman.\n\n` +
       `Bugun sizga qanday yordam bera olaman? Shohona taomlarimiz, bugungi oqshom dasturi yoki stol band qilish bo'yicha savollaringiz bormi? Xohlagan savolingizni bemalol yozing, bajonidil yordam beraman! 😊✨`
+    );
+  }
+
+  // Alkogol, spirt, pivo, vino, aroq, sigaret, kalyan taqiqlanganligi
+  if (
+    q.includes('spirt') || q.includes('alkogol') || q.includes('pivo') || q.includes('vino') ||
+    q.includes('aroq') || q.includes('sharob') || q.includes('sigaret') || q.includes('tamaki') ||
+    q.includes('kalyan') || q.includes('kalon') || q.includes('chekish') || q.includes('алкоголь') ||
+    q.includes('пиво') || q.includes('вино') || q.includes('водка') || q.includes('сигарет') ||
+    q.includes('курить') || q.includes('кальян') || q.includes('beer') || q.includes('wine') ||
+    q.includes('alcohol') || q.includes('smoke') || q.includes('hookah') || q.includes('cigar')
+  ) {
+    if (isRussian || q.includes('алкоголь') || q.includes('пиво') || q.includes('курить') || q.includes('кальян')) {
+      return (
+        `🚫 <b>100% Халяль и Семейная Концепция:</b>\n\n` +
+        `В ресторане Zafaron алкогольные напитки (пиво, вино, водка), курение сигарет и кальяны <b>строго ЗАПРЕЩЕНЫ</b>!\n\n` +
+        `У нас чистая, безалкогольная атмосфера, ориентированная на семейный уют и благородный отдых. Мы с радостью предложим вам наш королевский шафрановый чай в хрустальном чайнике, свежевыжатые соки и авторские натуральные лимонады! 🫖✨`
+      );
+    }
+    if (isEnglish) {
+      return (
+        `🚫 <b>100% Halal & Family Environment:</b>\n\n` +
+        `Alcoholic beverages (beer, wine, spirits), cigarettes, and hookahs are <b>strictly prohibited</b> at Zafaron!\n\n` +
+        `We provide a smoke-free and alcohol-free peaceful atmosphere. We gladly invite you to try our royal saffron teas, freshly squeezed juices, and artisan mocktails! 🫖✨`
+      );
+    }
+    return (
+      `🚫 <b>100% Halol & Pokiza Oilaviy Maskan:</b>\n\n` +
+      `Zafaron restoranida spirtli ichimliklar (pivo, vino, aroq) hamda sigaret va kalyan chekish <b>QAT'IYAN TAQIQLANGAN</b>!\n\n` +
+      `Bizning barcha taomlarimiz 100% Halol bo'lib, restoranimizda spirtli ichimliklar umuman sotilmaydi va chekish taqiqlangan. Sizga shohona za'faronli choylarimiz, yangi siqilgan tabiiy sharbatlar va maxsus mualliflik ichimliklarini tavsiya etamiz! 🫖✨`
     );
   }
 

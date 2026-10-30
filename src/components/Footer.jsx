@@ -31,12 +31,15 @@ export const Footer = ({ setActivePage, setIsAdminView }) => {
             <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
               {t('hero.subtitle')}
             </p>
-            <div className="pt-2 flex items-center gap-3">
+            <div className="pt-2 flex flex-wrap items-center gap-2">
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-gold-500/10 text-gold-500 border border-gold-500/20">
                 {t('footer.halal')}
               </span>
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
                 {t('footer.organic')}
+              </span>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                🚭 Spirtsiz & Tamakisiz
               </span>
             </div>
           </div>

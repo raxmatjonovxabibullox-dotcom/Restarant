@@ -505,6 +505,18 @@ export const ReservationPage = ({ setActivePage }) => {
                       </p>
                     </div>
                   )}
+
+                  {/* 100% Halal, Smoke-Free, Alcohol-Free Guarantee */}
+                  <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center gap-2.5 text-xs text-emerald-400">
+                    <span className="text-base">🚭</span>
+                    <p className="text-[11px] leading-relaxed">
+                      {lang === 'ru'
+                        ? '100% Халяль и семейный формат: алкогольные напитки, курение сигарет и кальянов строго запрещены.'
+                        : lang === 'en'
+                        ? '100% Halal & Family-friendly: alcoholic beverages, smoking cigarettes and hookahs are strictly prohibited.'
+                        : "100% Halol & Oilaviy maskan: spirtli ichimliklar, sigaret va kalyan chekish qat'iyan man etiladi."}
+                    </p>
+                  </div>
                 </div>
 
                 <div className="pt-2">

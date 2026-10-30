@@ -8,7 +8,6 @@ import {
   Star,
   Info,
   Clock,
-  Wine,
   Utensils,
   ChevronRight,
   CheckCircle2
@@ -352,11 +351,11 @@ export const GastroShowcase3D = ({ onAddToCartSuccess }) => {
               <p className="italic leading-relaxed">{curNote}</p>
             </div>
 
-            {/* Sommelier Pairing */}
+            {/* Halal Culinary Pairing */}
             <div className="flex items-center gap-3 p-3.5 rounded-2xl bg-white dark:bg-dark-900/60 border border-gray-200 dark:border-gold-500/20 text-xs text-gray-800 dark:text-gray-200">
-              <Wine className="w-4 h-4 text-purple-400 shrink-0" />
+              <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
               <div>
-                <span className="text-[10px] text-gray-400 block font-bold uppercase">Ideal Uyg'unlik (Pairing):</span>
+                <span className="text-[10px] text-gray-400 block font-bold uppercase">Tavsiya Etiladigan Lazzat Uyg'unligi:</span>
                 <span className="font-semibold text-gold-400">{curPairing}</span>
               </div>
             </div>

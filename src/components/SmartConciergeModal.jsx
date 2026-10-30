@@ -24,7 +24,7 @@ export const SmartConciergeModal = ({ isOpen, onClose, setActivePage }) => {
       id: 'romantic',
       title: lang === 'ru' ? 'Романтический Ужин' : lang === 'en' ? 'Romantic Dinner' : 'Romantik Kechki Ovqat',
       desc: lang === 'ru' ? 'Уютная атмосфера, нежнейшие мясные блюда, десерт и чай' : lang === 'en' ? 'Cozy ambiance, tender meat cuts, dessert and signature tea' : "Nafis muhit, mayin go'shtli taomlar, desert va choy",
-      icon: "🍷",
+      icon: "🕯️",
       dishes: ['dish-1', 'dish-7', 'dish-9', 'dish-11']
     },
     {
@@ -64,7 +64,7 @@ export const SmartConciergeModal = ({ isOpen, onClose, setActivePage }) => {
     : ['1-2 kishi', '3-4 kishi', '5-8 kishi', '10+ kishi'];
 
   const tSomm = {
-    badge: lang === 'ru' ? 'Zafaron Умный Сомелье & Меню-Гид' : lang === 'en' ? 'Zafaron Smart Sommelier & Recommender' : 'Zafaron Aqlli Sommelier & Recommender',
+    badge: lang === 'ru' ? 'Zafaron Умный Консьерж & Меню-Гид' : lang === 'en' ? 'Zafaron Smart Concierge & Recommender' : 'Zafaron Aqlli Konsyerj & Menyu-Gid',
     title: lang === 'ru' ? 'Идеальное Меню Под Ваше Настроение' : lang === 'en' ? 'Curated Table for Your Mood' : 'Sizga Mos Shohona Dasturxon',
     step1Title: lang === 'ru' ? '1. Для какого события или настроения планируете?' : lang === 'en' ? '1. What occasion or dining mood are you planning?' : '1. Qanday tadbir yoki kayfiyat uchun rejalashtiryapsiz?',
     step2Title: lang === 'ru' ? '2. Количество гостей' : lang === 'en' ? '2. Number of guests' : '2. Mehmonlar soni',
