@@ -12,9 +12,7 @@ import {
   getStoredAdminProfile,
   saveStoredAdminProfile,
   getStoredAutoDirect,
-  saveStoredAutoDirect,
-  DEFAULT_ADMIN_PROFILE,
-  DEFAULT_AUTODIRECT
+  saveStoredAutoDirect
 } from '../lib/storage';
 import { syncMenuWithSupabase, testSupabaseConnection } from '../lib/supabase';
 import { KitchenDisplay } from '../components/admin/KitchenDisplay';
@@ -73,12 +71,10 @@ import {
   Camera,
   Upload,
   Check,
-  ExternalLink,
   Image as ImageIcon,
   MessageSquare,
   Bot,
-  Crown,
-  Radio
+  Crown
 } from 'lucide-react';
 
 // Tri-lingual dictionary specifically tailored for Maxton Executive Suite

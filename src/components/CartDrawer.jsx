@@ -18,7 +18,6 @@ import {
   CheckCircle2,
   ChefHat,
   Bike,
-  Zap,
   ExternalLink
 } from 'lucide-react';
 import { handlePhoneInputChange, blockNonPhoneKeys, isValidUzPhone } from '../lib/phoneUtils';
@@ -85,8 +84,6 @@ export const CartDrawer = () => {
     alertName: lang === 'ru' ? 'Пожалуйста, введите ваше имя!' : lang === 'en' ? 'Please enter your name!' : 'Iltimos, ismingizni kiriting!',
     alertPhone: lang === 'ru' ? 'Пожалуйста, введите полный номер телефона:\nНапример: +998 (90) 123-45-67' : lang === 'en' ? 'Please enter a valid phone number:\ne.g. +998 (90) 123-45-67' : "Iltimos, to'liq telefon raqamingizni kiriting:\nMasalan: +998 (90) 123-45-67"
   };
-
-  if (!isCartOpen) return null;
 
   const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const deliveryFee = deliveryType === 'delivery' ? 15000 : 0;
@@ -166,6 +163,8 @@ export const CartDrawer = () => {
     setIsRedirectCancelled(false);
     closeCart();
   };
+
+  if (!isCartOpen) return null;
 
   return (
     <>

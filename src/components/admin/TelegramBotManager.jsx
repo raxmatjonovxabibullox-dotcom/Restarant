@@ -10,11 +10,8 @@ import {
   ShieldCheck,
   Zap,
   Globe,
-  Radio,
-  Sliders,
-  Play
+  Radio
 } from 'lucide-react';
-import { useLanguage } from '../../context/LanguageContext';
 import { useTheme } from '../../context/ThemeContext';
 import { soundFx } from '../../hooks/useSoundEffects';
 
