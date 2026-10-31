@@ -26,6 +26,9 @@ import { AdminAiCopilotModal } from '../components/admin/AdminAiCopilotModal';
 import { VipSuiteManager } from '../components/admin/VipSuiteManager';
 import { TelegramBotManager } from '../components/admin/TelegramBotManager';
 import { ExecutiveTickerBar } from '../components/admin/ExecutiveTickerBar';
+import { SupabaseCloudCommandBar } from '../components/admin/SupabaseCloudCommandBar';
+import { AiExecutiveIntelligenceWidget } from '../components/admin/AiExecutiveIntelligenceWidget';
+import { PosShiftCloseModal } from '../components/admin/PosShiftCloseModal';
 import {
   LayoutDashboard,
   UtensilsCrossed,
@@ -46,6 +49,7 @@ import {
   X,
   ChefHat,
   Printer,
+  Receipt,
   ChevronDown,
   ChevronRight,
   LogOut,
@@ -378,6 +382,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [appsMenuOpen, setAppsMenuOpen] = useState(false);
   const [isAiCopilotOpen, setIsAiCopilotOpen] = useState(false);
+  const [isShiftCloseModalOpen, setIsShiftCloseModalOpen] = useState(false);
 
   // Admin Profile & Avatar State - automatically populate from Supabase user if logged in
   const [adminProfile, setAdminProfile] = useState(() => {
@@ -804,7 +809,13 @@ export const AdminDashboard = ({ setIsAdminView }) => {
     };
     const nextStatus = nextMap[order.status];
     if (!nextStatus) return;
-    if (audioEnabled) soundFx.playChime();
+    if (audioEnabled) {
+      if (nextStatus === 'completed') {
+        soundFx.playCashRegister();
+      } else {
+        soundFx.playChime();
+      }
+    }
     updateOrderStatus(order.id, nextStatus);
     showToast(
       lang === 'ru' ? `Статус заказа #${order.id} изменен: ${nextStatus}` :
@@ -1814,6 +1825,18 @@ export const AdminDashboard = ({ setIsAdminView }) => {
             </div>
 
             <button
+              onClick={() => {
+                if (audioEnabled) soundFx.playPop();
+                setIsShiftCloseModalOpen(true);
+              }}
+              className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-amber-500/20 to-yellow-500/20 hover:from-amber-500/30 hover:to-yellow-500/30 text-amber-300 font-bold text-xs flex items-center gap-1.5 border border-amber-500/40 shadow-md shadow-amber-500/10 transition-all transform hover:scale-[1.02] active:scale-95"
+              title="Kassa smenasini yopish va Z-Hisobot auditini o'tkazish"
+            >
+              <Receipt className="w-3.5 h-3.5 text-amber-400" />
+              <span>Smenani Yopish (Z-Report)</span>
+            </button>
+
+            <button
               onClick={() => handleSelectTab('settings')}
               className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center gap-1.5 shadow-lg shadow-blue-500/25 transition-all"
             >
@@ -1821,6 +1844,18 @@ export const AdminDashboard = ({ setIsAdminView }) => {
               <span>{m.settings}</span>
             </button>
           </div>
+        </div>
+
+        {/* SUPABASE REAL-TIME CLOUD COMMAND BAR */}
+        <div className="px-6 pb-2.5">
+          <SupabaseCloudCommandBar
+            menuItems={menuItems}
+            orders={orders}
+            reservations={reservations}
+            theme={theme}
+            audioEnabled={audioEnabled}
+            showToast={showToast}
+          />
         </div>
 
         {/* EXECUTIVE REAL-TIME TICKER BAR */}
@@ -1834,6 +1869,17 @@ export const AdminDashboard = ({ setIsAdminView }) => {
           {/* ================= VIEW 1: ECOMMERCE DASHBOARD (EXACT MAXTON MATCH) ================= */}
           {activeTab === 'ecommerce' && (
             <div className="space-y-6">
+
+              {/* AI EXECUTIVE INTELLIGENCE & REVENUE PREDICTOR WIDGET */}
+              <AiExecutiveIntelligenceWidget
+                orders={orders}
+                menuItems={menuItems}
+                reservations={reservations}
+                theme={theme}
+                audioEnabled={audioEnabled}
+                onOpenAiCopilot={() => setIsAiCopilotOpen(true)}
+                showToast={showToast}
+              />
 
               {/* TOP ROW: HERO CARD (35%) + 4 MINI KPI CARDS (65%) */}
               <div className="grid grid-cols-12 gap-5">
@@ -4070,6 +4116,17 @@ export const AdminDashboard = ({ setIsAdminView }) => {
         menuItems={menuItems}
         theme={theme}
         audioEnabled={audioEnabled}
+      />
+
+      {/* POS Shift Closure & Z-Report Audit Modal */}
+      <PosShiftCloseModal
+        isOpen={isShiftCloseModalOpen}
+        onClose={() => setIsShiftCloseModalOpen(false)}
+        orders={orders}
+        adminName={adminProfile.displayName || adminProfile.name || "Administrator"}
+        theme={theme}
+        audioEnabled={audioEnabled}
+        showToast={showToast}
       />
     </div>
   );

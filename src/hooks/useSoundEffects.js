@@ -145,6 +145,56 @@ class SoundSynthesizer {
     this.playSuccess();
   }
 
+  // Realistic luxury cash register "Ka-Ching!" sound
+  playCashRegister() {
+    if (this.muted) return;
+    try {
+      this.init();
+      if (!this.ctx) return;
+      const now = this.ctx.currentTime;
+
+      // Part 1: Metallic mechanical drawer latch click
+      const clickOsc = this.ctx.createOscillator();
+      const clickGain = this.ctx.createGain();
+      clickOsc.type = 'triangle';
+      clickOsc.frequency.setValueAtTime(320, now);
+      clickOsc.frequency.exponentialRampToValueAtTime(80, now + 0.04);
+      clickGain.gain.setValueAtTime(0.12, now);
+      clickGain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+      clickOsc.connect(clickGain);
+      clickGain.connect(this.ctx.destination);
+      clickOsc.start(now);
+      clickOsc.stop(now + 0.04);
+
+      // Part 2: Dual resonant silver bell chime (C6 + E6)
+      const bell1 = this.ctx.createOscillator();
+      const bell2 = this.ctx.createOscillator();
+      const bellGain = this.ctx.createGain();
+
+      bell1.type = 'sine';
+      bell2.type = 'sine';
+
+      const bellStart = now + 0.05;
+      bell1.frequency.setValueAtTime(1046.5, bellStart); // C6
+      bell1.frequency.exponentialRampToValueAtTime(2093.0, bellStart + 0.08); // C7 shimmer
+
+      bell2.frequency.setValueAtTime(1318.5, bellStart); // E6
+      bell2.frequency.exponentialRampToValueAtTime(2637.0, bellStart + 0.08); // E7 shimmer
+
+      bellGain.gain.setValueAtTime(0.15, bellStart);
+      bellGain.gain.exponentialRampToValueAtTime(0.001, bellStart + 0.6);
+
+      bell1.connect(bellGain);
+      bell2.connect(bellGain);
+      bellGain.connect(this.ctx.destination);
+
+      bell1.start(bellStart);
+      bell2.start(bellStart);
+      bell1.stop(bellStart + 0.6);
+      bell2.stop(bellStart + 0.6);
+    } catch {}
+  }
+
   // Success fanfare when order or reservation is successfully placed
   playSuccessFanfare() {
     if (this.muted) return;
