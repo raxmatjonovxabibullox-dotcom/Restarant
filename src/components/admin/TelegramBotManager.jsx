@@ -112,7 +112,7 @@ export const TelegramBotManager = ({ showToast = () => {} }) => {
             <h1 className="text-2xl sm:text-3xl font-black text-current flex items-center gap-2">
               🤖 Telegram AI Bot Jonli Boshqaruv Markazi
             </h1>
-            <p className="text-xs sm:text-sm text-slate-400 max-w-2xl leading-relaxed">
+            <p className={`text-xs sm:text-sm max-w-2xl leading-relaxed ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
               Telegram boti holatini nazorat qilish, mijozlarga avtomatik javoblar, VIP depozit ma'lumotlarini tekshirish va jonli test sinovi.
             </p>
           </div>
@@ -231,7 +231,7 @@ export const TelegramBotManager = ({ showToast = () => {} }) => {
                 <button
                   key={q}
                   onClick={() => setTestQuery(q)}
-                  className="px-2 py-0.5 rounded-md text-[10px] bg-slate-800/60 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-colors"
+                  className={`px-2 py-0.5 rounded-md text-[10px] border transition-colors ${theme === 'dark' ? 'bg-slate-800/60 hover:bg-slate-700 text-slate-300 border-slate-700' : 'bg-slate-100 hover:bg-slate-200 text-slate-600 border-slate-300'}`}
                 >
                   {q}
                 </button>
@@ -244,7 +244,7 @@ export const TelegramBotManager = ({ showToast = () => {} }) => {
                 value={testQuery}
                 onChange={(e) => setTestQuery(e.target.value)}
                 placeholder="Botga savol yozing (masalan: VIP puli bo'lsin, taomlar, manzil)..."
-                className="flex-1 px-4 py-2.5 rounded-xl text-xs border bg-slate-900/60 border-slate-700 text-white focus:outline-none focus:border-blue-500"
+                className={`flex-1 px-4 py-2.5 rounded-xl text-xs border focus:outline-none focus:border-blue-500 ${theme === 'dark' ? 'bg-slate-900/60 border-slate-700 text-white' : 'bg-slate-50 border-slate-300 text-slate-900'}`}
               />
               <button
                 type="submit"
@@ -277,7 +277,7 @@ export const TelegramBotManager = ({ showToast = () => {} }) => {
                 <select
                   value={broadcastTarget}
                   onChange={(e) => setBroadcastTarget(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border bg-slate-900/60 border-slate-700 text-slate-200"
+                  className={`w-full px-3 py-2 rounded-xl border ${theme === 'dark' ? 'bg-slate-900/60 border-slate-700 text-slate-200' : 'bg-slate-50 border-slate-300 text-slate-900'}`}
                 >
                   <option value="all">Barcha obunachi mehmonlar (2,450+ ta)</option>
                   <option value="vip">Faqat VIP va Doimiy Mehmonlar</option>
@@ -292,7 +292,7 @@ export const TelegramBotManager = ({ showToast = () => {} }) => {
                   value={broadcastText}
                   onChange={(e) => setBroadcastText(e.target.value)}
                   placeholder="Bugun Zafaron restoranida barcha steyklar uchun 15% bayramona chegirma!..."
-                  className="w-full px-3 py-2 rounded-xl border bg-slate-900/60 border-slate-700 text-white focus:outline-none"
+                  className={`w-full px-3 py-2 rounded-xl border focus:outline-none ${theme === 'dark' ? 'bg-slate-900/60 border-slate-700 text-white' : 'bg-slate-50 border-slate-300 text-slate-900'}`}
                 />
               </div>
 
@@ -324,7 +324,7 @@ export const TelegramBotManager = ({ showToast = () => {} }) => {
               ].map((c) => (
                 <div
                   key={c.cmd}
-                  className="p-2 rounded-xl bg-slate-800/40 border border-slate-700/60 flex items-center justify-between font-mono"
+                  className={`p-2 rounded-xl border flex items-center justify-between font-mono ${theme === 'dark' ? 'bg-slate-800/40 border-slate-700/60' : 'bg-slate-100 border-slate-200'}`}
                 >
                   <span className="text-blue-400 font-bold">{c.cmd}</span>
                   <span className="text-[10px] text-slate-400">{c.desc}</span>

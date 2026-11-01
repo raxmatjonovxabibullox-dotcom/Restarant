@@ -249,14 +249,14 @@ export const VipSuiteManager = ({ reservations = [], showToast = () => {} }) => 
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="text-xs font-bold text-slate-300 block mb-1">
+              <label className={`text-xs font-bold block mb-1 ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>
                 VIP-1 (10 kishilik) Depozit Summasi (UZS):
               </label>
               <input
                 type="number"
                 value={editForm.vip1Deposit}
                 onChange={(e) => setEditForm({ ...editForm, vip1Deposit: Number(e.target.value) })}
-                className="w-full px-3 py-2 rounded-xl text-xs border bg-slate-900/50 border-slate-700 text-amber-400 font-mono font-bold"
+                className={`w-full px-3 py-2 rounded-xl text-xs border font-mono font-bold ${theme === 'dark' ? 'bg-slate-900/50 border-slate-700 text-amber-400' : 'bg-slate-50 border-slate-300 text-amber-600'}`}
               />
             </div>
             <div>
@@ -267,7 +267,7 @@ export const VipSuiteManager = ({ reservations = [], showToast = () => {} }) => 
                 type="number"
                 value={editForm.vip2Deposit}
                 onChange={(e) => setEditForm({ ...editForm, vip2Deposit: Number(e.target.value) })}
-                className="w-full px-3 py-2 rounded-xl text-xs border bg-slate-900/50 border-slate-700 text-amber-400 font-mono font-bold"
+                className={`w-full px-3 py-2 rounded-xl text-xs border font-mono font-bold ${theme === 'dark' ? 'bg-slate-900/50 border-slate-700 text-amber-400' : 'bg-slate-50 border-slate-300 text-amber-600'}`}
               />
             </div>
           </div>
@@ -397,7 +397,7 @@ export const VipSuiteManager = ({ reservations = [], showToast = () => {} }) => 
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
                 filterStatus === 'all'
                   ? 'bg-amber-500 text-dark-950 font-black'
-                  : 'text-slate-400 hover:text-white bg-slate-800/40'
+                  : theme === 'dark' ? 'text-slate-400 hover:text-white bg-slate-800/40' : 'text-slate-500 hover:text-slate-800 bg-slate-100'
               }`}
             >
               Hammasi ({vipBookings.length})
@@ -407,7 +407,7 @@ export const VipSuiteManager = ({ reservations = [], showToast = () => {} }) => 
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
                 filterStatus === 'paid'
                   ? 'bg-emerald-500 text-white font-black'
-                  : 'text-slate-400 hover:text-white bg-slate-800/40'
+                  : theme === 'dark' ? 'text-slate-400 hover:text-white bg-slate-800/40' : 'text-slate-500 hover:text-slate-800 bg-slate-100'
               }`}
             >
               To'langan
@@ -417,7 +417,7 @@ export const VipSuiteManager = ({ reservations = [], showToast = () => {} }) => 
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
                 filterStatus === 'pending'
                   ? 'bg-yellow-500 text-dark-950 font-black'
-                  : 'text-slate-400 hover:text-white bg-slate-800/40'
+                  : theme === 'dark' ? 'text-slate-400 hover:text-white bg-slate-800/40' : 'text-slate-500 hover:text-slate-800 bg-slate-100'
               }`}
             >
               Kutilmoqda
@@ -457,13 +457,13 @@ export const VipSuiteManager = ({ reservations = [], showToast = () => {} }) => 
                     <div className="text-current font-bold">{b.guestName}</div>
                     <div className="text-[11px] text-slate-400 font-mono">{b.guestPhone}</div>
                   </td>
-                  <td className="py-3.5 px-4 text-slate-300 font-medium">
+                  <td className={`py-3.5 px-4 font-medium ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>
                     <div className="flex items-center gap-1.5">
                       <Clock className="w-3.5 h-3.5 text-slate-400" />
                       <span>{b.date}</span>
                     </div>
                   </td>
-                  <td className="py-3.5 px-4 text-slate-300">
+                  <td className={`py-3.5 px-4 ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>
                     <div className="flex items-center gap-1 font-bold">
                       <User className="w-3.5 h-3.5 text-blue-400" />
                       <span>{b.guestsCount} kishi</span>
@@ -490,7 +490,7 @@ export const VipSuiteManager = ({ reservations = [], showToast = () => {} }) => 
                       {b.specialRequests?.map((req, idx) => (
                         <span
                           key={idx}
-                          className="px-2 py-0.5 rounded-md text-[10px] bg-slate-800/80 text-slate-300 border border-slate-700"
+                          className={`px-2 py-0.5 rounded-md text-[10px] border ${theme === 'dark' ? 'bg-slate-800/80 text-slate-300 border-slate-700' : 'bg-slate-100 text-slate-600 border-slate-300'}`}
                         >
                           {req}
                         </span>
@@ -549,7 +549,7 @@ export const VipSuiteManager = ({ reservations = [], showToast = () => {} }) => 
                 <select
                   value={newBooking.room}
                   onChange={(e) => setNewBooking({ ...newBooking, room: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl border bg-slate-900/60 border-slate-700 text-amber-400 font-bold"
+                  className={`w-full px-3 py-2 rounded-xl border font-bold ${theme === 'dark' ? 'bg-slate-900/60 border-slate-700 text-amber-400' : 'bg-slate-50 border-slate-300 text-amber-600'}`}
                 >
                   <option value="VIP 1">VIP-1 Hashamatli Oltin Xona (200,000 UZS Depozit)</option>
                   <option value="VIP 2">VIP-2 Prezident Suit (300,000 UZS Depozit)</option>
@@ -564,7 +564,7 @@ export const VipSuiteManager = ({ reservations = [], showToast = () => {} }) => 
                   placeholder="Masalan: Sardor Rahimov"
                   value={newBooking.guestName}
                   onChange={(e) => setNewBooking({ ...newBooking, guestName: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl border bg-slate-900/60 border-slate-700 text-white"
+                  className={`w-full px-3 py-2 rounded-xl border ${theme === 'dark' ? 'bg-slate-900/60 border-slate-700 text-white' : 'bg-slate-50 border-slate-300 text-slate-900'}`}
                 />
               </div>
 
@@ -577,7 +577,7 @@ export const VipSuiteManager = ({ reservations = [], showToast = () => {} }) => 
                     placeholder="+998 (90) 123-45-67"
                     value={newBooking.guestPhone}
                     onChange={(e) => setNewBooking({ ...newBooking, guestPhone: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl border bg-slate-900/60 border-slate-700 text-white"
+                    className={`w-full px-3 py-2 rounded-xl border ${theme === 'dark' ? 'bg-slate-900/60 border-slate-700 text-white' : 'bg-slate-50 border-slate-300 text-slate-900'}`}
                   />
                 </div>
                 <div>
@@ -588,7 +588,7 @@ export const VipSuiteManager = ({ reservations = [], showToast = () => {} }) => 
                     max="14"
                     value={newBooking.guestsCount}
                     onChange={(e) => setNewBooking({ ...newBooking, guestsCount: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl border bg-slate-900/60 border-slate-700 text-white"
+                    className={`w-full px-3 py-2 rounded-xl border ${theme === 'dark' ? 'bg-slate-900/60 border-slate-700 text-white' : 'bg-slate-50 border-slate-300 text-slate-900'}`}
                   />
                 </div>
               </div>
@@ -599,7 +599,7 @@ export const VipSuiteManager = ({ reservations = [], showToast = () => {} }) => 
                   type="text"
                   value={newBooking.date}
                   onChange={(e) => setNewBooking({ ...newBooking, date: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl border bg-slate-900/60 border-slate-700 text-white"
+                  className={`w-full px-3 py-2 rounded-xl border ${theme === 'dark' ? 'bg-slate-900/60 border-slate-700 text-white' : 'bg-slate-50 border-slate-300 text-slate-900'}`}
                 />
               </div>
 
@@ -610,7 +610,7 @@ export const VipSuiteManager = ({ reservations = [], showToast = () => {} }) => 
                   placeholder="Kamin yoqilsin, Jonli musiqa, Maxsus choy"
                   value={newBooking.specialRequests}
                   onChange={(e) => setNewBooking({ ...newBooking, specialRequests: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl border bg-slate-900/60 border-slate-700 text-white"
+                  className={`w-full px-3 py-2 rounded-xl border ${theme === 'dark' ? 'bg-slate-900/60 border-slate-700 text-white' : 'bg-slate-50 border-slate-300 text-slate-900'}`}
                 />
               </div>
 
@@ -625,7 +625,7 @@ export const VipSuiteManager = ({ reservations = [], showToast = () => {} }) => 
                 <button
                   type="button"
                   onClick={() => setNewBookingModal(false)}
-                  className="px-4 py-2 rounded-xl border border-slate-700 text-slate-300 font-bold"
+                  className={`px-4 py-2 rounded-xl border font-bold ${theme === 'dark' ? 'border-slate-700 text-slate-300' : 'border-slate-300 text-slate-600'}`}
                 >
                   Bekor qilish
                 </button>

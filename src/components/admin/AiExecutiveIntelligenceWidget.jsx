@@ -73,7 +73,7 @@ export const AiExecutiveIntelligenceWidget = ({
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-4 border-b border-inherit relative z-10">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-500 via-purple-500 to-indigo-500 p-0.5 shadow-lg shadow-purple-500/20">
-            <div className="w-full h-full bg-dark-950 rounded-[14px] flex items-center justify-center text-amber-400">
+            <div className={`w-full h-full rounded-[14px] flex items-center justify-center text-amber-400 ${theme === 'dark' ? 'bg-dark-950' : 'bg-white'}`}>
               <Sparkles className="w-5 h-5 animate-pulse" />
             </div>
           </div>

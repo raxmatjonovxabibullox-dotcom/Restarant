@@ -51,9 +51,10 @@ export const Navbar = ({ activePage, setActivePage, setIsAdminView, onOpenConcie
   ];
 
   const languages = [
-    { code: 'uz', label: "O'zbekcha", flag: '🇺🇿' },
-    { code: 'ru', label: 'Русский', flag: '🇷🇺' },
-    { code: 'en', label: 'English', flag: '🇬🇧' },
+    { code: 'uz', short: 'UZ', label: "O'zbekcha", flag: '🇺🇿' },
+    { code: 'uz_new', short: 'YANGI', label: "Özbekça (Yangi)", flag: '🇺🇿' },
+    { code: 'ru', short: 'RU', label: 'Русский', flag: '🇷🇺' },
+    { code: 'en', short: 'EN', label: 'English', flag: '🇬🇧' },
   ];
 
   const currentLangObj = languages.find(l => l.code === lang) || languages[0];
@@ -130,11 +131,11 @@ export const Navbar = ({ activePage, setActivePage, setIsAdminView, onOpenConcie
                 className="flex items-center gap-1.5 py-1 px-2.5 rounded-lg bg-white dark:bg-dark-800 border border-gray-200 dark:border-gray-700 hover:border-gold-500 transition-colors text-xs"
               >
                 <Globe className="w-3 h-3 text-gold-500" />
-                <span className="font-medium text-gray-800 dark:text-gray-200">{currentLangObj.flag} {currentLangObj.code.toUpperCase()}</span>
+                <span className="font-medium text-gray-800 dark:text-gray-200">{currentLangObj.flag} {currentLangObj.short || currentLangObj.code.toUpperCase()}</span>
               </button>
 
               {langDropdownOpen && (
-                <div className="absolute right-0 mt-1.5 w-36 py-1 bg-white dark:bg-dark-850 border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl z-50 animate-fade-in">
+                <div className="absolute right-0 mt-1.5 w-44 py-1 bg-white dark:bg-dark-850 border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl z-50 animate-fade-in">
                   {languages.map((l) => (
                     <button
                       key={l.code}

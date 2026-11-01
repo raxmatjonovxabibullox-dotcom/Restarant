@@ -152,6 +152,79 @@ const MAXTON_I18N = {
     vipSuite: "VIP Boshqaruv & Depozitlar",
     telegramBot: "Telegram AI Boti"
   },
+  uz_new: {
+    brand: "Maxton",
+    brandSubtitle: "Zafaron Lounge",
+    dashboard: "Dashboard",
+    analysis: "Tahlillar",
+    ecommerce: "eCommerce",
+    widgets: "Vidjetlar",
+    apps: "Ilovalar",
+    uiElements: "UI ELEMENTLARI",
+    cards: "Kartalar",
+    components: "Komponentlar",
+    icons: "Ikonkalar",
+    formsAndTables: "ŞAKLLAR VA JADVALLAR",
+    forms: "Şakllar (Taomnoma)",
+    tables: "Jadvallar (Buyurtmalar)",
+    pages: "SAHIFALAR",
+    authentication: "Autentifikatsiya",
+    userProfile: "Profil",
+    timeline: "Xronologiya",
+    settings: "Sozlamalar",
+    kds: "Oşxona (KDS)",
+    reservations: "Stol Bandliklari",
+    backToSite: "Restoranga Qaytiş",
+    searchPlaceholder: "Qidiriş (Buyurtma, taom, mijoz)...",
+    congratulations: "Tabriklaymiz Jhon 🎉",
+    bestSellerSubtitle: "Siz bu oyning eng yaxşi sotuvçisisiz",
+    salesTarget: "savdo rejasining bajarilişi",
+    viewDetails: "Batafsil Köriş",
+    totalOrders: "Jami Buyurtmalar",
+    totalSales: "Jami Tuşum",
+    totalVisits: "Taşriflar Soni",
+    bounceRate: "Yetkazib Beriş",
+    orderStatus: "Buyurtmalar Holati",
+    salesAndViews: "Savdo va Körişlar",
+    salesLegend: "Savdo",
+    viewsLegend: "Körişlar",
+    productLegend: "Taomlar",
+    incomeLegend: "Sof Daromad",
+    monthly: "Oylik",
+    yearly: "Yillik",
+    addNewDish: "Yangi Taom Qöşiş",
+    printReport: "Kassa Hisoboti",
+    exportCsv: "Excelga Yuklaş",
+    liveClock: "Toşkent Vaqti",
+    quickStatusStep: "Keyingi Holat",
+    stopList: "Stop-list",
+    available: "Sotuvda",
+    all: "Barçasi",
+    demoMode: "Maxton Demo",
+    liveMode: "Jonli Baza (Live)",
+    dataSource: "Ma'lumotlar Manbai",
+    appLauncher: "Ilovalar Markazi",
+    bestSellerModalTitle: "Oyning Eng Yaxşi Xodimi",
+    salesTargetProgress: "Savdo Rejasining Bajarilişi",
+    unlockedBonus: "Mukofot Bonusi",
+    customerRating: "Mijozlar Bahosi",
+    topDishesSold: "Eng Köp Sotilgan Halol Taomlar",
+    halalCompliance: "100% Halol Standartlar Nazorati",
+    markAllRead: "Barçasini öqilgan deb belgilaş",
+    noNotifications: "Yangi bildirişnomalar yöq",
+    searchDishes: "Taomlar",
+    searchOrders: "Buyurtmalar",
+    searchGuests: "Stol Bandliklari",
+    executiveProfile: "Ijroçi Profil (Admin)",
+    kitchenVelocity: "Oşxona Tezligi",
+    hallOccupancy: "Zallar Bandligi",
+    autoDirect: "Avto-Direct",
+    changeAvatar: "Avatar Almaştiriş",
+    pos: "POS Kassa Terminali",
+    aiCopilot: "AI Boşqaruvçi",
+    vipSuite: "VIP Boşqaruv & Depozitlar",
+    telegramBot: "Telegram AI Boti"
+  },
   ru: {
     brand: "Maxton",
     brandSubtitle: "Zafaron Lounge",
@@ -304,37 +377,37 @@ const MAXTON_I18N = {
 const PRESET_AVATARS = [
   {
     id: 'exec_male',
-    label: "Bosh Boshqaruvchi",
+    label: { uz: "Bosh Boshqaruvchi", uz_new: "Boş Boşqaruvçi", ru: "Главный Руководитель", en: "Chief Executive" },
     badge: "Executive Leader",
     url: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80"
   },
   {
     id: 'exec_female',
-    label: "Ijrochi Administrator",
+    label: { uz: "Ijrochi Administrator", uz_new: "Ijroçi Administrator", ru: "Исполнительный Администратор", en: "Executive Admin" },
     badge: "Lady Executive",
     url: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80"
   },
   {
     id: 'chef_gold',
-    label: "Bosh Oshpaz (Brand Chef)",
+    label: { uz: "Bosh Oshpaz (Brand Chef)", uz_new: "Boş Oşpaz (Brand Chef)", ru: "Бренд-Шеф", en: "Executive Chef" },
     badge: "Master Chef",
     url: "https://images.unsplash.com/photo-1577219491135-ce391730fb2c?auto=format&fit=crop&w=300&q=80"
   },
   {
     id: 'vip_concierge',
-    label: "VIP Konsyerj",
+    label: { uz: "VIP Konsyerj", uz_new: "VIP Konsyerj", ru: "VIP Консьерж", en: "VIP Concierge" },
     badge: "VIP Host",
     url: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80"
   },
   {
     id: 'modern_manager',
-    label: "Zamonaviy Menejer",
+    label: { uz: "Zamonaviy Menejer", uz_new: "Zamonaviy Menejer", ru: "Современный Менеджер", en: "Modern Manager" },
     badge: "Manager",
     url: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=300&q=80"
   },
   {
     id: 'cyber_gold',
-    label: "Prezident Darajasi",
+    label: { uz: "Prezident Darajasi", uz_new: "Prezident Darajasi", ru: "Президентский Класс", en: "Presidential Tier" },
     badge: "Top Executive",
     url: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=300&q=80"
   }
@@ -631,9 +704,10 @@ export const AdminDashboard = ({ setIsAdminView }) => {
 
   // Languages array with flags
   const languages = [
-    { code: 'en', label: 'English', flag: '🇺🇸' },
-    { code: 'uz', label: "O'zbekcha", flag: '🇺🇿' },
-    { code: 'ru', label: 'Русский', flag: '🇷🇺' },
+    { code: 'uz', short: 'UZ', label: "O'zbekcha", flag: '🇺🇿' },
+    { code: 'uz_new', short: 'YANGI', label: "Özbekça (Yangi)", flag: '🇺🇿' },
+    { code: 'ru', short: 'RU', label: 'Русский', flag: '🇷🇺' },
+    { code: 'en', short: 'EN', label: 'English', flag: '🇬🇧' },
   ];
   const currentLangObj = languages.find(l => l.code === lang) || languages[0];
 
@@ -1482,12 +1556,12 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                   }`}
               >
                 <span className="text-sm">{currentLangObj.flag}</span>
-                <span className="font-bold">{currentLangObj.code.toUpperCase()}</span>
+                <span className="font-bold">{currentLangObj.short || currentLangObj.code.toUpperCase()}</span>
                 <ChevronDown className="w-3 h-3 text-slate-400" />
               </button>
 
               {langDropdownOpen && (
-                <div className={`absolute right-0 mt-2 w-36 py-1 rounded-2xl shadow-2xl border z-50 ${theme === 'dark'
+                <div className={`absolute right-0 mt-2 w-44 py-1 rounded-2xl shadow-2xl border z-50 ${theme === 'dark'
                     ? 'bg-[#1c2032] border-[#2c324e] text-slate-200'
                     : 'bg-white border-slate-200 text-slate-800'
                   }`}>
@@ -3928,8 +4002,12 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                   <Camera className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-extrabold text-base">Admin Avatarini Almashtirish</h3>
-                  <p className="text-[11px] text-slate-400">Profil rasmi, ism va lavozimni sozlash</p>
+                  <h3 className="font-extrabold text-base">
+                    {lang === 'ru' ? 'Сменить Аватар Администратора' : lang === 'en' ? 'Change Admin Avatar' : lang === 'uz_new' ? 'Admin Avatarini Almaştiriş' : 'Admin Avatarini Almashtirish'}
+                  </h3>
+                  <p className="text-[11px] text-slate-400">
+                    {lang === 'ru' ? 'Настройка фото, имени и должности' : lang === 'en' ? 'Customize photo, name and role' : lang === 'uz_new' ? 'Profil rasmi, ism va lavozimni sozlaş' : 'Profil rasmi, ism va lavozimni sozlash'}
+                  </p>
                 </div>
               </div>
               <button
@@ -3951,11 +4029,13 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                 <span className="w-4 h-4 rounded-full bg-emerald-500 border-2 border-inherit absolute -bottom-1 -right-1" />
               </div>
               <div className="space-y-1">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-blue-400">Tanlangan Surat</span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-blue-400">
+                  {lang === 'ru' ? 'Выбранное Фото' : lang === 'en' ? 'Selected Photo' : lang === 'uz_new' ? 'Tanlangan Surat' : 'Tanlangan Surat'}
+                </span>
                 <h4 className="font-bold text-sm text-current">{avatarForm.name}</h4>
                 <p className="text-[11px] text-slate-400">{avatarForm.role}</p>
                 <span className="inline-block text-[9px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
-                  Faol holatda
+                  {lang === 'ru' ? 'Активен' : lang === 'en' ? 'Active' : lang === 'uz_new' ? 'Faol holatda' : 'Faol holatda'}
                 </span>
               </div>
             </div>
@@ -3964,7 +4044,9 @@ export const AdminDashboard = ({ setIsAdminView }) => {
             <div className="space-y-2">
               <span className="text-xs font-bold text-current block flex items-center gap-1.5">
                 <Upload className="w-3.5 h-3.5 text-blue-400" />
-                <span>1. Kompyuterdan yangi rasm yuklash</span>
+                <span>
+                  {lang === 'ru' ? '1. Загрузить новое фото с устройства' : lang === 'en' ? '1. Upload image from device' : lang === 'uz_new' ? '1. Kompyuterdan yangi rasm yuklaş' : '1. Kompyuterdan yangi rasm yuklash'}
+                </span>
               </span>
               <label className={`w-full py-3 px-4 rounded-2xl border-2 border-dashed flex items-center justify-center gap-2 cursor-pointer transition-all ${theme === 'dark'
                   ? 'border-[#2c324e] hover:border-blue-500 bg-[#141622]'
@@ -3972,7 +4054,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                 }`}>
                 <Upload className="w-4 h-4 text-blue-400" />
                 <span className="text-xs font-semibold text-slate-400">
-                  Faylni tanlang (JPG, PNG, WEBP, max 4MB)
+                  {lang === 'ru' ? 'Выберите файл (JPG, PNG, WEBP, макс. 4MB)' : lang === 'en' ? 'Choose file (JPG, PNG, WEBP, max 4MB)' : lang === 'uz_new' ? 'Faylni tanlang (JPG, PNG, WEBP, max 4MB)' : 'Faylni tanlang (JPG, PNG, WEBP, max 4MB)'}
                 </span>
                 <input
                   type="file"
@@ -3987,11 +4069,13 @@ export const AdminDashboard = ({ setIsAdminView }) => {
             <div className="space-y-2">
               <span className="text-xs font-bold text-current block flex items-center gap-1.5">
                 <ImageIcon className="w-3.5 h-3.5 text-purple-400" />
-                <span>2. Rasm URL havolasi orqali</span>
+                <span>
+                  {lang === 'ru' ? '2. По прямой ссылке (URL)' : lang === 'en' ? '2. Via image URL link' : lang === 'uz_new' ? '2. Rasm URL havolasi orqali' : '2. Rasm URL havolasi orqali'}
+                </span>
               </span>
               <input
                 type="text"
-                placeholder="https://... rasm havolasini kiriting"
+                placeholder={lang === 'ru' ? 'https://... введите ссылку на изображение' : lang === 'en' ? 'https://... enter image URL' : lang === 'uz_new' ? 'https://... rasm havolasini kiriting' : 'https://... rasm havolasini kiriting'}
                 value={avatarForm.avatar}
                 onChange={(e) => setAvatarForm({ ...avatarForm, avatar: e.target.value })}
                 className={`w-full px-3.5 py-2.5 rounded-xl text-xs border ${theme === 'dark' ? 'bg-[#141622] border-[#252a42] text-white' : 'bg-slate-50 border-slate-200'
@@ -4003,11 +4087,14 @@ export const AdminDashboard = ({ setIsAdminView }) => {
             <div className="space-y-2">
               <span className="text-xs font-bold text-current block flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                <span>3. Tayyor Hashamatli Avatarlardan tanlang</span>
+                <span>
+                  {lang === 'ru' ? '3. Выберите из готовых роскошных аватаров' : lang === 'en' ? '3. Choose from luxury preset avatars' : lang === 'uz_new' ? '3. Tayyor Haşamatli Avatarlardan tanlang' : '3. Tayyor Hashamatli Avatarlardan tanlang'}
+                </span>
               </span>
               <div className="grid grid-cols-3 gap-2.5">
                 {PRESET_AVATARS.map((p) => {
                   const isSelected = avatarForm.avatar === p.url;
+                  const localizedLabel = typeof p.label === 'object' ? (p.label[lang] || p.label.uz) : p.label;
                   return (
                     <button
                       type="button"
@@ -4021,7 +4108,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                       <div className="relative">
                         <img
                           src={p.url}
-                          alt={p.label}
+                          alt={localizedLabel}
                           className="w-12 h-12 rounded-xl object-cover"
                         />
                         {isSelected && (
@@ -4030,7 +4117,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                           </span>
                         )}
                       </div>
-                      <span className="text-[10px] font-bold text-current truncate w-full">{p.label}</span>
+                      <span className="text-[10px] font-bold text-current truncate w-full">{localizedLabel}</span>
                       <span className="text-[9px] text-slate-400 truncate w-full">{p.badge}</span>
                     </button>
                   );
@@ -4041,7 +4128,9 @@ export const AdminDashboard = ({ setIsAdminView }) => {
             {/* Name & Role Form */}
             <div className="grid grid-cols-2 gap-3 pt-1">
               <div>
-                <label className="block text-[11px] font-semibold text-slate-400 mb-1">Ism / Nik</label>
+                <label className="block text-[11px] font-semibold text-slate-400 mb-1">
+                  {lang === 'ru' ? 'Имя / Ник' : lang === 'en' ? 'Name / Nickname' : lang === 'uz_new' ? 'Ism / Nik' : 'Ism / Nik'}
+                </label>
                 <input
                   type="text"
                   value={avatarForm.name}
@@ -4051,7 +4140,9 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                 />
               </div>
               <div>
-                <label className="block text-[11px] font-semibold text-slate-400 mb-1">Lavozim</label>
+                <label className="block text-[11px] font-semibold text-slate-400 mb-1">
+                  {lang === 'ru' ? 'Должность' : lang === 'en' ? 'Role / Position' : lang === 'uz_new' ? 'Lavozim' : 'Lavozim'}
+                </label>
                 <input
                   type="text"
                   value={avatarForm.role}
@@ -4069,7 +4160,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                 onClick={() => setIsAvatarModalOpen(false)}
                 className="px-4 py-2.5 rounded-xl text-xs font-bold text-slate-400 hover:text-current hover:bg-slate-500/10 transition-colors"
               >
-                Bekor Qilish
+                {lang === 'ru' ? 'Отмена' : lang === 'en' ? 'Cancel' : lang === 'uz_new' ? 'Bekor Qiliş' : 'Bekor Qilish'}
               </button>
               <button
                 type="button"
@@ -4077,7 +4168,9 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                 className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-black text-xs shadow-lg shadow-blue-500/25 flex items-center gap-1.5 transition-all"
               >
                 <Check className="w-4 h-4" />
-                <span>Saqlash & Qo'llash</span>
+                <span>
+                  {lang === 'ru' ? 'Сохранить и применить' : lang === 'en' ? 'Save & Apply' : lang === 'uz_new' ? 'Saqlaş & Qöllaş' : 'Saqlash & Qo\'llash'}
+                </span>
               </button>
             </div>
           </div>

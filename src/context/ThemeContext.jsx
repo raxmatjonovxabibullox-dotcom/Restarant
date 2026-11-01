@@ -4,7 +4,17 @@ const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
   const [theme, setTheme] = useState(() => {
-    return localStorage.getItem('zafaron_theme_v1') || 'dark'; // Default luxury dark
+    try {
+      const saved = localStorage.getItem('zafaron_theme_v1');
+      if (saved) return saved;
+      if (document.documentElement.classList.contains('dark')) return 'dark';
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        return 'dark';
+      }
+      return 'light';
+    } catch (e) {
+      return 'light';
+    }
   });
 
   useEffect(() => {
@@ -14,7 +24,9 @@ export const ThemeProvider = ({ children }) => {
     } else {
       root.classList.remove('dark');
     }
-    localStorage.setItem('zafaron_theme_v1', theme);
+    try {
+      localStorage.setItem('zafaron_theme_v1', theme);
+    } catch (e) {}
   }, [theme]);
 
   const toggleTheme = () => {

@@ -102,7 +102,7 @@ export const ExecutiveTickerBar = ({ totalRevenue = 18500000, vipDepositTotal = 
               <div className="flex items-center gap-1.5">
                 <span className="text-[10px] text-slate-400 font-medium">{m.label}:</span>
                 <span className={`font-mono font-bold ${m.color}`}>{m.val}</span>
-                <span className="text-[9px] px-1.5 py-0.2 rounded-full bg-slate-800 text-slate-400 border border-slate-700">
+                <span className={`text-[9px] px-1.5 py-0.2 rounded-full border ${theme === 'dark' ? 'bg-slate-800 text-slate-400 border-slate-700' : 'bg-slate-100 text-slate-500 border-slate-300'}`}>
                   {m.trend}
                 </span>
               </div>

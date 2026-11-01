@@ -1,10 +1,12 @@
 import React from 'react';
 import { ChefHat, Clock, CheckCircle2, Flame, Bike, UtensilsCrossed } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
+import { useTheme } from '../../context/ThemeContext';
 import { soundFx } from '../../hooks/useSoundEffects';
 
 export const KitchenDisplay = ({ orders = [], updateOrderStatus, onUpdateStatus, getLocalized }) => {
   const { lang } = useLanguage();
+  const { theme } = useTheme();
   const handleStatusUpdate = updateOrderStatus || onUpdateStatus;
 
   const tKds = {
@@ -101,13 +103,13 @@ export const KitchenDisplay = ({ orders = [], updateOrderStatus, onUpdateStatus,
   return (
     <div className="space-y-6">
       {/* KDS Header & Filter Info */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5 rounded-3xl bg-dark-900 border border-gold-500/30 text-white shadow-xl">
+      <div className={`flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5 rounded-3xl border shadow-xl ${theme === 'dark' ? 'bg-dark-900 border-gold-500/30 text-white' : 'bg-gradient-to-r from-amber-50 via-white to-amber-50 border-amber-200 text-slate-900'}`}>
         <div className="flex items-center gap-3">
           <div className="p-3 rounded-2xl bg-amber-500/20 text-gold-400">
             <ChefHat className="w-7 h-7" />
           </div>
           <div>
-            <h3 className="font-serif font-black text-xl sm:text-2xl text-white flex items-center gap-2">
+            <h3 className={`font-serif font-black text-xl sm:text-2xl flex items-center gap-2 ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
               {cur.title}
               <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500 text-dark-950">
                 {cur.activeTickets(kitchenOrders.length)}

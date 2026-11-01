@@ -102,7 +102,7 @@ export const PosShiftCloseModal = ({
         {/* Modal Header */}
         <div className="flex items-center gap-3.5 mb-6">
           <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500 to-yellow-400 p-0.5 shadow-lg shadow-amber-500/20">
-            <div className="w-full h-full bg-dark-950 rounded-[14px] flex items-center justify-center text-amber-400">
+            <div className={`w-full h-full rounded-[14px] flex items-center justify-center text-amber-400 ${theme === 'dark' ? 'bg-dark-950' : 'bg-white'}`}>
               <Receipt className="w-6 h-6" />
             </div>
           </div>
@@ -176,7 +176,7 @@ export const PosShiftCloseModal = ({
               placeholder={`Masalan: ${cashTotal}`}
               value={countedCash}
               onChange={(e) => setCountedCash(e.target.value)}
-              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-slate-700 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 text-sm font-mono font-bold text-current outline-none"
+              className={`w-full px-4 py-3 rounded-2xl border focus:border-amber-500 focus:ring-1 focus:ring-amber-500 text-sm font-mono font-bold text-current outline-none ${theme === 'dark' ? 'bg-white/5 border-slate-700' : 'bg-slate-50 border-slate-300'}`}
             />
             <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">
               UZS
