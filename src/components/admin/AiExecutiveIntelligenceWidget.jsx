@@ -80,7 +80,7 @@ export const AiExecutiveIntelligenceWidget = ({
           <div>
             <div className="flex items-center gap-2">
               <h2 className="font-extrabold text-sm sm:text-base text-current">
-                Zafaron AI Executive Intelligence & Rush Operations
+                Sapphire AI Executive Intelligence & Rush Operations
               </h2>
               <span className="px-2 py-0.5 rounded-full text-[9px] font-black bg-gradient-to-r from-amber-500 to-yellow-500 text-dark-950 uppercase tracking-widest">
                 AI 4.0 Suite

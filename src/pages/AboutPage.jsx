@@ -46,7 +46,7 @@ export const AboutPage = ({ setActivePage }) => {
     },
     {
       url: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=800&q=80",
-      title: lang === 'ru' ? 'Свадебный Плов Zafaron' : lang === 'en' ? 'Zafaron Royal Wedding Plov' : "Zafaron To'y Palovi",
+      title: lang === 'ru' ? 'Свадебный Плов Sapphire' : lang === 'en' ? 'Sapphire Royal Wedding Plov' : "Sapphire To'y Palovi",
       caption: lang === 'ru' ? 'Рис лазер, горный шафран и отборный казы' : lang === 'en' ? 'Lazer rice, mountain saffron and choice kazy' : "Lazer guruch, tog' zafaroni va sarxil kazy",
       category: "dishes"
     }
@@ -70,7 +70,7 @@ export const AboutPage = ({ setActivePage }) => {
     },
     {
       year: "2026",
-      title: "Zafaron Royal & Lounge",
+      title: "Sapphire Royal & Lounge",
       desc: lang === 'ru' ? 'Открыт новый флагман: терраса, VIP-сьюты, интерактивный сервис и умный консьерж.' : lang === 'en' ? 'New venue with panoramic terrace, VIP suites, and smart concierge service opened.' : "Yangi bino, panoramik terrasa, VIP suite xonalar va aqlli raqamli servis ochildi."
     }
   ];
@@ -118,7 +118,7 @@ export const AboutPage = ({ setActivePage }) => {
               <Crown className="w-5 h-5 text-gold-500 flex-shrink-0 mt-0.5" />
               <div>
                 <h4 className="font-bold text-sm text-gray-900 dark:text-white">
-                  {lang === 'ru' ? 'Горный Шафран' : lang === 'en' ? 'Mountain Saffron' : "Asl Tog' Zafaroni"}
+                  {lang === 'ru' ? 'Горный Шафран' : lang === 'en' ? 'Mountain Saffron' : "Asl Tog' Sapphirei"}
                 </h4>
                 <p className="text-xs text-gray-500 dark:text-gray-400">
                   {lang === 'ru' ? 'Благороднейшая натуральная специя' : lang === 'en' ? 'The most prized natural spice' : 'Eng qimmatbaho tabiiy ziravor'}
@@ -133,7 +133,7 @@ export const AboutPage = ({ setActivePage }) => {
           <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-gray-200 dark:border-white/10">
             <img
               src="https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=900&q=80"
-              alt="Zafaron Atmosphere"
+              alt="Sapphire Atmosphere"
               className="w-full h-[450px] object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-dark-950/80 via-transparent to-transparent" />

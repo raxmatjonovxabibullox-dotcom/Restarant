@@ -50,7 +50,7 @@ export const CartDrawer = () => {
   const tCart = {
     title: lang === 'ru' ? 'Корзина Заказа' : lang === 'en' ? 'Shopping Cart' : 'Buyurtma Savati',
     statusTitle: lang === 'ru' ? 'Статус заказа' : lang === 'en' ? 'Order Status' : 'Buyurtma holati',
-    brandSubtitle: 'Zafaron Restaurant & Lounge',
+    brandSubtitle: 'Sapphire Luxury Dining & Lounge',
     orderNum: lang === 'ru' ? 'ЗАКАЗ' : lang === 'en' ? 'ORDER' : 'BUYURTMA',
     orderReceived: lang === 'ru' ? 'Ваш Заказ Принят!' : lang === 'en' ? 'Your Order is Confirmed!' : 'Buyurtmangiz Qabul Qilindi!',
     orderSentInfo: lang === 'ru' ? 'Информация отправлена администратору и в Telegram бот.' : lang === 'en' ? 'Details dispatched to restaurant admin and Telegram bot.' : "Ma'lumotlar restoran administratoriga va Telegram botga yuborildi.",
@@ -146,7 +146,7 @@ export const CartDrawer = () => {
     if (autoRedirectTimer === null || isRedirectCancelled) return;
     if (autoRedirectTimer <= 0) {
       const autoDirect = getStoredAutoDirect();
-      const botUrl = autoDirect?.telegramBotLink || 'https://t.me/zafaron_restarant_bot';
+      const botUrl = autoDirect?.telegramBotLink || 'https://t.me/sapphire_restaurant_bot';
       window.open(botUrl, '_blank', 'noopener,noreferrer');
       setAutoRedirectTimer(null);
       return;
@@ -236,7 +236,7 @@ export const CartDrawer = () => {
                     </div>
                     <div className="flex items-center gap-1.5 shrink-0">
                       <a
-                        href={getStoredAutoDirect()?.telegramBotLink || "https://t.me/zafaron_restarant_bot"}
+                        href={getStoredAutoDirect()?.telegramBotLink || "https://t.me/sapphire_restaurant_bot"}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="px-2.5 py-1.5 rounded-lg bg-gold-500 text-dark-950 font-bold text-[10px] hover:brightness-110 flex items-center gap-1"

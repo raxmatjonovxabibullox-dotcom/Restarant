@@ -60,7 +60,7 @@ export const DishDetailModal = () => {
     },
     {
       id: 'saffron_sauce',
-      name: lang === 'ru' ? 'Шафраново-чесночный соус' : lang === 'en' ? 'Saffron garlic sauce' : 'Zafaron sarimsoqli sousi',
+      name: lang === 'ru' ? 'Шафраново-чесночный соус' : lang === 'en' ? 'Saffron garlic sauce' : 'Sapphire sarimsoqli sousi',
       price: 8000
     },
     {

@@ -207,7 +207,7 @@ export const Navbar = ({ activePage, setActivePage, setIsAdminView, onOpenConcie
             </div>
             <div>
               <span className="font-display font-black text-lg sm:text-2xl tracking-wider gold-gradient-text block leading-none">
-                ZAFARON
+                SAPPHIRE
               </span>
               <span className="text-[10px] sm:text-xs font-medium tracking-[0.25em] text-gray-500 dark:text-gray-400 uppercase block mt-1">
                 Restaurant & Lounge
@@ -380,7 +380,7 @@ export const Navbar = ({ activePage, setActivePage, setIsAdminView, onOpenConcie
               className="w-full py-3 px-4 rounded-xl text-left text-xs font-bold text-gold-500 bg-amber-500/10 flex items-center gap-2"
             >
               <Sparkles className="w-4 h-4" />
-              <span>{lang === 'ru' ? "Zafaron Умный Сомелье & Меню-Гид" : lang === 'en' ? "Zafaron Smart Sommelier & Recommender" : "Zafaron Aqlli Sommelier & Recommender"}</span>
+              <span>{lang === 'ru' ? "Sapphire Умный Сомелье & Меню-Гид" : lang === 'en' ? "Sapphire Smart Sommelier & Recommender" : "Sapphire Aqlli Sommelier & Recommender"}</span>
             </button>
 
             {/* Mobile Admin Panel Entry with Login Requirement */}

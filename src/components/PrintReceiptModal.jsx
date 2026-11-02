@@ -113,7 +113,7 @@ export const PrintReceiptModal = ({ order, isOpen, onClose }) => {
           {/* Brand Header */}
           <div className={`text-center pb-3 border-b border-dashed ${isDark ? 'border-gray-800' : 'border-gray-300'} print:border-gray-400`}>
             <h2 className={`font-serif font-black text-2xl tracking-wider uppercase ${isDark ? 'text-white' : 'text-gray-900'} print:text-black`}>
-              ZAFARON
+              SAPPHIRE
             </h2>
             <p className="text-[10px] uppercase tracking-widest text-gold-500 font-bold mt-0.5 print:text-gray-600">
               Restaurant & Lounge
@@ -226,7 +226,7 @@ export const PrintReceiptModal = ({ order, isOpen, onClose }) => {
               {tReceipt.thankYou}
             </p>
             <p className={`text-[9px] ${isDark ? 'text-gray-500' : 'text-gray-400'} print:text-gray-400`}>
-              www.zafaron-restaurant.uz • @restarantnamezafaronbot
+              www.sapphire-restaurant.uz • @sapphire_restaurant_bot
             </p>
           </div>
         </div>

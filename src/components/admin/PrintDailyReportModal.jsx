@@ -63,7 +63,7 @@ export const PrintDailyReportModal = ({ isOpen, onClose, orders, reservations, m
     adminSign: lang === 'ru' ? 'Главный Администратор: _______________' : lang === 'en' ? 'Executive Administrator: _______________' : 'Bosh Administrator: _________________',
     cashierSign: lang === 'ru' ? 'Старший Кассир: ____________________' : lang === 'en' ? 'Senior Cashier: ____________________' : 'Katta Kassir: ______________________',
     signature: lang === 'ru' ? 'Подпись: _________' : lang === 'en' ? 'Signature: _________' : 'Imzo: _________',
-    footerNote: lang === 'ru' ? 'Автоматизированная система управления Zafaron Lounge' : lang === 'en' ? 'Zafaron Lounge Automated Hospitality System' : 'Zafaron Lounge avtomatlashtirilgan boshqaruv tizimi'
+    footerNote: lang === 'ru' ? 'Автоматизированная система управления Sapphire Lounge' : lang === 'en' ? 'Sapphire Lounge Automated Hospitality System' : 'Sapphire Lounge avtomatlashtirilgan boshqaruv tizimi'
   };
 
   return (
@@ -118,7 +118,7 @@ export const PrintDailyReportModal = ({ isOpen, onClose, orders, reservations, m
           {/* Header */}
           <div className="text-center pb-3 border-b-2 border-dashed border-gray-300 dark:border-gray-700 print:border-gray-400">
             <h1 className="font-serif font-black text-2xl tracking-wider text-gray-900 dark:text-white uppercase print:text-black">
-              ZAFARON RESTAURANT & LOUNGE
+              SAPPHIRE LUXURY DINING & LOUNGE
             </h1>
             <p className="text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-widest mt-0.5 print:text-gray-600">
               {tReport.subtitle}

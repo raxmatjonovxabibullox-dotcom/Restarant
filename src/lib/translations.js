@@ -83,7 +83,7 @@ export const translations = {
     hero: {
       badge: "Gourmet & Luxury Restaurant",
       title: "Haqiqiy Sharqona va Yevropa lazzati",
-      subtitle: "Zafaron restoranida eng saralangan masalliqlar, mohir oshpazlar mahorati va shohona muhit sizni kutmoqda. Har bir luqma — betakror san'at asari.",
+      subtitle: "Sapphire restoranida eng saralangan masalliqlar, mohir oshpazlar mahorati va shohona muhit sizni kutmoqda. Har bir luqma — betakror san'at asari.",
       viewMenu: "Taomnomani ko'rish",
       reserveBtn: "Stol bron qilish",
       features1: "Mualliflik retseptlari",
@@ -104,7 +104,7 @@ export const translations = {
       specialsTitle: "Maxsus Takliflarimiz",
       specialsSubtitle: "Bugungi kunda bosh oshpazimiz tomonidan tavsiya etilgan eng saralangan taomlar",
       addToCart: "Savatchaga qo'shish",
-      whyUsTitle: "Nega aynan Zafaron?",
+      whyUsTitle: "Nega aynan Sapphire?",
       whyUsSubtitle: "Biz shunchaki taom bermaymiz, unutilmas lazzat va yuqori xizmat tuyg'usini tuhfa etamiz",
       reason1Title: "Premium Masalliqlar",
       reason1Desc: "Faqat yangi so'yilgan sifatli go'sht, sarxil sabzavotlar va tabiiy ziravorlar.",
@@ -122,7 +122,7 @@ export const translations = {
       review2Text: "Oilaviy kelish uchun eng zo'r joy. Salatlar yangi, kaboblar yumshoq, desertlari esa betakror.",
       review2Author: "Dilnoza Karimova",
       review2Role: "Oziq-ovqat blogeri",
-      review3Text: "Xorijlik mehmonlarimizni olib bordik, hamma hayratda qoldi. Ayniqsa Zafaron choyi va palov ajoyib!",
+      review3Text: "Xorijlik mehmonlarimizni olib bordik, hamma hayratda qoldi. Ayniqsa Sapphire choyi va palov ajoyib!",
       review3Author: "Azamat Rustamov",
       review3Role: "Tadbirkor",
     },
@@ -151,7 +151,7 @@ export const translations = {
     aboutPage: {
       badge: "Tariximiz va falsafamiz",
       title: "An'analar va Yuqori Pazandachilik San'ati",
-      desc1: "Zafaron restorani 2010-yilda o'zbek mehmondo'stligining eng go'zal an'analarini zamonaviy gastronomik madaniyat bilan uyg'unlashtirish maqsadida tashkil etilgan.",
+      desc1: "Sapphire restorani 2010-yilda o'zbek mehmondo'stligining eng go'zal an'analarini zamonaviy gastronomik madaniyat bilan uyg'unlashtirish maqsadida tashkil etilgan.",
       desc2: "Biz har kuni sahardan boshlab eng sarxil masalliqlar, toza zafaron (shafran) va tabiiy tog' ziravorlaridan foydalanib, shohona milliy va nozik Yevropa taomlarini tayyorlaymiz.",
       masterChef: "Bosh Oshpazimiz",
       chefName: "Mansur Shokirov",
@@ -241,7 +241,7 @@ export const translations = {
 
     // Admin Panel
     admin: {
-      brand: "ZAFARON ADMIN",
+      brand: "SAPPHIRE ADMIN",
       dashboard: "Boshqaruv Paneli",
       menuManagement: "Taomnoma Boshqaruvi",
       orders: "Buyurtmalar",
@@ -429,7 +429,7 @@ export const translations = {
     hero: {
       badge: "Gourmet & Luxury Restaurant",
       title: "Haqiqiy Şarqona va Yevropa lazzati",
-      subtitle: "Zafaron restoranida eng saralangan masalliqlar, mohir oşpazlar mahorati va şohona muhit sizni kutmoqda. Har bir luqma — betakror san'at asari.",
+      subtitle: "Sapphire restoranida eng saralangan masalliqlar, mohir oşpazlar mahorati va şohona muhit sizni kutmoqda. Har bir luqma — betakror san'at asari.",
       viewMenu: "Taomnomani köriş",
       reserveBtn: "Stol bron qiliş",
       features1: "Mualliflik retseptlari",
@@ -450,7 +450,7 @@ export const translations = {
       specialsTitle: "Maxsus Takliflarimiz",
       specialsSubtitle: "Bugungi kunda boş oşpazimiz tomonidan tavsiya etilgan eng saralangan taomlar",
       addToCart: "Savatçaga qöşiş",
-      whyUsTitle: "Nega aynan Zafaron?",
+      whyUsTitle: "Nega aynan Sapphire?",
       whyUsSubtitle: "Biz şunçaki taom bermaymiz, unutilmas lazzat va yuqori xizmat tuyğusini tuhfa etamiz",
       reason1Title: "Premium Masalliqlar",
       reason1Desc: "Faqat yangi söyilgan sifatli göşt, sarxil sabzavotlar va tabiiy ziravorlar.",
@@ -468,7 +468,7 @@ export const translations = {
       review2Text: "Oilaviy keliş uçun eng zör joy. Salatlar yangi, kaboblar yumşoq, desertlari esa betakror.",
       review2Author: "Dilnoza Karimova",
       review2Role: "Oziq-ovqat blogeri",
-      review3Text: "Xorijlik mehmonlarimizni olib bordik, hamma hayratda qoldi. Ayniqsa Zafaron çoyi va palov ajoyib!",
+      review3Text: "Xorijlik mehmonlarimizni olib bordik, hamma hayratda qoldi. Ayniqsa Sapphire çoyi va palov ajoyib!",
       review3Author: "Azamat Rustamov",
       review3Role: "Tadbirkor",
     },
@@ -497,7 +497,7 @@ export const translations = {
     aboutPage: {
       badge: "Tariximiz va falsafamiz",
       title: "An'analar va Yuqori Pazandaçilik San'ati",
-      desc1: "Zafaron restorani 2010-yilda özbek mehmondöstligining eng gözal an'analarini zamonaviy gastronomik madaniyat bilan uyğunlaştiriş maqsadida taşkil etilgan.",
+      desc1: "Sapphire restorani 2010-yilda özbek mehmondöstligining eng gözal an'analarini zamonaviy gastronomik madaniyat bilan uyğunlaştiriş maqsadida taşkil etilgan.",
       desc2: "Biz har kuni sahardan boşlab eng sarxil masalliqlar, toza zafaron (şafran) va tabiiy toğ ziravorlaridan foydalanib, şohona milliy va nozik Yevropa taomlarini tayyorlaymiz.",
       masterChef: "Boş Oşpazimiz",
       chefName: "Mansur Şokirov",
@@ -587,7 +587,354 @@ export const translations = {
 
     // Admin Panel
     admin: {
-      brand: "ZAFARON ADMIN",
+      brand: "SAPPHIRE ADMIN",
+      dashboard: "Boşqaruv Paneli",
+      menuManagement: "Taomnoma Boşqaruvi",
+      orders: "Buyurtmalar",
+      reservations: "Stol Bandliklari",
+      settings: "Sozlamalar (Bot & Supabase)",
+      backToSite: "Saytga qaytiş",
+      
+      // Dashboard Stats
+      todayRevenue: "Bugungi tuşum",
+      totalOrders: "Jami buyurtmalar",
+      activeReservations: "Faol stol bandliklari",
+      totalMenuItems: "Menyudagi taomlar",
+      revenueGrowth: "Ötgan haftaga nisbatan +18.4%",
+      ordersGrowth: "+12 yangi buyurtma",
+      
+      // Dashboard Charts & Tables
+      weeklyRevenue: "Haftalik Tuşum Dinamikasi",
+      popularDishes: "Eng Köp Sotilgan Taomlar",
+      recentOrders: "Sönggi Buyurtmalar",
+      allOrders: "Barça buyurtmalarni köriş",
+      orderId: "Buyurtma №",
+      customer: "Mijoz",
+      type: "Turi",
+      amount: "Summasi",
+      payment: "Tölov",
+      statusPending: "Kutilmoqda",
+      statusCooking: "Tayyorlanmoqda",
+      statusDelivering: "Yetkazilmoqda",
+      statusCompleted: "Yakunlandi",
+      statusCancelled: "Bekor qilindi",
+
+      // Menu Management (CRUD)
+      addNewDish: "Yangi Taom Qöşiş",
+      editDish: "Taomni Tahrirlaş",
+      dishNameUz: "Taom nomi (Özbekça)",
+      dishNameRu: "Taom nomi (Rusça)",
+      dishNameEn: "Taom nomi (Inglizça)",
+      dishDescUz: "Tavsifi (Özbekça)",
+      dishDescRu: "Tavsifi (Rusça)",
+      dishDescEn: "Tavsifi (Inglizça)",
+      category: "Kategoriya",
+      price: "Narxi (söm)",
+      imageUrl: "Rasm havolasi (URL)",
+      prepTimeMin: "Tayyorlaniş vaqti (daq.)",
+      caloriesKcal: "Kaloriya (kkal)",
+      tagsSelect: "Belgilar / Xususiyatlar",
+      isAvailable: "Sotuvda mavjud",
+      saveDish: "Taomni Saqlaş",
+      dishAddedSuccess: "Yangi taom muvaffaqiyatli qöşildi!",
+      dishUpdatedSuccess: "Taom ma'lumotlari yangilandi!",
+      dishDeletedSuccess: "Taom menyudan öçirildi!",
+
+      // Orders Management
+      filterByStatus: "Holat böyiça saralaş",
+      itemsOrdered: "Buyurtma qilingan taomlar",
+      changeStatus: "Holatini özgartiriş",
+      deliveryAddressInfo: "Yetkaziş manzili",
+      orderTime: "Vaqti",
+
+      // Reservations Management
+      reservationStatusNew: "Yangi",
+      reservationStatusConfirmed: "Tasdiqlangan",
+      reservationStatusFinished: "Keldilar / Yakunlandi",
+      reservationStatusCancelled: "Bekor qilindi",
+      confirmReservation: "Tasdiqlaş",
+      cancelReservation: "Bekor qiliş",
+
+      // Settings
+      settingsTitle: "Tizim Integratsiyalari va Sozlamalar",
+      telegramBotConfig: "Telegram Bot Integratsiyasi",
+      botToken: "Telegram Bot Token",
+      botTokenPlaceholder: "Masalan: 123456789:ABCdefGhIJKlmNoPQRstuVWxyz",
+      chatId: "Admin Çat ID (yoki guruh ID)",
+      chatIdPlaceholder: "Masalan: 987654321 yoki -100123456789",
+      testBotBtn: "Test Xabar Yuboriş",
+      botStatusConnected: "Telegram Bot Ulangan",
+      botStatusDisconnected: "Telegram Bot Ma'lumotlari Kiritilmagan",
+      botTestSuccess: "Test xabari Telegramingizga yuborildi!",
+      
+      supabaseConfig: "Supabase Ma'lumotlar Bazasi",
+      supabaseUrl: "Supabase Project URL",
+      supabaseKey: "Supabase Anon / Public Key",
+      supabaseStatusConnected: "Supabase Ulangan (Bulutli Ma'lumotlar)",
+      supabaseStatusLocal: "Lokal Rejimda Işlamoqda (LocalStorage)",
+      supabaseSyncBtn: "Ma'lumotlarni Sinxronlaş",
+      
+      dataManagement: "Ma'lumotlar Zaxira Nusxasi (Backup)",
+      exportData: "JSON Eksport Qiliş",
+      resetDefaultMenu: "Boşlanğiç Menyuni Qaytariş",
+      resetConfirm: "Haqiqatan ham menyuni standart holatga qaytarmoqçimisiz?",
+    },
+
+    // Footer
+    footer: {
+      halal: "100% Halol Sertifikatlangan",
+      organic: "Yangi & Organik",
+      alcoholFree: "🚭 Spirtsiz & Tamakisiz Hudud",
+      quickLinks: "Tezkor havolalar",
+      liveMusic: "Jonli musiqa:",
+      musicSchedule: "Har payşanba, juma va şanba 19:30 dan",
+      telegramIntegration: "Telegram Bot bilan töliq integratsiya",
+      allRightsReserved: "Barça huquqlar himoyalangan.",
+      craftedWith: "Gastronomiya ixlosmandlari uçun mehr bilan yaratilgan",
+    }
+  
+  },
+
+  uz_new: {
+    // Navigation
+    nav: {
+      home: "Boş sahifa",
+      menu: "Taomnoma",
+      about: "Biz haqimizda",
+      reservation: "Stol band qiliş",
+      contact: "Aloqa",
+      admin: "Admin Panel",
+      login: "Kiriş",
+      logout: "Çiqiş",
+      searchPlaceholder: "Taom, salat yoki içimlik qidiriş...",
+      cart: "Savatça",
+      bookTable: "Joy band qiliş",
+      menuQuick: "Menyu",
+      openHours: "Har kuni: 10:00 - 23:30",
+      phone: "+998 71 200 88 99",
+      address: "Toşkent ş., Amir Temur şoh köçasi, 45",
+    },
+
+    // Common
+    common: {
+      currency: "söm",
+      save: "Saqlaş",
+      cancel: "Bekor qiliş",
+      delete: "Öçiriş",
+      edit: "Tahrirlaş",
+      add: "Qöşiş",
+      search: "Qidiriş",
+      filter: "Filtr",
+      all: "Barçasi",
+      loading: "Yuklanmoqda...",
+      noResults: "Heç qanday ma'lumot topilmadi",
+      success: "Muvaffaqiyatli bajarildi!",
+      error: "Xatolik yuz berdi",
+      confirmDelete: "Haqiqatan ham bu elementni öçirmoqçimisiz?",
+      yes: "Ha",
+      no: "Yöq",
+      close: "Yopiş",
+      viewAll: "Barçasini köriş",
+      status: "Holati",
+      action: "Amallar",
+      date: "Sana",
+      time: "Vaqt",
+      name: "Ism",
+      phone: "Telefon",
+      comment: "Izoh",
+      details: "Batafsil",
+      back: "Orqaga",
+      requiredField: "Uşbu maydon töldirilişi şart",
+    },
+
+    // Categories
+    categories: {
+      all: "Barça taomlar",
+      national: "Milliy taomlar",
+      european: "Yevropa & Steyk",
+      salads: "Salatlar",
+      kebabs: "Kabob & Gril",
+      mains: "Issiq taomlar",
+      desserts: "Desertlar",
+      drinks: "Içimliklar & Çoylar",
+      fastfood: "Aperitiv & Zakuskalar",
+    },
+
+    // Tags & Badges
+    badges: {
+      popular: "Maşhur",
+      spicy: "Aççiq",
+      vegetarian: "Vegetarian",
+      chef: "Oşpaz tavsiyasi",
+      new: "Yangi",
+      halal: "100% Halol",
+      available: "Mavjud",
+      unavailable: "Tugagan",
+    },
+
+    // Hero Section
+    hero: {
+      badge: "Gourmet & Luxury Restaurant",
+      title: "Haqiqiy Şarqona va Yevropa lazzati",
+      subtitle: "Sapphire restoranida eng saralangan masalliqlar, mohir oşpazlar mahorati va şohona muhit sizni kutmoqda. Har bir luqma — betakror san'at asari.",
+      viewMenu: "Taomnomani köriş",
+      reserveBtn: "Stol bron qiliş",
+      features1: "Mualliflik retseptlari",
+      features2: "100% Tabiiy & Halol",
+      features3: "VIP zallar va Jonli ijro",
+    },
+
+    // Stats
+    stats: {
+      experience: "Yillik tajriba",
+      dishes: "Noyob taomlar",
+      customers: "Mamnun mijozlar",
+      chefs: "Mahoratli oşpazlar",
+    },
+
+    // Home Highlights
+    home: {
+      specialsTitle: "Maxsus Takliflarimiz",
+      specialsSubtitle: "Bugungi kunda boş oşpazimiz tomonidan tavsiya etilgan eng saralangan taomlar",
+      addToCart: "Savatçaga qöşiş",
+      whyUsTitle: "Nega aynan Sapphire?",
+      whyUsSubtitle: "Biz şunçaki taom bermaymiz, unutilmas lazzat va yuqori xizmat tuyğusini tuhfa etamiz",
+      reason1Title: "Premium Masalliqlar",
+      reason1Desc: "Faqat yangi söyilgan sifatli göşt, sarxil sabzavotlar va tabiiy ziravorlar.",
+      reason2Title: "Tajribali Oşpazlar",
+      reason2Desc: "Xalqaro toifadagi ustoz oşpazlarimiz har bir taomni mehr bilan tayyorlaydi.",
+      reason3Title: "Şohona Muhit",
+      reason3Desc: "Oilaviy oqşomlar, biznes uçraşuvlar va tantanalar uçun mos haşamatli zal.",
+      reason4Title: "Tezkor Yetkaziş",
+      reason4Desc: "Issiqligini va xuşböyligini yöqotmagan holda buyurtmangizni tezda yetkazamiz.",
+      testimonialsTitle: "Mijozlarimiz Fikrlari",
+      testimonialsSubtitle: "Bizning mehmonlarimiz öz taassurotlari bilan bölişadilar",
+      review1Text: "Töy oşi va tandir göşti aql bovar qilmas darajada mazali! Xizmat körsatiş darajasi juda yuqori.",
+      review1Author: "Jamşid Aliyev",
+      review1Role: "Doimiy mehmon",
+      review2Text: "Oilaviy keliş uçun eng zör joy. Salatlar yangi, kaboblar yumşoq, desertlari esa betakror.",
+      review2Author: "Dilnoza Karimova",
+      review2Role: "Oziq-ovqat blogeri",
+      review3Text: "Xorijlik mehmonlarimizni olib bordik, hamma hayratda qoldi. Ayniqsa Sapphire çoyi va palov ajoyib!",
+      review3Author: "Azamat Rustamov",
+      review3Role: "Tadbirkor",
+    },
+
+    // Menu Page
+    menuPage: {
+      title: "Bizning Boy Taomnoma",
+      subtitle: "Eng lazzatli göştli taomlar, yangi salatlar, şirinliklar va maxsus içimliklar",
+      searchPlaceholder: "Nomi, tarkibi yoki kaloriya böyiça qidiring...",
+      priceFilter: "Narx böyiça saralaş",
+      maxPrice: "Maksimal narx",
+      sortBy: "Saralaş",
+      sortDefault: "Odatiy",
+      sortPriceAsc: "Arzonroqdan qimmatroqqa",
+      sortPriceDesc: "Qimmatroqdan arzonroqqa",
+      sortRating: "Eng yuqori reyting",
+      portion: "Porsiya",
+      prepTime: "Tayyorlaniş vaqti",
+      calories: "Kaloriya",
+      ingredients: "Masalliqlar",
+      viewDetails: "Batafsil köriş",
+      addedToCart: "Savatçaga qöşildi",
+    },
+
+    // About Page
+    aboutPage: {
+      badge: "Tariximiz va falsafamiz",
+      title: "An'analar va Yuqori Pazandaçilik San'ati",
+      desc1: "Sapphire restorani 2010-yilda özbek mehmondöstligining eng gözal an'analarini zamonaviy gastronomik madaniyat bilan uyğunlaştiriş maqsadida taşkil etilgan.",
+      desc2: "Biz har kuni sahardan boşlab eng sarxil masalliqlar, toza zafaron (şafran) va tabiiy toğ ziravorlaridan foydalanib, şohona milliy va nozik Yevropa taomlarini tayyorlaymiz.",
+      masterChef: "Boş Oşpazimiz",
+      chefName: "Mansur Şokirov",
+      chefBio: "20 yillik xalqaro tajribaga ega bölgan boş oşpazimiz Turkiya, Dubay va Özbekistonning nufuzli restoranlarida faoliyat yuritgan.",
+      galleryTitle: "Restoran Muhiti va Jarayonlar",
+      gallerySubtitle: "Bizning şinam zallarimiz va oçiq oşxonamizdan lahzalar",
+    },
+
+    // Reservation Page
+    reservationPage: {
+      badge: "Stol Bron Qiliş",
+      title: "Unutilmas Keça Uçun Joy Band Qiling",
+      subtitle: "Siz va yaqinlaringiz uçun eng qulay joyni oldindan rejalaştiring. Biz sizning taşrifingizga maxsus tayyorgarlik köramiz.",
+      formTitle: "Bron Qiliş Formasi",
+      fullName: "Töliq ismingiz",
+      phone: "Telefon raqamingiz",
+      date: "Taşrif sanasi",
+      time: "Taşrif vaqti",
+      guests: "Mehmonlar soni",
+      zone: "Zal / Hudud tanlang",
+      zoneMain: "Asosiy Haşamatli Zal",
+      zoneVIP: "VIP Alohida Xona (6-12 kişi)",
+      zoneTerrace: "Oçiq Havo Terrasasi (Manzarali)",
+      zoneFamily: "Şinam Oila Hududi",
+      specialRequests: "Maxsus istaklar yoki bayram nişonlaş (Ixtiyoriy)",
+      submitBtn: "Stolni Bron Qiliş",
+      successMsg: "Stol muvaffaqiyatli band qilindi! Tez orada ma'murimiz siz bilan boğlanadi.",
+      instantTelegram: "Bron haqida Telegram botimizga xabar yuborildi.",
+    },
+
+    // Contact Page
+    contactPage: {
+      badge: "Biz Bilan Aloqa",
+      title: "Sizni Restoranimizda Kutamiz",
+      subtitle: "Savollaringiz, takliflaringiz bormi yoki tadbir ötkazmoqçimisiz? Bizga yozing yoki qönğiroq qiling.",
+      addressTitle: "Manzilimiz",
+      addressDesc: "Toşkent şahri, Amir Temur şoh köçasi, 45-uy (Möljal: Markaziy xiyobon röparasi)",
+      phoneTitle: "Telefon Raqamlar",
+      phoneDesc: "+998 71 200 88 99 / +998 90 123 45 67",
+      hoursTitle: "Iş Vaqtimiz",
+      hoursDesc: "Duşanba - Yakşanba: 10:00 dan 23:30 gaça (Oşxona 23:00 gaça)",
+      formTitle: "Bizga Xabar Yuboring",
+      formSubtitle: "Xabaringiz töğridan-töğri Telegram botimizga boradi",
+      namePlaceholder: "Ismingiz",
+      phonePlaceholder: "+998 90 123 45 67",
+      subject: "Mavzu",
+      message: "Xabaringiz matni...",
+      sendMessage: "Xabar Yuboriş",
+      messageSent: "Xabaringiz muvaffaqiyatli yuborildi! Rahmat.",
+    },
+
+    // Cart & Checkout
+    cart: {
+      title: "Sizning Savatçangiz",
+      emptyTitle: "Savatçangiz böş",
+      emptyDesc: "Taomnomadan özingizga yoqqan mazali taomlarni tanlang!",
+      itemsCount: "ta taom",
+      totalPrice: "Umumiy summa",
+      deliveryType: "Yetkazib beriş usuli",
+      deliveryDineIn: "Restoranda (Stolga)",
+      deliveryHome: "Manzilga yetkazib beriş (Dostavka)",
+      tableNumber: "Stol raqami (agar restoranda bölsangiz)",
+      deliveryAddress: "Yetkazib beriş manzili",
+      customerName: "Ismingiz",
+      customerPhone: "Telefon raqamingiz",
+      paymentMethod: "Tölov usuli",
+      payCash: "Naqd pul",
+      payCard: "Karta orqali (Payme / Click / Uzum)",
+      placeOrder: "Buyurtmani Tasdiqlaş",
+      orderSuccess: "Buyurtmangiz qabul qilindi! Oşpazlarimiz işga kirişişdi.",
+      orderSentToTelegram: "Buyurtma ma'lumotlari oşxona Telegram botiga yetkazildi.",
+    },
+
+    // Auth & Login
+    auth: {
+      loginTitle: "Tizimga Kiriş",
+      loginSubtitle: "Admin panelga kiriş uçun login va parolni kiriting",
+      username: "Foydalanuvçi nomi (Username)",
+      password: "Parol",
+      signIn: "Kiriş",
+      logoutConfirm: "Tizimdan çiqmoqçimisiz?",
+      invalidCredentials: "Login yoki parol notöğri! Faqat Supabase foydalanuvçilari qabul qilinadi.",
+      adminHint: "Admin kiriş: Faqat rasmiy Supabase hisobi orqali",
+      roleAdmin: "Administrator",
+      welcomeAdmin: "Xuş kelibsiz, Boşqaruvçi!",
+    },
+
+    // Admin Panel
+    admin: {
+      brand: "SAPPHIRE ADMIN",
       dashboard: "Boşqaruv Paneli",
       menuManagement: "Taomnoma Boşqaruvi",
       orders: "Buyurtmalar",
@@ -776,7 +1123,7 @@ export const translations = {
     hero: {
       badge: "Gourmet & Luxury Restaurant",
       title: "Истинный вкус Востока и Европы",
-      subtitle: "В ресторане Zafaron вас ждут изысканные ингредиенты, мастерство шеф-поваров и королевская атмосфера. Каждый кусочек — произведение искусства.",
+      subtitle: "В ресторане Sapphire вас ждут изысканные ингредиенты, мастерство шеф-поваров и королевская атмосфера. Каждый кусочек — произведение искусства.",
       viewMenu: "Открыть меню",
       reserveBtn: "Забронировать стол",
       features1: "Авторские рецепты",
@@ -797,7 +1144,7 @@ export const translations = {
       specialsTitle: "Специальные Предложения",
       specialsSubtitle: "Лучшие блюда сегодняшнего дня, рекомендуемые нашим шеф-поваром",
       addToCart: "В корзину",
-      whyUsTitle: "Почему именно Zafaron?",
+      whyUsTitle: "Почему именно Sapphire?",
       whyUsSubtitle: "Мы дарим не просто изысканную еду, а незабываемые впечатления и первоклассный сервис",
       reason1Title: "Премиальные Продукты",
       reason1Desc: "Только свежайшее отборное мясо, натуральные овощи и подлинные специи.",
@@ -844,7 +1191,7 @@ export const translations = {
     aboutPage: {
       badge: "Наша история и философия",
       title: "Традиции и Высокое Кулинарное Искусство",
-      desc1: "Ресторан Zafaron был основан в 2010 году с целью объединить великие традиции восточного гостеприимства с современными гастрономическими трендами.",
+      desc1: "Ресторан Sapphire был основан в 2010 году с целью объединить великие традиции восточного гостеприимства с современными гастрономическими трендами.",
       desc2: "Каждое утро мы начинаем с отбора свежайших ингредиентов, чистого шафрана и горных пряностей, создавая шедевры национальной и европейской кухни.",
       masterChef: "Наш Шеф-повар",
       chefName: "Мансур Шокиров",
@@ -934,7 +1281,7 @@ export const translations = {
 
     // Admin Panel
     admin: {
-      brand: "ZAFARON АДМИН",
+      brand: "SAPPHIRE АДМИН",
       dashboard: "Дашборд",
       menuManagement: "Управление Меню",
       orders: "Заказы",
@@ -1122,7 +1469,7 @@ export const translations = {
     hero: {
       badge: "Gourmet & Luxury Restaurant",
       title: "Authentic Oriental & European Cuisine",
-      subtitle: "Indulge in exquisite culinary craftsmanship, curated premium ingredients, and a royal dining atmosphere at Zafaron Restaurant.",
+      subtitle: "Indulge in exquisite culinary craftsmanship, curated premium ingredients, and a royal dining atmosphere at Sapphire Restaurant.",
       viewMenu: "Explore Menu",
       reserveBtn: "Book a Table",
       features1: "Signature Chef Recipes",
@@ -1143,7 +1490,7 @@ export const translations = {
       specialsTitle: "Chef's Daily Specials",
       specialsSubtitle: "Exquisite seasonal dishes crafted by our executive culinary masters",
       addToCart: "Add to Cart",
-      whyUsTitle: "Why Choose Zafaron?",
+      whyUsTitle: "Why Choose Sapphire?",
       whyUsSubtitle: "We provide not just exceptional food, but an unforgettable luxury dining experience",
       reason1Title: "Finest Ingredients",
       reason1Desc: "Only grass-fed meats, garden-fresh vegetables, and authentic royal saffron.",
@@ -1190,7 +1537,7 @@ export const translations = {
     aboutPage: {
       badge: "Our Heritage & Philosophy",
       title: "Centuries of Tradition Meets Modern Haute Cuisine",
-      desc1: "Founded in 2010, Zafaron was born to blend the legendary warmth of Uzbek hospitality with world-class gastronomic standards.",
+      desc1: "Founded in 2010, Sapphire was born to blend the legendary warmth of Uzbek hospitality with world-class gastronomic standards.",
       desc2: "Each morning starts with sourcing organic local produce, genuine mountain herbs, and golden saffron, crafting symphonies of flavor for discerning palates.",
       masterChef: "Executive Chef",
       chefName: "Mansur Shokirov",
@@ -1224,7 +1571,7 @@ export const translations = {
     // Contact Page
     contactPage: {
       badge: "Get in Touch",
-      title: "We Welcome You to Zafaron",
+      title: "We Welcome You to Sapphire",
       subtitle: "Inquiries, banquet bookings, or feedback? Contact us or drop by anytime.",
       addressTitle: "Our Location",
       addressDesc: "Tashkent, 45 Amir Temur Avenue (Opposite Central Alley)",
@@ -1280,7 +1627,7 @@ export const translations = {
 
     // Admin Panel
     admin: {
-      brand: "ZAFARON ADMIN",
+      brand: "SAPPHIRE ADMIN",
       dashboard: "Dashboard",
       menuManagement: "Menu Management",
       orders: "Orders",

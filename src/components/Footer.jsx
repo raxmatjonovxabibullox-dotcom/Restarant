@@ -23,7 +23,7 @@ export const Footer = ({ setActivePage, setIsAdminView }) => {
               </div>
               <div>
                 <span className="font-display font-black text-xl gold-gradient-text tracking-wider block">
-                  ZAFARON
+                  SAPPHIRE
                 </span>
                 <span className="text-[10px] tracking-[0.2em] text-gray-500 dark:text-gray-400 uppercase block">
                   Restaurant & Lounge
@@ -138,7 +138,7 @@ export const Footer = ({ setActivePage, setIsAdminView }) => {
 
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-gray-200 dark:border-gray-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-500 dark:text-gray-400">
-          <p>© {CURRENT_YEAR} ZAFARON Restaurant & Lounge. {t('footer.allRightsReserved')}</p>
+          <p>© {CURRENT_YEAR} SAPPHIRE Luxury Dining & Lounge. {t('footer.allRightsReserved')}</p>
           <div className="flex items-center gap-4">
             <button
               onClick={() => { setIsAdminView(true); window.scrollTo(0, 0); }}

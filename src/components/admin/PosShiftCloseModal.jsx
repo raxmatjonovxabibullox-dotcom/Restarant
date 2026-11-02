@@ -111,7 +111,7 @@ export const PosShiftCloseModal = ({
               <span>Kassa Smenasini Yopish (Z-Report Audit)</span>
             </h2>
             <p className="text-xs text-slate-400">
-              ZAFARON Restaurant & Lounge — Kunlik tushum va kassa hisob-kitob akti
+              SAPPHIRE Luxury Dining & Lounge — Kunlik tushum va kassa hisob-kitob akti
             </p>
           </div>
         </div>

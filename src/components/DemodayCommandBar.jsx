@@ -264,7 +264,7 @@ export const DemodayCommandBar = ({
                 </div>
                 <div>
                   <h3 className="font-serif font-black text-xl text-gold-400">Demoday Investor Metriklari</h3>
-                  <p className="text-xs text-gray-400">Zafaron Platformasi Ishlash Ko'rsatkichlari</p>
+                  <p className="text-xs text-gray-400">Sapphire Platformasi Ishlash Ko'rsatkichlari</p>
                 </div>
               </div>
               <button
@@ -302,7 +302,7 @@ export const DemodayCommandBar = ({
             </div>
 
             <div className="p-4 rounded-2xl bg-gold-500/10 border border-gold-500/30 text-xs text-gold-200">
-              💡 <b>Hakamlar uchun xulosa:</b> Zafaron tizimi xaridordan boshlab (veb-sayt, AI konsyerj, Telegram bot) to oshxonadagi oshpazlar (KDS) va boshqaruvchilargacha (POS, Avto-Direct) 100% avtomatlashtirilgan yagona ekotizimdir.
+              💡 <b>Hakamlar uchun xulosa:</b> Sapphire tizimi xaridordan boshlab (veb-sayt, AI konsyerj, Telegram bot) to oshxonadagi oshpazlar (KDS) va boshqaruvchilargacha (POS, Avto-Direct) 100% avtomatlashtirilgan yagona ekotizimdir.
             </div>
 
             <div className="flex justify-end">

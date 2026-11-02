@@ -1,4 +1,4 @@
-// Rich authentic initial menu data for Zafaron Restaurant
+// Rich authentic initial menu data for Sapphire Restaurant
 // With multilingual names, descriptions, ingredients, categories, prices, and HD imagery
 
 export const initialMenu = [
@@ -7,7 +7,7 @@ export const initialMenu = [
     id: "dish-1",
     category: "national",
     name: {
-      uz: "Shohona Zafaron Palov",
+      uz: "Shohona Sapphire Palov",
       ru: "Шахский Шафрановый Плов",
       en: "Royal Saffron Plov"
     },
@@ -26,7 +26,7 @@ export const initialMenu = [
     tags: ["chef", "popular", "halal"],
     isAvailable: true,
     ingredients: {
-      uz: ["Lazer guruch", "Qo'zichoq go'shti", "Kazi", "Bedana tuxumi", "Zafaron", "Sariq sabzi", "Mayiz"],
+      uz: ["Lazer guruch", "Qo'zichoq go'shti", "Kazi", "Bedana tuxumi", "Sapphire", "Sariq sabzi", "Mayiz"],
       ru: ["Рис Лазер", "Баранина", "Казы", "Перепелиные яйца", "Шафран", "Желтая морковь", "Изюм"],
       en: ["Lazer Rice", "Tender Lamb", "Kazy Horse Meat", "Quail Eggs", "Saffron", "Carrots", "Raisins"]
     }
@@ -351,7 +351,7 @@ export const initialMenu = [
     id: "dish-13",
     category: "desserts",
     name: {
-      uz: "Turkcha Zafaron Paxlava & Muzqaymoq",
+      uz: "Turkcha Sapphire Paxlava & Muzqaymoq",
       ru: "Турецкая Пахлава с Шафраном и Мороженым",
       en: "Saffron Turkish Baklava with Ice Cream"
     },
@@ -409,7 +409,7 @@ export const initialMenu = [
     id: "dish-15",
     category: "drinks",
     name: {
-      uz: "Shohona Zafaron Choyi (Choynakda)",
+      uz: "Shohona Sapphire Choyi (Choynakda)",
       ru: "Царский Шафрановый Чай в Чайнике",
       en: "Royal Saffron Tea (Infusion Pot)"
     },
@@ -428,7 +428,7 @@ export const initialMenu = [
     tags: ["chef", "popular", "vegetarian", "halal"],
     isAvailable: true,
     ingredients: {
-      uz: ["Zafaron gullari", "Tog' kiyiko'ti", "Dolchin", "Asal", "Limon"],
+      uz: ["Sapphire gullari", "Tog' kiyiko'ti", "Dolchin", "Asal", "Limon"],
       ru: ["Цветы шафрана", "Горный чабрец", "Корица", "Мед", "Лимон"],
       en: ["Saffron Strands", "Wild Thyme", "Cinnamon", "Wild Honey", "Lemon"]
     }
@@ -473,9 +473,9 @@ export const initialOrders = [
     tableNumber: "VIP-2",
     deliveryAddress: "",
     items: [
-      { id: "dish-1", name: "Shohona Zafaron Palov", price: 68000, quantity: 2 },
+      { id: "dish-1", name: "Shohona Sapphire Palov", price: 68000, quantity: 2 },
       { id: "dish-5", name: "Shohona Achichuk", price: 26000, quantity: 2 },
-      { id: "dish-15", name: "Shohona Zafaron Choyi", price: 32000, quantity: 1 }
+      { id: "dish-15", name: "Shohona Sapphire Choyi", price: 32000, quantity: 1 }
     ],
     totalAmount: 220000,
     paymentMethod: "card",
@@ -492,7 +492,7 @@ export const initialOrders = [
     items: [
       { id: "dish-2", name: "Maxsus Qozon Kabob", price: 85000, quantity: 1 },
       { id: "dish-7", name: "Sezar Salati", price: 49000, quantity: 1 },
-      { id: "dish-13", name: "Turkcha Zafaron Paxlava", price: 38000, quantity: 2 }
+      { id: "dish-13", name: "Turkcha Sapphire Paxlava", price: 38000, quantity: 2 }
     ],
     totalAmount: 210000,
     paymentMethod: "cash",

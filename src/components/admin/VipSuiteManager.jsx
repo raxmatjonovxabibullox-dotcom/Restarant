@@ -49,7 +49,7 @@ export const VipSuiteManager = ({ reservations = [], showToast = () => {} }) => 
       includedServices: [
         "Shaxsiy Oltin Ofitsiant xizmati",
         "Jonli kamin va xushbo'y ud tutatqisi",
-        "Eksklyuziv Zafaron Shohona Choy to'plami",
+        "Eksklyuziv Sapphire Shohona Choy to'plami",
         "Shaxsiy akustika va audio-tizim",
         "Depozit summasi hisobdan to'liq chegiriladi"
       ]
@@ -202,7 +202,7 @@ export const VipSuiteManager = ({ reservations = [], showToast = () => {} }) => 
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/40 text-xs font-black tracking-widest uppercase">
               <Crown className="w-4 h-4 text-amber-400 fill-amber-400" />
-              <span>Zafaron Presidential VIP Suite Command Center</span>
+              <span>Sapphire Presidential VIP Suite Command Center</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-black text-current flex items-center gap-2">
               👑 VIP Xonalar va Bron Depozitlari Boshqaruvi

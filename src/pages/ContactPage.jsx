@@ -65,7 +65,7 @@ export const ContactPage = () => {
   const faqs = [
     {
       q: lang === 'ru' ? 'Возможно ли проведение банкетов и мероприятий?' : lang === 'en' ? 'Can we host banquets and corporate events?' : "Katta marosim va banketlar o'tkazish mumkinmi?",
-      a: lang === 'ru' ? 'Конечно! В ресторане Zafaron есть банкетный зал вместимостью до 150 персон для свадеб, юбилеев и корпоративов. Составляется индивидуальное авторское меню.' : lang === 'en' ? 'Certainly! Zafaron restaurant features a private banquet hall accommodating up to 150 guests for weddings, anniversaries, and corporate events with custom signature menus.' : "Albatta! Zafaron restoranida 150 kishigacha bo'lgan to'y, yubiley, korporativ yoki boshqa tantanalarni o'tkazish uchun maxsus banket zali mavjud. Alohida mualliflik menyusi tuziladi."
+      a: lang === 'ru' ? 'Конечно! В ресторане Sapphire есть банкетный зал вместимостью до 150 персон для свадеб, юбилеев и корпоративов. Составляется индивидуальное авторское меню.' : lang === 'en' ? 'Certainly! Sapphire restaurant features a private banquet hall accommodating up to 150 guests for weddings, anniversaries, and corporate events with custom signature menus.' : "Albatta! Sapphire restoranida 150 kishigacha bo'lgan to'y, yubiley, korporativ yoki boshqa tantanalarni o'tkazish uchun maxsus banket zali mavjud. Alohida mualliflik menyusi tuziladi."
     },
     {
       q: lang === 'ru' ? 'Как работает служба доставки?' : lang === 'en' ? 'How does delivery service work?' : "Yetkazib berish xizmati (Dostavka) qanday ishlaydi?",
@@ -166,7 +166,7 @@ export const ContactPage = () => {
               : "Barcha xabarlar va buyurtmalar to'g'ridan-to'g'ri telegramga tushadi"}
           </p>
           <span className="text-[11px] text-gold-500 font-semibold block pt-1">
-            @zafaron_restaurant_bot
+            @sapphire_restaurant_bot
           </span>
         </div>
       </div>
@@ -286,7 +286,7 @@ export const ContactPage = () => {
                   <MapPin className="w-7 h-7 text-gold-400" />
                 </div>
                 <span className="mt-2 inline-block px-3 py-1 rounded-full text-xs font-bold bg-dark-950 text-gold-400 border border-gold-500/30">
-                  ZAFARON Restaurant
+                  SAPPHIRE Restaurant
                 </span>
               </div>
             </div>

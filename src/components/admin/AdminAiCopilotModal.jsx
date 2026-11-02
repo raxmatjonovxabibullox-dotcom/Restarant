@@ -32,7 +32,7 @@ export const AdminAiCopilotModal = ({
     {
       sender: 'ai',
       time: 'Hozirgina',
-      text: "👋 Assalomu alaykum, Hurmatli Boshqaruvchi! Men Zafaron AI Executive Assistant tizimiman. Bugungi savdo ko'rsatkichlari, oshxona tezligi va zallar bandligi bo'yicha tahlillar tayyor. Nimani ko'rib chiqamiz?"
+      text: "👋 Assalomu alaykum, Hurmatli Boshqaruvchi! Men Sapphire AI Executive Assistant tizimiman. Bugungi savdo ko'rsatkichlari, oshxona tezligi va zallar bandligi bo'yicha tahlillar tayyor. Nimani ko'rib chiqamiz?"
     }
   ]);
   const [isTyping, setIsTyping] = useState(false);
@@ -67,7 +67,7 @@ export const AdminAiCopilotModal = ({
         `🍽 <b>Taomnoma & Oshxona Zaxira Tavsiyalari:</b>\n\n` +
         `• <b>1-o'rinda:</b> Shohona To'y Palov (Halol) — bugun 35+ porsiya buyurtma qilindi.\n` +
         `• <b>2-o'rinda:</b> Tomahawk Steyk va Qo'y Go'shtli Lux Kabob — zaxira to'liq nazoratda.\n` +
-        `• <b>Tavsiya:</b> Kechki soat 19:00 dan keyin Zafaron Maxsus Choyi va shirinliklarga talab 40% ga oshishi kutilmoqda. Bosh oshpazga ogohlantirish berildi.`;
+        `• <b>Tavsiya:</b> Kechki soat 19:00 dan keyin Sapphire Maxsus Choyi va shirinliklarga talab 40% ga oshishi kutilmoqda. Bosh oshpazga ogohlantirish berildi.`;
     } else if (promptId === 'tables') {
       answer =
         `👑 <b>VIP Zallar & Mehmonlar Xronologiyasi:</b>\n\n` +
@@ -105,7 +105,7 @@ export const AdminAiCopilotModal = ({
     setIsTyping(true);
     setTimeout(() => {
       setIsTyping(false);
-      let reply = `🤖 <b>Zafaron AI Tahlili:</b> "${userMsg}" bo'yicha ma'lumotlar tekshirildi. Barcha restoran ko'rsatkichlari, POS kassa balansi va Telegram bot uzluksiz ishlamoqda. Yangi taklifingiz tizim loglariga kiritildi!`;
+      let reply = `🤖 <b>Sapphire AI Tahlili:</b> "${userMsg}" bo'yicha ma'lumotlar tekshirildi. Barcha restoran ko'rsatkichlari, POS kassa balansi va Telegram bot uzluksiz ishlamoqda. Yangi taklifingiz tizim loglariga kiritildi!`;
       setChatLog(prev => [
         ...prev,
         { sender: 'ai', time: new Date().toLocaleTimeString().slice(0, 5), text: reply }
@@ -129,7 +129,7 @@ export const AdminAiCopilotModal = ({
             </div>
             <div>
               <h3 className="font-extrabold text-base flex items-center gap-2">
-                <span>Zafaron AI Executive Co-Pilot</span>
+                <span>Sapphire AI Executive Co-Pilot</span>
                 <span className="px-2 py-0.5 rounded-full text-[9px] font-black bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
                   SMART BRAIN
                 </span>

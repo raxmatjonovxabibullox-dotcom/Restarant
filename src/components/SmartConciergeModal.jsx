@@ -64,7 +64,7 @@ export const SmartConciergeModal = ({ isOpen, onClose, setActivePage }) => {
     : ['1-2 kishi', '3-4 kishi', '5-8 kishi', '10+ kishi'];
 
   const tSomm = {
-    badge: lang === 'ru' ? 'Zafaron Умный Консьерж & Меню-Гид' : lang === 'en' ? 'Zafaron Smart Concierge & Recommender' : 'Zafaron Aqlli Konsyerj & Menyu-Gid',
+    badge: lang === 'ru' ? 'Sapphire Умный Консьерж & Меню-Гид' : lang === 'en' ? 'Sapphire Smart Concierge & Recommender' : 'Sapphire Aqlli Konsyerj & Menyu-Gid',
     title: lang === 'ru' ? 'Идеальное Меню Под Ваше Настроение' : lang === 'en' ? 'Curated Table for Your Mood' : 'Sizga Mos Shohona Dasturxon',
     step1Title: lang === 'ru' ? '1. Для какого события или настроения планируете?' : lang === 'en' ? '1. What occasion or dining mood are you planning?' : '1. Qanday tadbir yoki kayfiyat uchun rejalashtiryapsiz?',
     step2Title: lang === 'ru' ? '2. Количество гостей' : lang === 'en' ? '2. Number of guests' : '2. Mehmonlar soni',

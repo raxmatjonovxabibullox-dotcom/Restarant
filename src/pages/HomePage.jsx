@@ -72,7 +72,7 @@ export const HomePage = ({ setActivePage, onOpenConcierge }) => {
           <h1 className="font-serif font-black text-4xl sm:text-6xl lg:text-7xl text-gray-900 dark:text-white leading-[1.12] tracking-tight">
             {t('hero.title')}{' '}
             <span className="gold-gradient-text block mt-2 font-display">
-              ZAFARON
+              SAPPHIRE
             </span>
           </h1>
 
@@ -308,10 +308,10 @@ export const HomePage = ({ setActivePage, onOpenConcierge }) => {
             </h3>
             <p className="text-sm sm:text-base text-gray-300 font-light leading-relaxed">
               {lang === 'ru'
-                ? 'Умный сомелье Zafaron подберет идеальный сет из 3 блюд с 10% скидкой в зависимости от настроения, компании и повода.'
+                ? 'Умный сомелье Sapphire подберет идеальный сет из 3 блюд с 10% скидкой в зависимости от настроения, компании и повода.'
                 : lang === 'en'
-                ? 'Zafaron Smart Sommelier will craft an ideal 3-course royal set with a 10% discount tailored to your mood, party size, and occasion.'
-                : "Zafaron Aqlli Sommelier tizimi sizning kayfiyatingiz, mehmonlar soni va tadbir turiga qarab ideal 3-bosqichli shohona to'plamni 10% chegirma bilan taqdim etadi."}
+                ? 'Sapphire Smart Sommelier will craft an ideal 3-course royal set with a 10% discount tailored to your mood, party size, and occasion.'
+                : "Sapphire Aqlli Sommelier tizimi sizning kayfiyatingiz, mehmonlar soni va tadbir turiga qarab ideal 3-bosqichli shohona to'plamni 10% chegirma bilan taqdim etadi."}
             </p>
             <div className="pt-2">
               <button

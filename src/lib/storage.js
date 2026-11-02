@@ -1,4 +1,4 @@
-// LocalStorage persistence service for Zafaron Restaurant
+// LocalStorage persistence service for Sapphire Restaurant
 import { initialMenu, initialOrders, initialReservations } from '../data/initialMenu.js';
 
 const KEYS = {
@@ -215,9 +215,9 @@ export const DEFAULT_ADMIN_PROFILE = {
   displayName: "Jhon (Admin)",
   role: "Boshqaruvchi Administrator & Best Seller",
   badge: "Super Administrator",
-  email: "admin@zafaron.uz",
+  email: "admin@sapphire.uz",
   phone: "+998 (90) 123-45-67",
-  branch: "Zafaron Lounge Tashkent",
+  branch: "Sapphire Lounge Tashkent",
   shiftHours: "09:00 - 23:00 (To'liq smena)",
   avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80"
 };
@@ -257,8 +257,8 @@ export const DEFAULT_AUTODIRECT = {
   autoRedirectSite: true, // Automatically redirect customer after placing order
   autoRedirectDelay: 4, // Countdown in seconds before redirecting
   redirectDestination: 'telegramBot', // 'telegramBot' | 'menu' | 'receipt'
-  telegramBotLink: 'https://t.me/zafaron_restarant_bot',
-  directMessageTemplate: "Hurmatli {customer}! Zafaron Restaurant & Lounge'dagi #{orderId} sonli buyurtmangiz qabul qilindi va tayyorlashga yo'naltirildi. Rahmat! 🍽✨"
+  telegramBotLink: 'https://t.me/sapphire_restaurant_bot',
+  directMessageTemplate: "Hurmatli {customer}! Sapphire Luxury Dining & Lounge'dagi #{orderId} sonli buyurtmangiz qabul qilindi va tayyorlashga yo'naltirildi. Rahmat! 🍽✨"
 };
 
 export const getStoredAutoDirect = () => {

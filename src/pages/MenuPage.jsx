@@ -114,7 +114,7 @@ export const MenuPage = ({ onOpenConcierge }) => {
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gold-500/10 text-gold-500 text-xs font-bold uppercase tracking-wider mb-2">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>Zafaron Royal Menu</span>
+            <span>Sapphire Royal Menu</span>
           </div>
           <h1 className="font-serif font-black text-3xl sm:text-5xl text-gray-900 dark:text-white">
             {t('menuPage.title')}

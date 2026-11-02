@@ -24,7 +24,7 @@ export const TelegramBotManager = ({ showToast = () => {} }) => {
     {
       sender: 'bot',
       time: '10:00',
-      text: "🤖 Assalomu alaykum! Zafaron AI Restoran yordamchisi xizmatingizda. Stol band qilish, taomnoma yoki manzilimiz bo'yicha yordam bera olaman."
+      text: "🤖 Assalomu alaykum! Sapphire AI Restoran yordamchisi xizmatingizda. Stol band qilish, taomnoma yoki manzilimiz bo'yicha yordam bera olaman."
     }
   ]);
   const [isSimulating, setIsSimulating] = useState(false);
@@ -47,12 +47,12 @@ export const TelegramBotManager = ({ showToast = () => {} }) => {
     soundFx.playPop();
 
     setTimeout(() => {
-      let replyText = "Zafaron restoranida barcha taomlar 100% Halol sertifikatiga ega va eng sifatli mahsulotlardan tayyorlanadi.";
+      let replyText = "Sapphire restoranida barcha taomlar 100% Halol sertifikatiga ega va eng sifatli mahsulotlardan tayyorlanadi.";
 
       if (currentQ.includes('vip') || currentQ.includes('3')) {
         replyText = "👑 3. VIP Oltin Xona tanlandi!\n• 10-14 kishilik to'liq alohida qulay xona\n• Shaxsiy ofitsiant va kamin xizmati\n• 💰 VIP Bron Depoziti: 200,000 so'm (kechki ovqat hisobidan to'liq chegiriladi)\n📞 +998 (71) 200-88-99";
       } else if (currentQ.includes('osh') || currentQ.includes('plov')) {
-        replyText = "✨ Zafaron Shohona Oshi — 58,000 so'm. Mayin lahm go'sht, qazi, bedana tuxum va tabiiy za'faron bilan damlanadi. Har kuni soat 11:30 da tayyor bo'ladi!";
+        replyText = "✨ Sapphire Shohona Oshi — 58,000 so'm. Mayin lahm go'sht, qazi, bedana tuxum va tabiiy za'faron bilan damlanadi. Har kuni soat 11:30 da tayyor bo'ladi!";
       } else if (currentQ.includes('manzil') || currentQ.includes('qayerda')) {
         replyText = "📍 Manzilimiz: Toshkent sh., Amir Temur shox ko'chasi, 107-uy (Mo'ljal: Oloy bozori yaqinida). Har kuni 10:00 dan 23:00 gacha ishlaymiz!";
       } else if (currentQ.includes('bron') || currentQ.includes('stol')) {
@@ -107,7 +107,7 @@ export const TelegramBotManager = ({ showToast = () => {} }) => {
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/40 text-xs font-black uppercase tracking-wider">
               <Bot className="w-4 h-4 text-blue-400 animate-bounce" />
-              <span>Zafaron Telegram Neural AI Assistant Controller</span>
+              <span>Sapphire Telegram Neural AI Assistant Controller</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-black text-current flex items-center gap-2">
               🤖 Telegram AI Bot Jonli Boshqaruv Markazi
@@ -224,7 +224,7 @@ export const TelegramBotManager = ({ showToast = () => {} }) => {
               <span className="text-[10px] font-bold text-slate-400 uppercase">Tezkor so'rovlar:</span>
               {[
                 "VIP xona narxi qancha?",
-                "Zafaron oshi bormi?",
+                "Sapphire oshi bormi?",
                 "Stol band qilish",
                 "Manzil qayerda?"
               ].map((q) => (
@@ -291,7 +291,7 @@ export const TelegramBotManager = ({ showToast = () => {} }) => {
                   rows="3"
                   value={broadcastText}
                   onChange={(e) => setBroadcastText(e.target.value)}
-                  placeholder="Bugun Zafaron restoranida barcha steyklar uchun 15% bayramona chegirma!..."
+                  placeholder="Bugun Sapphire restoranida barcha steyklar uchun 15% bayramona chegirma!..."
                   className={`w-full px-3 py-2 rounded-xl border focus:outline-none ${theme === 'dark' ? 'bg-slate-900/60 border-slate-700 text-white' : 'bg-slate-50 border-slate-300 text-slate-900'}`}
                 />
               </div>

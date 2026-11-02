@@ -12,7 +12,7 @@ export class ErrorBoundary extends React.Component {
   }
 
   componentDidCatch(error, errorInfo) {
-    console.error("ZAFARON ErrorBoundary intercepted error:", error, errorInfo);
+    console.error("SAPPHIRE ErrorBoundary intercepted error:", error, errorInfo);
     this.setState({ errorInfo });
   }
 
@@ -55,7 +55,7 @@ export class ErrorBoundary extends React.Component {
 
             <div>
               <span className="font-display font-black text-2xl gold-gradient-text tracking-widest block">
-                ZAFARON
+                SAPPHIRE
               </span>
               <span className="text-[10px] tracking-[0.25em] text-gray-400 uppercase block mt-0.5">
                 Restaurant & Lounge

@@ -36,7 +36,7 @@ export const FloatingVipHub = ({
 
   const tHub = {
     uz: {
-      vipHub: "Zafaron VIP Hub",
+      vipHub: "Sapphire VIP Hub",
       hubSubtitle: "Tezkor xizmatlar markazi",
       bookTable: "Stol Band Qilish",
       bookSub: "Hashamatli zallar va xonalar",
@@ -50,7 +50,7 @@ export const FloatingVipHub = ({
       locationSub: "Amir Temur shoh ko'chasi"
     },
     ru: {
-      vipHub: "Zafaron VIP Hub",
+      vipHub: "Sapphire VIP Hub",
       hubSubtitle: "Центр быстрых сервисов",
       bookTable: "Бронь Стола",
       bookSub: "Роскошные залы и VIP",
@@ -64,7 +64,7 @@ export const FloatingVipHub = ({
       locationSub: "Проспект Амира Темура"
     },
     en: {
-      vipHub: "Zafaron VIP Hub",
+      vipHub: "Sapphire VIP Hub",
       hubSubtitle: "Quick services hub",
       bookTable: "Book a Table",
       bookSub: "Luxury halls & VIP rooms",
@@ -165,7 +165,7 @@ export const FloatingVipHub = ({
 
               {/* 4. Telegram Bot */}
               <a
-                href="https://t.me/zafaron_restarant_bot"
+                href="https://t.me/sapphire_restaurant_bot"
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => soundFx.playPop()}
@@ -190,7 +190,7 @@ export const FloatingVipHub = ({
             setIsOpen(!isOpen);
           }}
           className="relative group p-3.5 rounded-full bg-gradient-to-tr from-dark-950 via-dark-900 to-dark-800 border-2 border-gold-500/70 text-gold-400 shadow-[0_0_25px_rgba(234,179,8,0.35)] hover:shadow-[0_0_35px_rgba(234,179,8,0.55)] hover:scale-105 active:scale-95 transition-all duration-300 flex items-center justify-center"
-          title="Zafaron VIP Hub"
+          title="Sapphire VIP Hub"
         >
           {/* Subtle pulse ring */}
           <span className="w-full h-full rounded-full bg-gold-400/20 absolute inset-0 animate-ping pointer-events-none" />

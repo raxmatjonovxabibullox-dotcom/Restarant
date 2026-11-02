@@ -81,7 +81,7 @@ import {
 const MAXTON_I18N = {
   uz: {
     brand: "Maxton",
-    brandSubtitle: "Zafaron Lounge",
+    brandSubtitle: "Sapphire Lounge",
     dashboard: "Dashboard",
     analysis: "Tahlillar",
     ecommerce: "eCommerce",
@@ -154,7 +154,7 @@ const MAXTON_I18N = {
   },
   uz_new: {
     brand: "Maxton",
-    brandSubtitle: "Zafaron Lounge",
+    brandSubtitle: "Sapphire Lounge",
     dashboard: "Dashboard",
     analysis: "Tahlillar",
     ecommerce: "eCommerce",
@@ -227,7 +227,7 @@ const MAXTON_I18N = {
   },
   ru: {
     brand: "Maxton",
-    brandSubtitle: "Zafaron Lounge",
+    brandSubtitle: "Sapphire Lounge",
     dashboard: "Dashboard",
     analysis: "Аналитика",
     ecommerce: "eCommerce",
@@ -300,7 +300,7 @@ const MAXTON_I18N = {
   },
   en: {
     brand: "Maxton",
-    brandSubtitle: "Zafaron Lounge",
+    brandSubtitle: "Sapphire Lounge",
     dashboard: "Dashboard",
     analysis: "Analysis",
     ecommerce: "eCommerce",
@@ -489,8 +489,8 @@ export const AdminDashboard = ({ setIsAdminView }) => {
     badge: adminProfile.badge || "Super Administrator",
     avatar: adminProfile.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80",
     phone: adminProfile.phone || "+998 (90) 123-45-67",
-    email: authUser?.email || adminProfile.email || "admin@zafaron.uz",
-    branch: adminProfile.branch || "Zafaron Lounge Tashkent",
+    email: authUser?.email || adminProfile.email || "admin@sapphire.uz",
+    branch: adminProfile.branch || "Sapphire Lounge Tashkent",
     shiftHours: adminProfile.shiftHours || "09:00 - 23:00 (To'liq smena)"
   }));
 
@@ -508,8 +508,8 @@ export const AdminDashboard = ({ setIsAdminView }) => {
       badge: adminProfile.badge || "Super Administrator",
       avatar: adminProfile.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80",
       phone: adminProfile.phone || "+998 (90) 123-45-67",
-      email: adminProfile.email || authUser?.email || "admin@zafaron.uz",
-      branch: adminProfile.branch || "Zafaron Lounge Tashkent",
+      email: adminProfile.email || authUser?.email || "admin@sapphire.uz",
+      branch: adminProfile.branch || "Sapphire Lounge Tashkent",
       shiftHours: adminProfile.shiftHours || "09:00 - 23:00 (To'liq smena)"
     });
   }, [adminProfile, authUser]);
@@ -558,10 +558,10 @@ export const AdminDashboard = ({ setIsAdminView }) => {
     setAutoDirectTestResult(null);
     try {
       const testCaption =
-        `⚡ <b>[TEST] ZAFARON AVTO-DIRECT PROBASI:</b>\n\n` +
+        `⚡ <b>[TEST] SAPPHIRE AVTO-DIRECT PROBASI:</b>\n\n` +
         `👤 <b>Mijoz:</b> Ali Valiyev (VIP Mehmon)\n` +
         `📦 <b>Buyurtma:</b> #AUTO-DIRECT-777\n` +
-        `🍽 <b>Tarkibi:</b> 1x Shohona To'y Palov, 1x Zafaronli Choy\n` +
+        `🍽 <b>Tarkibi:</b> 1x Shohona To'y Palov, 1x Sapphireli Choy\n` +
         `💰 <b>Summa:</b> 230,000 UZS\n` +
         `🚀 <b>Yo'naltirish:</b> Oshxona (KDS) & Telegram Admin\n\n` +
         `<i>⚡ Avto-Direct tizimi 100% barqaror ishlamoqda!</i>`;
@@ -650,7 +650,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
       ];
     }
     return [
-      { id: 1, title: "Yangi VIP Buyurtma qabul qilindi", time: "2 daqiqa oldin", type: "order", read: false, desc: "Shohona Palov va Zafaronli Choy jo'natildi" },
+      { id: 1, title: "Yangi VIP Buyurtma qabul qilindi", time: "2 daqiqa oldin", type: "order", read: false, desc: "Shohona Palov va Sapphireli Choy jo'natildi" },
       { id: 2, title: "Telegram AI Bot mijozga javob berdi", time: "5 daqiqa oldin", type: "bot", read: false, desc: "Gemini AI mijozga 100% halol menyuni tavsiya qildi" },
       { id: 3, title: "Stol #3 bron qilindi (VIP Zalda)", time: "12 daqiqa oldin", type: "res", read: false, desc: "Bugun 19:30 ga 6 kishilik maxsus xona band qilindi" },
       { id: 4, title: "100% Halol Go'sht qabul qilindi", time: "35 daqiqa oldin", type: "halal", read: false, desc: "Yangi so'yilgan qo'y go'shti sifat nazoratidan o'tdi" },
@@ -737,7 +737,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
     { label: 'Halol Ribay Steyk', url: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1200&q=85' },
     { label: 'Buxoro Manti (Halol)', url: 'https://images.unsplash.com/photo-1496116218417-1a781b1c416c?auto=format&fit=crop&w=1200&q=85' },
     { label: 'Turkcha Paxlava', url: 'https://images.unsplash.com/photo-1519869325930-281384150729?auto=format&fit=crop&w=1200&q=85' },
-    { label: 'Zafaronli Choy', url: 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=1200&q=85' },
+    { label: 'Sapphireli Choy', url: 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=1200&q=85' },
     { label: 'Anor Sharbat Fresh', url: 'https://images.unsplash.com/photo-1621263764928-df1444c5e859?auto=format&fit=crop&w=1200&q=85' },
   ];
 
@@ -969,7 +969,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
     if (audioEnabled) soundFx.playPop();
     setSendingBroadcast(true);
     try {
-      const caption = `📢 <b>ZAFARON ADMIN:</b>\n\n${customBroadcastMsg.trim()}`;
+      const caption = `📢 <b>SAPPHIRE ADMIN:</b>\n\n${customBroadcastMsg.trim()}`;
       const bannerUrl = 'https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=1200&q=80';
       const res = await sendPhotoToTelegramApi(settingsForm.telegramBotToken, settingsForm.telegramChatId, bannerUrl, caption);
       if (res.success) {
@@ -1735,7 +1735,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
             <button
               onClick={() => setIsAiCopilotOpen(true)}
               className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-indigo-600/30 via-purple-600/30 to-amber-600/30 hover:brightness-125 border border-purple-500/40 text-purple-300 font-bold text-xs flex items-center gap-1.5 shadow-md shadow-purple-500/10 transition-all group"
-              title="Zafaron AI Manager Assistant"
+              title="Sapphire AI Manager Assistant"
             >
               <Sparkles className="w-3.5 h-3.5 text-amber-400 group-hover:rotate-12 transition-transform" />
               <span className="hidden sm:inline">AI Co-Pilot</span>
@@ -3570,7 +3570,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                       type="text"
                       value={autoDirectConfig.telegramBotLink || ''}
                       onChange={(e) => setAutoDirectConfig({ ...autoDirectConfig, telegramBotLink: e.target.value })}
-                      placeholder="https://t.me/zafaron_restarant_bot"
+                      placeholder="https://t.me/sapphire_restaurant_bot"
                       className={`w-full px-3 py-2 rounded-xl text-xs border ${theme === 'dark' ? 'bg-[#141622] border-[#252a42] text-white' : 'bg-white border-slate-200'
                         }`}
                     />
@@ -3969,7 +3969,7 @@ export const AdminDashboard = ({ setIsAdminView }) => {
                     <span className="font-bold text-emerald-400">310 ta six</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="font-semibold text-current">🥉 Zafaronli & Tog' Choyi</span>
+                    <span className="font-semibold text-current">🥉 Sapphireli & Tog' Choyi</span>
                     <span className="font-bold text-emerald-400">580 ta choynak</span>
                   </div>
                 </div>

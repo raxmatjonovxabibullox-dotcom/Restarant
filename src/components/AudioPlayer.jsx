@@ -21,9 +21,9 @@ const LOUNGE_STREAMS = [
   {
     id: 'groove',
     title: {
-      uz: "Zafaron Sunset Chillout",
+      uz: "Sapphire Sunset Chillout",
       ru: "Зафарон Закатный Чиллаут",
-      en: "Zafaron Sunset Chillout"
+      en: "Sapphire Sunset Chillout"
     },
     artist: {
       uz: "SomaFM Ambient Lounge",
@@ -66,9 +66,9 @@ const LOUNGE_STREAMS = [
   {
     id: 'synth',
     title: {
-      uz: "Zafaron Zen Sanctuary",
+      uz: "Sapphire Zen Sanctuary",
       ru: "Зафарон Дзен Святилище",
-      en: "Zafaron Zen Sanctuary"
+      en: "Sapphire Zen Sanctuary"
     },
     artist: {
       uz: "Oflayn Relaks & Meditatsiya",
@@ -91,7 +91,7 @@ export const AudioPlayer = () => {
       prev: "Oldingi kanal",
       next: "Keyingi kanal",
       pause: "Musiqani to'xtatish",
-      play: "Zafaron Lounge musiqasini yoqish",
+      play: "Sapphire Lounge musiqasini yoqish",
       connecting: "Ulanmoqda...",
       clickToPlay: "Yoqish uchun bosing",
       close: "Yopish"
@@ -103,7 +103,7 @@ export const AudioPlayer = () => {
       prev: "Предыдущая станция",
       next: "Следующая станция",
       pause: "Приостановить музыку",
-      play: "Включить музыку Zafaron Lounge",
+      play: "Включить музыку Sapphire Lounge",
       connecting: "Подключение...",
       clickToPlay: "Нажмите для воспроизведения",
       close: "Закрыть"
@@ -115,7 +115,7 @@ export const AudioPlayer = () => {
       prev: "Previous station",
       next: "Next station",
       pause: "Pause music",
-      play: "Play Zafaron Lounge music",
+      play: "Play Sapphire Lounge music",
       connecting: "Connecting...",
       clickToPlay: "Click to play",
       close: "Close"
@@ -283,7 +283,7 @@ export const AudioPlayer = () => {
                 <Sparkles className="w-3.5 h-3.5" />
               </div>
               <span className="text-xs font-serif font-black tracking-wider text-gold-400 uppercase">
-                Zafaron Lounge FM
+                Sapphire Lounge FM
               </span>
             </div>
             <button

@@ -97,7 +97,7 @@ const SIGNATURE_DISHES = [
       en: "Dry-aged for 45 days, seared at 450°C to lock in every drop of rich natural juice."
     },
     pairing: {
-      uz: "Grilda qovurilgan sabzavotlar & Zafaron maxsus sousi",
+      uz: "Grilda qovurilgan sabzavotlar & Sapphire maxsus sousi",
       ru: "Овощи гриль и фирменный соус шефа",
       en: "Charred grill veggies & house chimichurri"
     },
@@ -131,9 +131,9 @@ const SIGNATURE_DISHES = [
   {
     id: 'gastro-burrata',
     title: {
-      uz: "Zafaron Artisanal Burrata",
+      uz: "Sapphire Artisanal Burrata",
       ru: "Буррата с Заатаром",
-      en: "Zafaron Artisanal Burrata"
+      en: "Sapphire Artisanal Burrata"
     },
     subtitle: {
       uz: "Mayin qaymoqli pishloq, pishgan cheri pomidorlari va xushbo'y rayhon",
@@ -209,7 +209,7 @@ const SIGNATURE_DISHES = [
       en: "Authentic Gaziantep recipe with wild mountain honey, pistachios, and edible gold leaf."
     },
     pairing: {
-      uz: "Zafaron tog' choyi yoki Turkcha qahva",
+      uz: "Sapphire tog' choyi yoki Turkcha qahva",
       ru: "Шафрановый горный чай или кофе по-восточному",
       en: "Signature saffron herbal tea or Turkish coffee"
     },
@@ -253,7 +253,7 @@ export const GastroShowcase3D = ({ onAddToCartSuccess }) => {
 
   const tGastro = {
     uz: {
-      badge: "Zafaron 3D Oshpazlik San'ati Tajribasi",
+      badge: "Sapphire 3D Oshpazlik San'ati Tajribasi",
       sectionTitle: "Shohona Gastronomiya",
       sectionHighlight: "Durdonalari",
       sectionDesc: "Har bir taom — san'at asari. Bosh oshpazimizning mualliflik durdonalari bilan 3D interaktiv shaklda tanishing, tarkibiy qismlarni kashf eting va didingizga mos shohona lazzatni tanlang.",
@@ -265,7 +265,7 @@ export const GastroShowcase3D = ({ onAddToCartSuccess }) => {
       addToCartBtn: "Savatga Qo'shish"
     },
     ru: {
-      badge: "Zafaron 3D Авторский Стол Шеф-Повара",
+      badge: "Sapphire 3D Авторский Стол Шеф-Повара",
       sectionTitle: "Королевская Гастрономия",
       sectionHighlight: "Шедевры Вкуса",
       sectionDesc: "Каждое блюдо — произведение искусства. Исследуйте авторские шедевры нашего шеф-повара в интерактивном формате, изучайте ингредиенты и выбирайте королевский вкус.",
@@ -277,7 +277,7 @@ export const GastroShowcase3D = ({ onAddToCartSuccess }) => {
       addToCartBtn: "Добавить в Корзину"
     },
     en: {
-      badge: "Zafaron 3D Chef's Table Experience",
+      badge: "Sapphire 3D Chef's Table Experience",
       sectionTitle: "Royal Gastronomic",
       sectionHighlight: "Masterpieces",
       sectionDesc: "Every dish is a work of culinary art. Explore our executive chef's signature masterpieces interactively, uncover premium ingredients and experience dining excellence.",

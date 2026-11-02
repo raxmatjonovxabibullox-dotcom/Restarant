@@ -92,7 +92,7 @@ export const AuthProvider = ({ children }) => {
 
     let emailToUse = cleanEmail;
     if (!emailToUse.includes('@')) {
-      emailToUse = `${cleanEmail}@zafaron.uz`;
+      emailToUse = `${cleanEmail}@sapphire.uz`;
     }
 
     try {
@@ -152,7 +152,7 @@ export const AuthProvider = ({ children }) => {
 
     let emailToUse = cleanEmail;
     if (!emailToUse.includes('@')) {
-      emailToUse = `${cleanEmail}@zafaron.uz`;
+      emailToUse = `${cleanEmail}@sapphire.uz`;
     }
 
     const client = getSupabaseClient();

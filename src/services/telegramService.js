@@ -1,4 +1,4 @@
-// Telegram Bot Service for Zafaron Restaurant & Lounge
+// Telegram Bot Service for Sapphire Luxury Dining & Lounge
 // Enhanced with Photo support and Telegram Premium HTML styling
 import { getStoredSettings } from '../lib/storage.js';
 
@@ -115,10 +115,10 @@ export const sendPhotoToTelegramApi = async (token, chatId, photoUrl, caption, r
 // Test bot connection with Photo
 export const testTelegramBot = async (token, chatId) => {
   // 1. Send welcoming greeting with waving hand first
-  await sendToTelegramApi(token, chatId, "👋 <b>Assalomu alaykum! Zafaron Telegram Bot aloqasi muvaffaqiyatli tekshirildi!</b>");
+  await sendToTelegramApi(token, chatId, "👋 <b>Assalomu alaykum! Sapphire Telegram Bot aloqasi muvaffaqiyatli tekshirildi!</b>");
 
   const caption =
-    `👑 <b>ZAFARON RESTAURANT & LOUNGE</b>\n` +
+    `👑 <b>SAPPHIRE LUXURY DINING & LOUNGE</b>\n` +
     `💎 <b>VIP STATUS: TELEGRAM BOT INTEGRATSIYASI</b>\n` +
     `━━━━━━━━━━━━━━━━━━━━━━\n` +
     `<blockquote>` +
@@ -126,7 +126,7 @@ export const testTelegramBot = async (token, chatId) => {
     `🛎 <b>Tizim holati:</b> Buyurtmalar, stollar va mijoz xabarlarini qabul qilishga tayyor\n` +
     `📅 <b>Sana va vaqt:</b> <code>${new Date().toLocaleString('uz-UZ')}</code>` +
     `</blockquote>\n\n` +
-    `✨ <i>Zafaron Lounge — Hashamat va Ta'm Uygunligi</i>`;
+    `✨ <i>Sapphire Lounge — Hashamat va Ta'm Uygunligi</i>`;
 
   const replyMarkup = {
     inline_keyboard: [
@@ -150,7 +150,7 @@ export const sendTelegramOrder = async (order) => {
   await sendToTelegramApi(
     token,
     chatId,
-    `👋 <b>Assalomu alaykum! Zafaron Restaurant & Lounge tizimiga yangi buyurtma qabul qilindi:</b>`
+    `👋 <b>Assalomu alaykum! Sapphire Luxury Dining & Lounge tizimiga yangi buyurtma qabul qilindi:</b>`
   );
 
   // 2. Format delivery title
@@ -176,7 +176,7 @@ export const sendTelegramOrder = async (order) => {
 
   // 4. Format Telegram Premium Message
   const caption =
-    `👑 <b>ZAFARON RESTAURANT & LOUNGE</b>\n` +
+    `👑 <b>SAPPHIRE LUXURY DINING & LOUNGE</b>\n` +
     `💎 <b>PREMIUM VIP BUYURTMA #${order.id}</b>\n` +
     `━━━━━━━━━━━━━━━━━━━━━━\n` +
     `👤 <b>Mijoz:</b> <b>${order.customerName}</b>\n` +
@@ -228,12 +228,12 @@ export const sendTelegramReservation = async (reservation) => {
   await sendToTelegramApi(
     token,
     chatId,
-    `👋 <b>Assalomu alaykum! Zafaron tizimida yangi stol bandligi (bron) qabul qilindi:</b>`
+    `👋 <b>Assalomu alaykum! Sapphire tizimida yangi stol bandligi (bron) qabul qilindi:</b>`
   );
 
   // 2. Telegram Premium Reservation Card
   const caption =
-    `👑 <b>ZAFARON RESTAURANT & LOUNGE</b>\n` +
+    `👑 <b>SAPPHIRE LUXURY DINING & LOUNGE</b>\n` +
     `🛎 <b>PREMIUM VIP STOL BAND QILINDI: #${reservation.id}</b>\n` +
     `━━━━━━━━━━━━━━━━━━━━━━\n` +
     `👤 <b>Mijoz:</b> <b>${reservation.fullName}</b>\n` +
@@ -278,7 +278,7 @@ export const sendTelegramContactMessage = async (msg) => {
   );
 
   const caption =
-    `👑 <b>ZAFARON RESTAURANT & LOUNGE</b>\n` +
+    `👑 <b>SAPPHIRE LUXURY DINING & LOUNGE</b>\n` +
     `📩 <b>YANGI MUROJAAT (VIP ALOQA)</b>\n` +
     `━━━━━━━━━━━━━━━━━━━━━━\n` +
     `👤 <b>Yuboruvchi:</b> <b>${msg.name}</b>\n` +
