@@ -26,10 +26,11 @@ import {
   Sparkles,
   Coins,
   Lock,
-  LogOut
+  LogOut,
+  Crown
 } from 'lucide-react';
 
-export const Navbar = ({ activePage, setActivePage, setIsAdminView, onOpenConcierge }) => {
+export const Navbar = ({ activePage, setActivePage, setIsAdminView, onOpenConcierge, onOpenVipPassport }) => {
   const { lang, setLang, t } = useLanguage();
   const { theme, toggleTheme } = useTheme();
   const { totalItems, openCart } = useCart();
@@ -81,7 +82,21 @@ export const Navbar = ({ activePage, setActivePage, setIsAdminView, onOpenConcie
             </a>
           </div>
 
-          <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-3 ml-auto">
+          <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-2.5 ml-auto">
+            {/* VIP Passport Club Trigger */}
+            <button
+              id="vip-club-nav-btn"
+              onClick={() => {
+                soundFx.playPop();
+                if (onOpenVipPassport) onOpenVipPassport();
+              }}
+              className="flex items-center gap-1.5 py-1 px-2.5 rounded-lg bg-gradient-to-r from-blue-900/30 via-gold-500/15 to-blue-900/30 hover:from-blue-900/50 hover:to-gold-500/25 border border-gold-500/40 text-gold-400 hover:text-gold-300 transition-all text-xs font-bold shadow-[0_0_10px_rgba(234,179,8,0.15)] group"
+              title="SAPPHIRE VIP Digital Passport"
+            >
+              <Crown className="w-3.5 h-3.5 text-gold-400 group-hover:scale-110 transition-transform" />
+              <span className="font-serif tracking-wider text-[11px] uppercase bg-gradient-to-r from-yellow-300 via-amber-200 to-yellow-400 bg-clip-text text-transparent">VIP Passport</span>
+            </button>
+
             {/* Currency Switcher */}
             <div className="relative">
               <button
@@ -381,6 +396,22 @@ export const Navbar = ({ activePage, setActivePage, setIsAdminView, onOpenConcie
             >
               <Sparkles className="w-4 h-4" />
               <span>{lang === 'ru' ? "Sapphire Умный Сомелье & Меню-Гид" : lang === 'en' ? "Sapphire Smart Sommelier & Recommender" : "Sapphire Aqlli Sommelier & Recommender"}</span>
+            </button>
+
+            <button
+              onClick={() => {
+                setMobileMenuOpen(false);
+                if (onOpenVipPassport) onOpenVipPassport();
+              }}
+              className="w-full py-3 px-4 rounded-xl text-left text-xs font-bold text-blue-400 bg-gradient-to-r from-blue-950/60 via-gold-500/10 to-blue-900/40 border border-gold-500/30 flex items-center justify-between"
+            >
+              <div className="flex items-center gap-2">
+                <Crown className="w-4 h-4 text-gold-400" />
+                <span className="text-white font-serif tracking-wide">{lang === 'ru' ? "Цифровой VIP Паспорт" : lang === 'en' ? "Digital VIP Passport" : "Raqamli VIP Pasport"}</span>
+              </div>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-gold-500 text-dark-950 font-black uppercase">
+                ROYALE
+              </span>
             </button>
 
             {/* Mobile Admin Panel Entry with Login Requirement */}

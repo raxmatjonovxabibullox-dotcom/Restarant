@@ -160,6 +160,50 @@ export const ReservationPage = ({ setActivePage }) => {
         <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 font-light">
           {t('reservationPage.subtitle')}
         </p>
+
+        {/* Live Real-time Occupancy & Lounge Pulse Ticker */}
+        <div className="pt-2">
+          <div className="inline-flex flex-wrap items-center justify-center gap-3 px-4 py-2 rounded-2xl bg-dark-900/80 dark:bg-dark-900/90 border border-gold-500/30 backdrop-blur-md shadow-lg text-xs">
+            <div className="flex items-center gap-2 font-semibold text-emerald-400">
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+              </span>
+              <span>
+                {lang === 'ru'
+                  ? 'В РЕАЛЬНОМ ВРЕМЕНИ'
+                  : lang === 'en'
+                  ? 'LIVE AVAILABILITY'
+                  : 'JONLI HOLAT'}
+              </span>
+            </div>
+            <span className="text-gray-600 dark:text-gray-500">•</span>
+            <span className="text-gray-200">
+              {lang === 'ru'
+                ? '8 столов свободно на вечер'
+                : lang === 'en'
+                ? '8 tables open for tonight'
+                : "Bugun oqshomga 8 ta stol bo'sh"}
+            </span>
+            <span className="text-gray-600 dark:text-gray-500">•</span>
+            <span className="text-amber-400 font-medium">
+              {lang === 'ru'
+                ? 'VIP 1 Кабинет доступен'
+                : lang === 'en'
+                ? 'VIP 1 Chamber Available'
+                : 'VIP 1 Xonasi ochiq'}
+            </span>
+            <span className="text-gray-600 dark:text-gray-500">•</span>
+            <span className="text-gold-300 font-medium flex items-center gap-1">
+              <Sparkles className="w-3 h-3 text-gold-400" />
+              {lang === 'ru'
+                ? 'Живой рояль и скрипка в 19:30'
+                : lang === 'en'
+                ? 'Live Piano & Strings at 19:30'
+                : 'Jonli royal & skripka 19:30'}
+            </span>
+          </div>
+        </div>
       </div>
 
       {submittedReservation ? (

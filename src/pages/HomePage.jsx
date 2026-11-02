@@ -7,6 +7,8 @@ import { useFavorites } from '../context/FavoritesContext';
 import { soundFx } from '../hooks/useSoundEffects';
 import { GoldParticles } from '../components/GoldParticles';
 import { GastroShowcase3D } from '../components/GastroShowcase3D';
+import { SapphireGemAccent } from '../components/SapphireGemAccent';
+import { SapphirePairingStudio } from '../components/SapphirePairingStudio';
 import {
   Sparkles,
   ArrowRight,
@@ -61,7 +63,10 @@ export const HomePage = ({ setActivePage, onOpenConcierge }) => {
           <div className="absolute bottom-0 right-0 w-96 h-96 bg-gold-400/15 rounded-full blur-3xl" />
         </div>
 
-        <div className="relative z-20 max-w-5xl mx-auto text-center space-y-8">
+        <div className="relative z-20 max-w-5xl mx-auto text-center space-y-6">
+          {/* Interactive 3D Sapphire Gem Accent */}
+          <SapphireGemAccent />
+
           {/* Top Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gold-500/10 border border-gold-500/40 text-gold-500 text-xs sm:text-sm font-bold tracking-wider uppercase backdrop-blur-md animate-fade-in shadow-glow">
             <Sparkles className="w-4 h-4 text-gold-400" />
@@ -183,6 +188,15 @@ export const HomePage = ({ setActivePage, onOpenConcierge }) => {
 
       {/* 3D GASTRO SHOWCASE & CHEF'S TABLE EXPERIENCE */}
       <GastroShowcase3D />
+
+      {/* SAPPHIRE GASTRONOMIC TASTING PAIRINGS STUDIO */}
+      <SapphirePairingStudio
+        onReserveClick={() => {
+          soundFx.playChime();
+          setActivePage('reservation');
+          window.scrollTo(0, 0);
+        }}
+      />
 
       {/* SPECIALS (CHEF'S SIGNATURE DISHES) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">

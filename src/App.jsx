@@ -18,6 +18,7 @@ import { ToastNotification } from './components/ToastNotification';
 import { AudioPlayer } from './components/AudioPlayer';
 import { SmartConciergeModal } from './components/SmartConciergeModal';
 import { FloatingVipHub } from './components/FloatingVipHub';
+import { SapphireVipPassportModal } from './components/SapphireVipPassportModal';
 
 // Pages
 import { HomePage } from './pages/HomePage';
@@ -49,6 +50,7 @@ function MainApp() {
   const [activePage, setActivePage] = useState(() => parseCurrentRoute().page);
   const [isAdminView, setIsAdminView] = useState(false);
   const [isConciergeOpen, setIsConciergeOpen] = useState(false);
+  const [isVipPassportOpen, setIsVipPassportOpen] = useState(false);
   const { isAdmin, openLoginModal, isLoadingAuth } = useAuth();
 
   // Route & URL listener strictly guarded by Supabase Auth
@@ -165,6 +167,7 @@ function MainApp() {
             setActivePage={handlePageChange}
             setIsAdminView={handleAdminViewChange}
             onOpenConcierge={() => setIsConciergeOpen(true)}
+            onOpenVipPassport={() => setIsVipPassportOpen(true)}
           />
 
           <main className="flex-1">
@@ -172,6 +175,7 @@ function MainApp() {
               <HomePage
                 setActivePage={handlePageChange}
                 onOpenConcierge={() => setIsConciergeOpen(true)}
+                onOpenVipPassport={() => setIsVipPassportOpen(true)}
               />
             )}
             {activePage === 'menu' && (
@@ -196,6 +200,7 @@ function MainApp() {
           <FloatingVipHub
             setActivePage={handlePageChange}
             onOpenConcierge={() => setIsConciergeOpen(true)}
+            onOpenVipPassport={() => setIsVipPassportOpen(true)}
           />
         </>
       )}
@@ -210,6 +215,10 @@ function MainApp() {
         isOpen={isConciergeOpen}
         onClose={() => setIsConciergeOpen(false)}
         setActivePage={handlePageChange}
+      />
+      <SapphireVipPassportModal
+        isOpen={isVipPassportOpen}
+        onClose={() => setIsVipPassportOpen(false)}
       />
 
     </div>

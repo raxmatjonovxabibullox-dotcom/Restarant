@@ -15,7 +15,8 @@ import { soundFx } from '../hooks/useSoundEffects';
 
 export const FloatingVipHub = ({
   setActivePage,
-  onOpenConcierge
+  onOpenConcierge,
+  onOpenVipPassport
 }) => {
   const { lang } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
@@ -38,6 +39,8 @@ export const FloatingVipHub = ({
     uz: {
       vipHub: "Sapphire VIP Hub",
       hubSubtitle: "Tezkor xizmatlar markazi",
+      vipPassport: "VIP Raqamli Pasport",
+      vipPassportSub: "Eksklyuziv imtiyoz & 20% chegirma",
       bookTable: "Stol Band Qilish",
       bookSub: "Hashamatli zallar va xonalar",
       menu: "Taomnoma",
@@ -52,6 +55,8 @@ export const FloatingVipHub = ({
     ru: {
       vipHub: "Sapphire VIP Hub",
       hubSubtitle: "Центр быстрых сервисов",
+      vipPassport: "Цифровой VIP Паспорт",
+      vipPassportSub: "Эксклюзивные привилегии & 20% скидка",
       bookTable: "Бронь Стола",
       bookSub: "Роскошные залы и VIP",
       menu: "Меню Ресторана",
@@ -66,6 +71,8 @@ export const FloatingVipHub = ({
     en: {
       vipHub: "Sapphire VIP Hub",
       hubSubtitle: "Quick services hub",
+      vipPassport: "Digital VIP Passport",
+      vipPassportSub: "Exclusive perks & 20% discount",
       bookTable: "Book a Table",
       bookSub: "Luxury halls & VIP rooms",
       menu: "Gourmet Menu",
@@ -121,6 +128,23 @@ export const FloatingVipHub = ({
 
             {/* Quick Actions List */}
             <div className="space-y-1.5 text-xs">
+              {/* 0. VIP Digital Passport */}
+              <button
+                onClick={() => handleAction(() => onOpenVipPassport?.())}
+                className="w-full p-2.5 rounded-2xl bg-gradient-to-r from-blue-950/80 via-blue-900/60 to-dark-900 border border-gold-500/40 hover:border-gold-400 flex items-center gap-3 transition-all text-left group shadow-lg"
+              >
+                <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-gold-500 to-amber-600 text-dark-950 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform shadow-md">
+                  <Crown className="w-4 h-4" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-1.5">
+                    <p className="font-serif font-bold text-yellow-300 group-hover:text-yellow-200 transition-colors">{t.vipPassport}</p>
+                    <span className="text-[9px] px-1.5 py-0.2 rounded bg-gold-500 text-dark-950 font-black">ROYALE</span>
+                  </div>
+                  <p className="text-[10px] text-gray-400">{t.vipPassportSub}</p>
+                </div>
+              </button>
+
               {/* 1. Book a table */}
               <button
                 onClick={() => handleAction(() => setActivePage('reservation'))}
