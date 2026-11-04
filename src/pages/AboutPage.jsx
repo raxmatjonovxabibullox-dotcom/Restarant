@@ -26,13 +26,13 @@ export const AboutPage = ({ setActivePage }) => {
       category: "dishes"
     },
     {
-      url: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1600&q=85",
+      url: "/images/sapphire_hall.jpg",
       title: lang === 'ru' ? 'Главный Роскошный Зал' : lang === 'en' ? 'Main Luxury Hall' : "Asosiy Hashamatli Zal",
       caption: lang === 'ru' ? 'Роскошный восточный дизайн, бархат и золотые люстры' : lang === 'en' ? 'Royal oriental design, velvet booths and crystal chandeliers' : "Shohona sharqona dizayn, baxmal mebel va billur qandillar",
       category: "halls"
     },
     {
-      url: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1600&q=85",
+      url: "/images/sapphire_kebab.jpg",
       title: lang === 'ru' ? 'Открытая Кухня & Мангал' : lang === 'en' ? 'Open Kitchen & Charcoal Grill' : "Ochiq Oshxona & Cho'g' Mangal",
       caption: lang === 'ru' ? 'Блюда на углях готовятся на глазах у гостей' : lang === 'en' ? 'Live charcoal grilling crafted right before the guests' : "Mehmonlar ko'z o'ngida cho'g'da pishadigan taomlar",
       category: "kitchen"
@@ -50,25 +50,25 @@ export const AboutPage = ({ setActivePage }) => {
       category: "halls"
     },
     {
-      url: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1600&q=85",
+      url: "/images/sapphire_steak.jpg",
       title: lang === 'ru' ? 'Искусство Стейков & Мяса' : lang === 'en' ? 'Art of Prime Steaks' : "Shohona Steyk & Go'sht San'ati",
       caption: lang === 'ru' ? 'Мраморная говядина Black Angus и сочные бараньи ребрышки' : lang === 'en' ? 'Prime Black Angus cuts and tender lamb rack chops' : "Marmar mol go'shti va yosh qo'zichoq qovurg'asi",
       category: "dishes"
     },
     {
-      url: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=1600&q=85",
+      url: "/images/sapphire_salmon.jpg",
       title: lang === 'ru' ? 'Норвежский Лосось на Гриле' : lang === 'en' ? 'Grilled Norwegian Salmon' : "Grilda Norvegiya Lososi",
       caption: lang === 'ru' ? 'Лимонно-сливочный соус, дикий рис и спаржа' : lang === 'en' ? 'Citrus cream sauce, wild rice and crisp asparagus' : "Limonli-qaymoqli sous, yovvoyi guruch va yangi spargel",
       category: "dishes"
     },
     {
-      url: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=1600&q=85",
+      url: "/images/sapphire_dessert.jpg",
       title: lang === 'ru' ? 'Бельгийский Шоколадный Фондан' : lang === 'en' ? 'Belgian Chocolate Lava' : "Belgiya Shokoladli Fondan",
       caption: lang === 'ru' ? 'Горячий текучий шоколад, ванильное мороженое и ягоды' : lang === 'en' ? 'Warm molten ganache, vanilla bean ice cream and berries' : "Issiq oqib turuvchi shokolad, vanil muzqaymoq va rezavorlar",
       category: "dishes"
     },
     {
-      url: "https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=1600&q=85",
+      url: "/images/sapphire_chef.jpg",
       title: lang === 'ru' ? 'Мастерство Шеф-Повара' : lang === 'en' ? 'Artisanal Culinary Craft' : "Oshpazlik Mahorati",
       caption: lang === 'ru' ? 'Каждое блюдо собирается с филигранной точностью' : lang === 'en' ? 'Every plate crafted with Michelin-star precision' : "Har bir taom yuksak e'tibor va san'at bilan tayyorlanadi",
       category: "kitchen"
@@ -173,9 +173,9 @@ export const AboutPage = ({ setActivePage }) => {
 
         {/* Visual Showcase */}
         <div className="relative">
-          <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-gray-200 dark:border-white/10">
+          <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-gold-500/30">
             <img
-              src="https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=900&q=80"
+              src="/images/sapphire_hall.jpg"
               alt="Sapphire Atmosphere"
               className="w-full h-[450px] object-cover"
             />
@@ -226,9 +226,9 @@ export const AboutPage = ({ setActivePage }) => {
       {/* Master Chef Section */}
       <div className="glass-card rounded-3xl p-8 sm:p-12 border border-gold-500/20 shadow-2xl">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
-          <div className="relative rounded-2xl overflow-hidden aspect-[3/4] max-w-xs mx-auto md:mx-0 shadow-xl">
+          <div className="relative rounded-2xl overflow-hidden aspect-[3/4] max-w-xs mx-auto md:mx-0 shadow-xl border border-gold-500/30">
             <img
-              src="https://images.unsplash.com/photo-1577219491135-ce391730fb2c?auto=format&fit=crop&w=700&q=80"
+              src="/images/sapphire_chef.jpg"
               alt="Chef Mansur Shokirov"
               className="w-full h-full object-cover"
             />

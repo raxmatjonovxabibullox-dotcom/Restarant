@@ -239,7 +239,7 @@ export const HomePage = ({ setActivePage, onOpenConcierge }) => {
                     alt={getLocalized(dish.name)}
                     loading="lazy"
                     decoding="async"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out will-change-transform"
+                    className="w-full h-full object-cover group-hover:scale-105 img-smooth"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-dark-950/85 via-dark-950/20 to-transparent opacity-60 group-hover:opacity-35 transition-opacity duration-500" />
 

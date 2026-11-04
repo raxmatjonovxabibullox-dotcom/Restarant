@@ -90,7 +90,7 @@ const SIGNATURE_DISHES = [
       ru: "30 минут",
       en: "30 mins"
     },
-    image: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1200&q=85",
+    image: "/images/sapphire_steak.jpg",
     chefNote: {
       uz: "45 kun quruq usulda yetiltirilgan marmar mol go'shti, 450°C olovda pishirilib, shirasi ichida muhrlanadi.",
       ru: "Выдержка 45 дней. Готовится при температуре 450°C с сохранением максимальной сочности.",
@@ -202,7 +202,7 @@ const SIGNATURE_DISHES = [
       ru: "10 минут",
       en: "10 mins"
     },
-    image: "https://images.unsplash.com/photo-1519676867240-f03562e64548?auto=format&fit=crop&w=1200&q=80",
+    image: "/images/sapphire_dessert.jpg",
     chefNote: {
       uz: "Qadimiy Gaziantep uslubida 40 qavat yupqa xamir, Eron pista mag'zi va tabiiy asal bilan tayyorlangan shohona shirinlik.",
       ru: "Традиционная пахлава по рецепту Газиантепа с горным медом и съедобным золотом.",
@@ -250,6 +250,9 @@ export const GastroShowcase3D = ({ onAddToCartSuccess }) => {
   const [selectedIdx, setSelectedIdx] = useState(0);
   const [activeHotspot, setActiveHotspot] = useState(null);
   const [isHovered, setIsHovered] = useState(false);
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+  const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   const tGastro = {
     uz: {
@@ -348,9 +351,14 @@ export const GastroShowcase3D = ({ onAddToCartSuccess }) => {
               <button
                 key={item.id}
                 onClick={() => {
+                  if (idx === selectedIdx) return;
                   soundFx.playPop();
-                  setSelectedIdx(idx);
+                  setIsTransitioning(true);
                   setActiveHotspot(null);
+                  setTimeout(() => {
+                    setSelectedIdx(idx);
+                    setIsTransitioning(false);
+                  }, 240);
                 }}
                 className={`px-4 sm:px-6 py-3 rounded-2xl text-xs sm:text-sm font-bold transition-all duration-300 flex items-center gap-2.5 ${
                   isSel
@@ -370,29 +378,71 @@ export const GastroShowcase3D = ({ onAddToCartSuccess }) => {
           {/* Left: Interactive 3D Dish Stage */}
           <div
             className="lg:col-span-7 relative group"
+            onMouseMove={(e) => {
+              const rect = e.currentTarget.getBoundingClientRect();
+              const x = (e.clientX - rect.left) / rect.width;
+              const y = (e.clientY - rect.top) / rect.height;
+              const tiltX = (0.5 - y) * 12;
+              const tiltY = (x - 0.5) * 12;
+              setTilt({ x: tiltX, y: tiltY });
+              setMousePos({ x: x * 100, y: y * 100 });
+            }}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => {
               setIsHovered(false);
               setActiveHotspot(null);
+              setTilt({ x: 0, y: 0 });
+            }}
+            style={{
+              perspective: '1200px'
             }}
           >
             {/* Ambient Dish Glow */}
             <div className="absolute inset-0 bg-gradient-to-tr from-amber-500/25 via-gold-500/20 to-transparent rounded-3xl blur-2xl transition-all duration-500 group-hover:blur-3xl" />
 
-            <div className="relative rounded-3xl overflow-hidden border border-gold-500/40 shadow-2xl aspect-[4/3] bg-dark-950">
+            <div
+              className="relative rounded-3xl overflow-hidden border border-gold-500/40 shadow-2xl aspect-[4/3] bg-dark-950 transform-gpu will-change-transform"
+              style={{
+                transform: isHovered
+                  ? `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) scale3d(1.02, 1.02, 1.02)`
+                  : 'rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)',
+                transition: isHovered
+                  ? 'transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1)'
+                  : 'transform 0.65s cubic-bezier(0.2, 0.8, 0.2, 1)',
+                transformStyle: 'preserve-3d'
+              }}
+            >
+              {/* Smooth image with crossfade and blur transition */}
               <img
                 src={dish.image}
                 alt={curTitle}
-                className={`w-full h-full object-cover transition-all duration-700 ${
-                  isHovered ? 'scale-105 brightness-105' : 'scale-100'
-                }`}
+                loading="eager"
+                decoding="async"
+                className={`w-full h-full object-cover transform-gpu will-change-transform backface-hidden transition-all duration-700 ease-out ${
+                  isTransitioning ? 'opacity-0 scale-95 blur-sm' : 'opacity-100 scale-100 blur-0'
+                } ${isHovered ? 'scale-105 brightness-105' : 'scale-100 brightness-100'}`}
+                style={{
+                  imageRendering: '-webkit-optimize-contrast',
+                  backfaceVisibility: 'hidden',
+                  transform: 'translateZ(0)'
+                }}
+              />
+
+              {/* Cursor-Following Golden Specular Refraction Sheen */}
+              <div
+                className="absolute inset-0 pointer-events-none transition-opacity duration-300 z-10"
+                style={{
+                  background: isHovered
+                    ? `radial-gradient(circle 380px at ${mousePos.x}% ${mousePos.y}%, rgba(234, 179, 8, 0.18), transparent 70%)`
+                    : 'transparent'
+                }}
               />
 
               {/* Steam / Warmth Overlay Shimmer */}
-              <div className="absolute inset-0 bg-gradient-to-t from-dark-950/80 via-transparent to-transparent pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-t from-dark-950/85 via-transparent to-transparent pointer-events-none z-10" />
 
               {/* Top Badges */}
-              <div className="absolute top-4 left-4 flex items-center gap-2">
+              <div className="absolute top-4 left-4 flex items-center gap-2 z-20">
                 <span className="px-3 py-1 rounded-full bg-dark-950/80 border border-gold-500/50 text-gold-400 text-xs font-black backdrop-blur-md flex items-center gap-1.5">
                   <Flame className="w-3.5 h-3.5 text-amber-500" />
                   <span>{curPrepTime}</span>
@@ -435,7 +485,7 @@ export const GastroShowcase3D = ({ onAddToCartSuccess }) => {
               })}
 
               {/* Bottom Quick Caption on Image */}
-              <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-white">
+              <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-white z-20">
                 <div>
                   <h3 className="font-serif font-black text-xl text-gold-300">{curTitle}</h3>
                   <p className="text-xs text-gray-300 max-w-xs truncate">{curSub}</p>

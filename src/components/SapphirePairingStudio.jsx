@@ -64,7 +64,7 @@ const PAIRING_SETS = [
     price: 168000,
     originalPrice: 198000,
     discount: "15% CHEGIRMA",
-    image: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1200&q=85",
+    image: "/images/sapphire_steak.jpg",
     flavorNotes: [
       { label: "Shiradorlik", value: "99%" },
       { label: "Marmarlik darajasi", value: "A5" },
@@ -90,7 +90,7 @@ const PAIRING_SETS = [
     price: 142000,
     originalPrice: 165000,
     discount: "14% CHEGIRMA",
-    image: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=1200&q=85",
+    image: "/images/sapphire_salmon.jpg",
     flavorNotes: [
       { label: "Yengillik", value: "100%" },
       { label: "Omega-3", value: "Yuqori" },
@@ -116,7 +116,7 @@ const PAIRING_SETS = [
     price: 82000,
     originalPrice: 96000,
     discount: "15% CHEGIRMA",
-    image: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=1200&q=85",
+    image: "/images/sapphire_dessert.jpg",
     flavorNotes: [
       { label: "Shirinlik uyg'unligi", value: "98%" },
       { label: "Hissiyot", value: "100%" },
@@ -131,6 +131,7 @@ export const SapphirePairingStudio = ({ onReserveClick }) => {
   const { formatPrice } = useCurrency();
   const [selectedIdx, setSelectedIdx] = useState(0);
   const [addedIdx, setAddedIdx] = useState(null);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   const activeSet = PAIRING_SETS[selectedIdx];
 
@@ -188,8 +189,13 @@ export const SapphirePairingStudio = ({ onReserveClick }) => {
             <button
               key={set.id}
               onClick={() => {
+                if (idx === selectedIdx) return;
                 soundFx.playPop();
-                setSelectedIdx(idx);
+                setIsTransitioning(true);
+                setTimeout(() => {
+                  setSelectedIdx(idx);
+                  setIsTransitioning(false);
+                }, 220);
               }}
               className={`p-4 rounded-3xl text-left transition-all border flex flex-col justify-between gap-2 relative overflow-hidden group ${
                 isSelected
@@ -224,7 +230,11 @@ export const SapphirePairingStudio = ({ onReserveClick }) => {
               <img
                 src={activeSet.image}
                 alt={activeSet.title[lang] || activeSet.title.uz}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                loading="lazy"
+                decoding="async"
+                className={`w-full h-full object-cover group-hover:scale-105 img-smooth ${
+                  isTransitioning ? 'opacity-0 scale-95 blur-sm' : 'opacity-100 scale-100 blur-0'
+                }`}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-dark-950/80 via-transparent to-transparent" />
               
