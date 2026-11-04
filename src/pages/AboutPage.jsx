@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { soundFx } from '../hooks/useSoundEffects';
 import {
@@ -6,49 +6,72 @@ import {
   ShieldCheck,
   CalendarDays,
   UtensilsCrossed,
-  Crown
+  Crown,
+  ZoomIn,
+  X,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 
 export const AboutPage = ({ setActivePage }) => {
   const { t, lang } = useLanguage();
   const [activeGalleryTab, setActiveGalleryTab] = useState('all');
+  const [activeLightboxIndex, setActiveLightboxIndex] = useState(null);
 
   const galleryImages = [
     {
-      url: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&q=85",
+      url: "/images/sapphire_plov.jpg",
+      title: lang === 'ru' ? 'Свадебный Плов Sapphire' : lang === 'en' ? 'Sapphire Royal Wedding Plov' : "Sapphire To'y Palovi",
+      caption: lang === 'ru' ? 'Рис лазер, горный шафран, томленая баранина и отборный казы' : lang === 'en' ? 'Lazer rice, mountain saffron, braised lamb and choice kazy' : "Lazer guruch, tog' zafaroni, sarxil qo'zichoq va kazy",
+      category: "dishes"
+    },
+    {
+      url: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1600&q=85",
       title: lang === 'ru' ? 'Главный Роскошный Зал' : lang === 'en' ? 'Main Luxury Hall' : "Asosiy Hashamatli Zal",
-      caption: lang === 'ru' ? 'Роскошный восточный дизайн и мягкая мебель' : lang === 'en' ? 'Royal oriental design and plush seating' : "Shohona sharqona dizayn va yumshoq mebellar",
+      caption: lang === 'ru' ? 'Роскошный восточный дизайн, бархат и золотые люстры' : lang === 'en' ? 'Royal oriental design, velvet booths and crystal chandeliers' : "Shohona sharqona dizayn, baxmal mebel va billur qandillar",
       category: "halls"
     },
     {
-      url: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1200&q=85",
-      title: lang === 'ru' ? 'Открытая Кухня' : lang === 'en' ? 'Open Kitchen' : "Ochiq Oshxona",
-      caption: lang === 'ru' ? 'Блюда на углях готовятся на глазах у гостей' : lang === 'en' ? 'Charcoal grilling right before the guests' : "Mehmonlar ko'z o'ngida cho'g'da pishadigan taomlar",
+      url: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1600&q=85",
+      title: lang === 'ru' ? 'Открытая Кухня & Мангал' : lang === 'en' ? 'Open Kitchen & Charcoal Grill' : "Ochiq Oshxona & Cho'g' Mangal",
+      caption: lang === 'ru' ? 'Блюда на углях готовятся на глазах у гостей' : lang === 'en' ? 'Live charcoal grilling crafted right before the guests' : "Mehmonlar ko'z o'ngida cho'g'da pishadigan taomlar",
       category: "kitchen"
     },
     {
-      url: "https://images.unsplash.com/photo-1578474846511-04ba529f0b88?auto=format&fit=crop&w=1200&q=85",
+      url: "https://images.unsplash.com/photo-1578474846511-04ba529f0b88?auto=format&fit=crop&w=1600&q=85",
       title: lang === 'ru' ? 'Золотые VIP Кабинеты' : lang === 'en' ? 'VIP Gold Suites' : "VIP Oltin Xonalar",
-      caption: lang === 'ru' ? 'Для особых торжеств и закрытых бесед' : lang === 'en' ? 'For special ceremonies and private talks' : "Maxsus tantanalar va shaxsiy suhbatlar uchun",
+      caption: lang === 'ru' ? 'Для особых торжеств, деловых ужинов и закрытых встреч' : lang === 'en' ? 'For celebrations, business banquets and private gatherings' : "Maxsus tantanalar, biznes kechki ovqatlar va shaxsiy uchrashuvlar",
       category: "halls"
     },
     {
-      url: "https://images.unsplash.com/photo-1543007630-9710e4a00a20?auto=format&fit=crop&w=1200&q=85",
+      url: "https://images.unsplash.com/photo-1543007630-9710e4a00a20?auto=format&fit=crop&w=1600&q=85",
       title: lang === 'ru' ? 'Панорамная Терраса' : lang === 'en' ? 'Panoramic Terrace' : "Panoramik Terrasa",
-      caption: lang === 'ru' ? 'Свежий воздух и вечерние виды Ташкента' : lang === 'en' ? 'Fresh air and Tashkent evening panorama' : "Toza havo va Toshkent kechki manzarasi",
+      caption: lang === 'ru' ? 'Свежий воздух, мерцание свечей и вечерний Ташкент' : lang === 'en' ? 'Fresh breeze, candlelight and evening Tashkent skyline' : "Toza havo, shamlar yog'dusi va Toshkent kechki panoramasi",
       category: "halls"
     },
     {
-      url: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1200&q=85",
-      title: lang === 'ru' ? 'Искусство Казан-Кабоба' : lang === 'en' ? 'Art of Qozon Kabob' : "Qozon Kabob San'ati",
-      caption: lang === 'ru' ? 'Золотистый картофель и сочные бараньи ребрышки' : lang === 'en' ? 'Golden potatoes and tender lamb ribs' : "Oltin kartoshka va yosh qo'zichoq qovurg'asi",
+      url: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1600&q=85",
+      title: lang === 'ru' ? 'Искусство Стейков & Мяса' : lang === 'en' ? 'Art of Prime Steaks' : "Shohona Steyk & Go'sht San'ati",
+      caption: lang === 'ru' ? 'Мраморная говядина Black Angus и сочные бараньи ребрышки' : lang === 'en' ? 'Prime Black Angus cuts and tender lamb rack chops' : "Marmar mol go'shti va yosh qo'zichoq qovurg'asi",
       category: "dishes"
     },
     {
-      url: "/images/sapphire_plov.jpg",
-      title: lang === 'ru' ? 'Свадебный Плов Sapphire' : lang === 'en' ? 'Sapphire Royal Wedding Plov' : "Sapphire To'y Palovi",
-      caption: lang === 'ru' ? 'Рис лазер, горный шафран и отборный казы' : lang === 'en' ? 'Lazer rice, mountain saffron and choice kazy' : "Lazer guruch, tog' zafaroni va sarxil kazy",
+      url: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=1600&q=85",
+      title: lang === 'ru' ? 'Норвежский Лосось на Гриле' : lang === 'en' ? 'Grilled Norwegian Salmon' : "Grilda Norvegiya Lososi",
+      caption: lang === 'ru' ? 'Лимонно-сливочный соус, дикий рис и спаржа' : lang === 'en' ? 'Citrus cream sauce, wild rice and crisp asparagus' : "Limonli-qaymoqli sous, yovvoyi guruch va yangi spargel",
       category: "dishes"
+    },
+    {
+      url: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=1600&q=85",
+      title: lang === 'ru' ? 'Бельгийский Шоколадный Фондан' : lang === 'en' ? 'Belgian Chocolate Lava' : "Belgiya Shokoladli Fondan",
+      caption: lang === 'ru' ? 'Горячий текучий шоколад, ванильное мороженое и ягоды' : lang === 'en' ? 'Warm molten ganache, vanilla bean ice cream and berries' : "Issiq oqib turuvchi shokolad, vanil muzqaymoq va rezavorlar",
+      category: "dishes"
+    },
+    {
+      url: "https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=1600&q=85",
+      title: lang === 'ru' ? 'Мастерство Шеф-Повара' : lang === 'en' ? 'Artisanal Culinary Craft' : "Oshpazlik Mahorati",
+      caption: lang === 'ru' ? 'Каждое блюдо собирается с филигранной точностью' : lang === 'en' ? 'Every plate crafted with Michelin-star precision' : "Har bir taom yuksak e'tibor va san'at bilan tayyorlanadi",
+      category: "kitchen"
     }
   ];
 
@@ -78,6 +101,26 @@ export const AboutPage = ({ setActivePage }) => {
   const filteredGallery = activeGalleryTab === 'all'
     ? galleryImages
     : galleryImages.filter(img => img.category === activeGalleryTab);
+
+  // Keyboard navigation for Fullscreen Lightbox
+  useEffect(() => {
+    if (activeLightboxIndex === null) return;
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setActiveLightboxIndex(null);
+      } else if (e.key === 'ArrowRight') {
+        soundFx.playPop();
+        setActiveLightboxIndex((prev) => (prev + 1) % filteredGallery.length);
+      } else if (e.key === 'ArrowLeft') {
+        soundFx.playPop();
+        setActiveLightboxIndex((prev) => (prev - 1 + filteredGallery.length) % filteredGallery.length);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [activeLightboxIndex, filteredGallery.length]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-20">
@@ -276,24 +319,142 @@ export const AboutPage = ({ setActivePage }) => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredGallery.map((img, i) => (
-            <div key={i} className="group relative rounded-3xl overflow-hidden shadow-lg h-72">
+            <div
+              key={i}
+              onClick={() => {
+                soundFx.playPop();
+                setActiveLightboxIndex(i);
+              }}
+              className="group relative rounded-3xl overflow-hidden shadow-lg h-72 cursor-pointer border border-transparent hover:border-gold-500/50 transition-all duration-300 hover:shadow-[0_0_25px_rgba(234,179,8,0.25)]"
+            >
               <img
                 src={img.url}
                 alt={img.title}
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                loading="lazy"
+                decoding="async"
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-dark-950/90 via-dark-950/20 to-transparent flex flex-col justify-end p-5 text-white">
-                <h4 className="font-serif font-bold text-lg text-white group-hover:text-gold-400 transition-colors">
-                  {img.title}
-                </h4>
-                <p className="text-xs text-gray-300 mt-1">
-                  {img.caption}
-                </p>
+              <div className="absolute inset-0 bg-gradient-to-t from-dark-950/95 via-dark-950/30 to-transparent flex flex-col justify-between p-5 text-white">
+                <div className="flex justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <span className="p-2.5 rounded-full bg-dark-950/80 backdrop-blur-md border border-gold-500/50 text-gold-400 shadow-lg flex items-center gap-1.5 text-xs font-semibold">
+                    <ZoomIn className="w-4 h-4 text-gold-400" />
+                    <span>{lang === 'ru' ? 'Смотреть' : lang === 'en' ? 'Expand' : 'Kattalashtirish'}</span>
+                  </span>
+                </div>
+                <div>
+                  <h4 className="font-serif font-bold text-lg text-white group-hover:text-gold-400 transition-colors">
+                    {img.title}
+                  </h4>
+                  <p className="text-xs text-gray-300 mt-1 line-clamp-2">
+                    {img.caption}
+                  </p>
+                </div>
               </div>
             </div>
           ))}
         </div>
       </div>
+
+      {/* Fullscreen Luxury Lightbox Modal */}
+      {activeLightboxIndex !== null && filteredGallery[activeLightboxIndex] && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 animate-fade-in select-none">
+          {/* Dark Glass Backdrop */}
+          <div
+            onClick={() => {
+              soundFx.playPop();
+              setActiveLightboxIndex(null);
+            }}
+            className="absolute inset-0 bg-dark-950/90 backdrop-blur-xl transition-opacity"
+          />
+
+          {/* Lightbox Container */}
+          <div className="relative z-10 max-w-5xl w-full flex flex-col items-center">
+            {/* Top Bar: Counter & Close */}
+            <div className="w-full flex items-center justify-between pb-3 text-white text-xs font-semibold">
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/10">
+                <Crown className="w-3.5 h-3.5 text-gold-400" />
+                <span className="text-gold-400 font-serif uppercase tracking-wider">Sapphire Galereya</span>
+                <span className="text-gray-400">•</span>
+                <span className="text-gray-200">
+                  {activeLightboxIndex + 1} / {filteredGallery.length}
+                </span>
+              </div>
+
+              <button
+                onClick={() => {
+                  soundFx.playPop();
+                  setActiveLightboxIndex(null);
+                }}
+                className="p-2 rounded-full bg-white/10 hover:bg-gold-500 hover:text-dark-950 text-white backdrop-blur-md border border-white/20 transition-all shadow-lg"
+                title="Yopish (Esc)"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Main Stage with Navigation Arrows */}
+            <div className="relative w-full rounded-3xl overflow-hidden bg-dark-900 border border-gold-500/30 shadow-2xl flex items-center justify-center max-h-[75vh]">
+              <img
+                src={filteredGallery[activeLightboxIndex].url}
+                alt={filteredGallery[activeLightboxIndex].title}
+                className="w-full h-full max-h-[75vh] object-contain transition-all duration-300"
+              />
+
+              {/* Prev Button */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  soundFx.playPop();
+                  setActiveLightboxIndex((prev) => (prev - 1 + filteredGallery.length) % filteredGallery.length);
+                }}
+                className="absolute left-3 p-3 rounded-full bg-dark-950/70 hover:bg-gold-500 hover:text-dark-950 text-white border border-white/20 transition-all backdrop-blur-md shadow-xl"
+                title="Oldingisi (←)"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+
+              {/* Next Button */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  soundFx.playPop();
+                  setActiveLightboxIndex((prev) => (prev + 1) % filteredGallery.length);
+                }}
+                className="absolute right-3 p-3 rounded-full bg-dark-950/70 hover:bg-gold-500 hover:text-dark-950 text-white border border-white/20 transition-all backdrop-blur-md shadow-xl"
+                title="Keyingisi (→)"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Bottom Details Bar */}
+            <div className="w-full mt-3 p-4 rounded-2xl bg-dark-900/90 border border-white/10 backdrop-blur-md text-white text-center sm:text-left flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xl">
+              <div>
+                <h3 className="font-serif font-bold text-lg text-gold-400">
+                  {filteredGallery[activeLightboxIndex].title}
+                </h3>
+                <p className="text-xs text-gray-300 mt-0.5">
+                  {filteredGallery[activeLightboxIndex].caption}
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => {
+                    soundFx.playChime();
+                    setActiveLightboxIndex(null);
+                    setActivePage('reservation');
+                    window.scrollTo(0, 0);
+                  }}
+                  className="px-4 py-2 rounded-xl gold-gradient-bg text-dark-950 font-bold text-xs shadow-md hover:scale-105 transition-transform"
+                >
+                  {lang === 'ru' ? 'Забронировать стол' : lang === 'en' ? 'Book a Table' : 'Stol Band Qilish'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
