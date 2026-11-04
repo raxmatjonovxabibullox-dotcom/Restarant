@@ -2,16 +2,16 @@
 import { initialMenu, initialOrders, initialReservations } from '../data/initialMenu.js';
 
 const KEYS = {
-  MENU: 'zafaron_menu_items_v1',
-  ORDERS: 'zafaron_orders_v1',
-  RESERVATIONS: 'zafaron_reservations_v1',
-  SETTINGS: 'zafaron_settings_v1',
-  AUTH: 'zafaron_auth_v1',
+  MENU: 'sapphire_menu_items_v2',
+  ORDERS: 'sapphire_orders_v2',
+  RESERVATIONS: 'sapphire_reservations_v2',
+  SETTINGS: 'sapphire_settings_v2',
+  AUTH: 'sapphire_auth_v2',
   LANGUAGE: 'zafaron_language_v1',
   THEME: 'zafaron_theme_v1',
-  CART: 'zafaron_cart_v1',
-  ADMIN_PROFILE: 'zafaron_admin_profile_v1',
-  AUTODIRECT: 'zafaron_autodirect_v1'
+  CART: 'sapphire_cart_v2',
+  ADMIN_PROFILE: 'sapphire_admin_profile_v2',
+  AUTODIRECT: 'sapphire_autodirect_v2'
 };
 
 // Menu Items
@@ -33,10 +33,18 @@ export const getStoredMenu = () => {
       .map(dish => {
         const tags = Array.isArray(dish.tags) ? [...dish.tags] : [];
         if (!tags.includes('halal')) tags.push('halal');
+        let img = dish.image || '';
+        if (dish.id === 'dish-1') {
+          img = '/images/sapphire_plov.jpg';
+        } else if (dish.id === 'dish-12' && img.includes('467003909585')) {
+          img = 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=1200&q=85';
+        } else {
+          img = img.replace('w=800&q=80', 'w=1200&q=85');
+        }
         return {
           ...dish,
           tags,
-          image: dish.image ? dish.image.replace('w=800&q=80', 'w=1200&q=85') : dish.image
+          image: img
         };
       });
     return validated.length > 0 ? validated : initialMenu;

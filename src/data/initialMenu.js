@@ -17,7 +17,7 @@ export const initialMenu = [
       en: "Festive royal pilaf with aromatic Lazer rice, tender lamb, golden carrots, raisins, chickpeas, quail eggs, kazy, and saffron."
     },
     price: 68000,
-    image: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=800&q=80",
+    image: "/images/sapphire_plov.jpg",
     prepTime: 20,
     calories: 780,
     portion: "450 g",
@@ -331,7 +331,7 @@ export const initialMenu = [
       en: "Fresh Norwegian salmon fillet grilled over fire, served with lemon-herb butter and tender asparagus."
     },
     price: 110000,
-    image: "https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=800&q=80",
+    image: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=1200&q=85",
     prepTime: 20,
     calories: 520,
     portion: "300 g",

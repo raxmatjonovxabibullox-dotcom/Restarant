@@ -15,37 +15,37 @@ export const AboutPage = ({ setActivePage }) => {
 
   const galleryImages = [
     {
-      url: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80",
+      url: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&q=85",
       title: lang === 'ru' ? 'Главный Роскошный Зал' : lang === 'en' ? 'Main Luxury Hall' : "Asosiy Hashamatli Zal",
       caption: lang === 'ru' ? 'Роскошный восточный дизайн и мягкая мебель' : lang === 'en' ? 'Royal oriental design and plush seating' : "Shohona sharqona dizayn va yumshoq mebellar",
       category: "halls"
     },
     {
-      url: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80",
+      url: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1200&q=85",
       title: lang === 'ru' ? 'Открытая Кухня' : lang === 'en' ? 'Open Kitchen' : "Ochiq Oshxona",
       caption: lang === 'ru' ? 'Блюда на углях готовятся на глазах у гостей' : lang === 'en' ? 'Charcoal grilling right before the guests' : "Mehmonlar ko'z o'ngida cho'g'da pishadigan taomlar",
       category: "kitchen"
     },
     {
-      url: "https://images.unsplash.com/photo-1578474846511-04ba529f0b88?auto=format&fit=crop&w=800&q=80",
+      url: "https://images.unsplash.com/photo-1578474846511-04ba529f0b88?auto=format&fit=crop&w=1200&q=85",
       title: lang === 'ru' ? 'Золотые VIP Кабинеты' : lang === 'en' ? 'VIP Gold Suites' : "VIP Oltin Xonalar",
       caption: lang === 'ru' ? 'Для особых торжеств и закрытых бесед' : lang === 'en' ? 'For special ceremonies and private talks' : "Maxsus tantanalar va shaxsiy suhbatlar uchun",
       category: "halls"
     },
     {
-      url: "https://images.unsplash.com/photo-1543007630-9710e4a00a20?auto=format&fit=crop&w=800&q=80",
+      url: "https://images.unsplash.com/photo-1543007630-9710e4a00a20?auto=format&fit=crop&w=1200&q=85",
       title: lang === 'ru' ? 'Панорамная Терраса' : lang === 'en' ? 'Panoramic Terrace' : "Panoramik Terrasa",
       caption: lang === 'ru' ? 'Свежий воздух и вечерние виды Ташкента' : lang === 'en' ? 'Fresh air and Tashkent evening panorama' : "Toza havo va Toshkent kechki manzarasi",
       category: "halls"
     },
     {
-      url: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80",
+      url: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1200&q=85",
       title: lang === 'ru' ? 'Искусство Казан-Кабоба' : lang === 'en' ? 'Art of Qozon Kabob' : "Qozon Kabob San'ati",
       caption: lang === 'ru' ? 'Золотистый картофель и сочные бараньи ребрышки' : lang === 'en' ? 'Golden potatoes and tender lamb ribs' : "Oltin kartoshka va yosh qo'zichoq qovurg'asi",
       category: "dishes"
     },
     {
-      url: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=800&q=80",
+      url: "/images/sapphire_plov.jpg",
       title: lang === 'ru' ? 'Свадебный Плов Sapphire' : lang === 'en' ? 'Sapphire Royal Wedding Plov' : "Sapphire To'y Palovi",
       caption: lang === 'ru' ? 'Рис лазер, горный шафран и отборный казы' : lang === 'en' ? 'Lazer rice, mountain saffron and choice kazy' : "Lazer guruch, tog' zafaroni va sarxil kazy",
       category: "dishes"

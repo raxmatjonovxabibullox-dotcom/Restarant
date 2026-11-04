@@ -33,7 +33,7 @@ const SIGNATURE_DISHES = [
       ru: "25 минут",
       en: "25 mins"
     },
-    image: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1200&q=80",
+    image: "/images/sapphire_plov.jpg",
     chefNote: {
       uz: "Bosh oshpazimiz 12 xil noyob ziravor va tabiiy tog' za'faroni bilan 4 soat mobaynida past olovda damlaydi.",
       ru: "Шеф томит плов 4 часа на медленном огне с 12 видами специй и горным шафраном.",
@@ -90,7 +90,7 @@ const SIGNATURE_DISHES = [
       ru: "30 минут",
       en: "30 mins"
     },
-    image: "https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=1200&q=80",
+    image: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1200&q=85",
     chefNote: {
       uz: "45 kun quruq usulda yetiltirilgan marmar mol go'shti, 450°C olovda pishirilib, shirasi ichida muhrlanadi.",
       ru: "Выдержка 45 дней. Готовится при температуре 450°C с сохранением максимальной сочности.",

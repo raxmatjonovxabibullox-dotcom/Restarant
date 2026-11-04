@@ -38,7 +38,7 @@ const PAIRING_SETS = [
     price: 115000,
     originalPrice: 135000,
     discount: "15% CHEGIRMA",
-    image: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80",
+    image: "/images/sapphire_plov.jpg",
     flavorNotes: [
       { label: "Aromat boyligi", value: "98%" },
       { label: "Go'sht mayinligi", value: "100%" },
@@ -64,7 +64,7 @@ const PAIRING_SETS = [
     price: 168000,
     originalPrice: 198000,
     discount: "15% CHEGIRMA",
-    image: "https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=800&q=80",
+    image: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1200&q=85",
     flavorNotes: [
       { label: "Shiradorlik", value: "99%" },
       { label: "Marmarlik darajasi", value: "A5" },
@@ -90,7 +90,7 @@ const PAIRING_SETS = [
     price: 142000,
     originalPrice: 165000,
     discount: "14% CHEGIRMA",
-    image: "https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=800&q=80",
+    image: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=1200&q=85",
     flavorNotes: [
       { label: "Yengillik", value: "100%" },
       { label: "Omega-3", value: "Yuqori" },
@@ -116,7 +116,7 @@ const PAIRING_SETS = [
     price: 82000,
     originalPrice: 96000,
     discount: "15% CHEGIRMA",
-    image: "https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=800&q=80",
+    image: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=1200&q=85",
     flavorNotes: [
       { label: "Shirinlik uyg'unligi", value: "98%" },
       { label: "Hissiyot", value: "100%" },
